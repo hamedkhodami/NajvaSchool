@@ -1,4 +1,5 @@
 from django.contrib.auth.models import BaseUserManager
+
 from apps.account.enums import UserRoleEnum
 
 
@@ -26,7 +27,5 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_verified", True)
 
         return self.create_user(
-            phone_number=phone_number,
-            password=password,
-            **extra_fields
+            phone_number=phone_number, password=password, **extra_fields
         )

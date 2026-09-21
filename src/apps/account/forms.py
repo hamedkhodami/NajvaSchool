@@ -43,19 +43,13 @@ class UserCreationForm(forms.ModelForm):
         )
 
     def clean_phone_number(self):
-        phone_number = digits.convert_to_en(
-            self.cleaned_data.get("phone_number")
-        )
+        phone_number = digits.convert_to_en(self.cleaned_data.get("phone_number"))
 
         if not check_phone_number(phone_number):
-            raise ValidationError(
-                "شماره موبایل واردشده معتبر نیست."
-            )
+            raise ValidationError("شماره موبایل واردشده معتبر نیست.")
 
         if User.objects.filter(phone_number=phone_number).exists():
-            raise ValidationError(
-                "این شماره موبایل قبلاً ثبت شده است."
-            )
+            raise ValidationError("این شماره موبایل قبلاً ثبت شده است.")
 
         return phone_number
 
@@ -64,9 +58,7 @@ class UserCreationForm(forms.ModelForm):
         password2 = self.cleaned_data.get("password2")
 
         if password1 and password2 and password1 != password2:
-            raise ValidationError(
-                "رمزهای عبور یکسان نیستند."
-            )
+            raise ValidationError("رمزهای عبور یکسان نیستند.")
 
         return password2
 
@@ -76,9 +68,7 @@ class UserCreationForm(forms.ModelForm):
         user.first_name = self.cleaned_data["first_name"]
         user.last_name = self.cleaned_data["last_name"]
 
-        user.set_password(
-            self.cleaned_data["password1"]
-        )
+        user.set_password(self.cleaned_data["password1"])
 
         if commit:
             user.save()
@@ -161,9 +151,7 @@ class VerifyPhoneNumberForm(forms.Form):
         code = self.cleaned_data.get("code")
 
         if not code.isdigit():
-            raise ValidationError(
-                "کد تأیید واردشده معتبر نیست."
-            )
+            raise ValidationError("کد تأیید واردشده معتبر نیست.")
 
         return code
 
@@ -200,9 +188,7 @@ class GetPhoneNumberForm(forms.Form):
                 phone_number=phone_number,
             )
         except User.DoesNotExist as error:
-            raise ValidationError(
-                "کاربری با این شماره موبایل پیدا نشد."
-            ) from error
+            raise ValidationError("کاربری با این شماره موبایل پیدا نشد.") from error
 
         cleaned_data["phone_number"] = phone_number
         cleaned_data["user"] = user
@@ -232,8 +218,6 @@ class ResetPassForm(forms.Form):
         password2 = self.cleaned_data.get("password2")
 
         if password and password2 and password != password2:
-            raise ValidationError(
-                "رمزهای عبور یکسان نیستند."
-            )
+            raise ValidationError("رمزهای عبور یکسان نیستند.")
 
         return password2

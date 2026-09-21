@@ -7,7 +7,8 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("apps.account.urls", namespace="account")),
-
+    path("student/", include("apps.student.urls", namespace="student")),
+    path("academic/", include("apps.academic.urls", namespace="academic")),
 ]
 
 # --- Static files ---

@@ -1,138 +1,85 @@
-# 🚀 Project Plan – Najva School Management System
+# 🚀 طرح پروژه – سامانه مدیریت مدرسه نجوا
 
-## 📌 Overview
+## 📌 نمای کلی
 
-Najva School Management System is a comprehensive web-based platform designed for
-managing the academic, administrative, financial, communication, and public
-activities of Najva School.
+سامانه مدیریت مدرسه نجوا یک پلتفرم جامع تحت وب است که برای مدیریت فعالیت‌های آموزشی، اداری، مالی، ارتباطی و عمومی مدرسه نجوا طراحی شده است.
 
-The system is designed as a Modular Monolith using Django and PostgreSQL.
+این سیستم با معماری Modular Monolith و با استفاده از Django و PostgreSQL ساخته می‌شود.
 
-The platform provides dedicated capabilities for:
-
-- School Administration
-- Teachers and Staff
-- Students and Parents
-- Academic Management
-- Attendance
-- Education and Evaluation
-- Discipline and Educational Records
-- Finance and Tuition
-- Online Payments
-- Communication
-- Online Pre-registration
-- Public School Website
-- Management Dashboard
+پلتفرم قابلیت‌های اختصاصی برای:
+- مدیریت مدرسه
+- معلمان و کارکنان
+- دانش‌آموزان و والدین
+- مدیریت آموزشی
+- حضور و غیاب
+- آموزش و ارزیابی
+- انضباط و سوابق تربیتی
+- امور مالی و شهریه
+- پرداخت آنلاین
+- ارتباطات
+- پیش‌ثبت‌نام آنلاین
+- وب‌سایت عمومی مدرسه
+- داشبورد مدیریتی
 
 ---
 
-# 🎯 Project Vision
+# 🎯 چشم‌انداز پروژه
 
-The primary goal is to create a centralized digital infrastructure for school
-management, education, and communication between the school and families.
+هدف اصلی ایجاد یک زیرساخت دیجیتال مرکزی برای مدیریت مدرسه، آموزش و ارتباط میان مدرسه و خانواده‌ها است.
 
-The system should:
-
-- Centralize school information
-- Reduce manual and paper-based processes
-- Improve access to student information
-- Provide a comprehensive student profile
-- Improve communication with parents
-- Simplify academic management
-- Manage attendance and discipline
-- Manage tuition and financial records
-- Provide online payment capability
-- Provide management dashboards
-- Provide online pre-registration
-- Provide a professional public website
+سیستم باید:
+- اطلاعات مدرسه را متمرکز کند
+- فرآیندهای دستی و کاغذی را کاهش دهد
+- دسترسی به اطلاعات دانش‌آموز را بهبود دهد
+- پروفایل جامع دانش‌آموز ارائه دهد
+- ارتباط با والدین را تقویت کند
+- مدیریت آموزشی را ساده کند
+- حضور و غیاب و انضباط را مدیریت کند
+- سوابق مالی و شهریه را مدیریت کند
+- امکان پرداخت آنلاین فراهم کند
+- داشبورد مدیریتی ارائه دهد
+- پیش‌ثبت‌نام آنلاین فراهم کند
+- یک وب‌سایت حرفه‌ای عمومی ارائه دهد
 
 ---
 
-# 🏗️ Architecture
+# 🏗️ معماری
 
-The project follows a Modular Monolithic Architecture.
+پروژه از معماری Modular Monolithic پیروی می‌کند.
 
-```text
-                    ┌──────────────┐
-                    │     core     │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │   accounts   │
-                    └──────┬───────┘
-                           │
-       ┌───────────────────┼───────────────────┐
-       │                   │                   │
-       ▼                   ▼                   ▼
-   students            teachers           admissions
-       │                   │                   │
-       └─────────────┬─────┴───────────────────┘
-                     │
-                     ▼
-                 academics
-                     │
-          ┌──────────┼──────────┐
-          ▼          ▼          ▼
-     attendance   education  discipline
-          │          │          │
-          └──────────┼──────────┘
-                     │
-                     ▼
-                  dashboard
-
-students / teachers
-        │
-        ▼
-     finance
-        │
-        ▼
-     payment
-
-communication
-     ▲
-     │
-All relevant apps
-
-public
-  │
-  └── Public Website
-```
+(نمودار معماری مطابق نسخه اصلی)
 
 ---
 
-# 🧭 Project Phases
+# 🧭 فازهای پروژه
 
-| Phase | Title | Description |
-|---------|---------|---------|
-| 1️⃣ | Planning & Preparation | Requirements, proposal, architecture, technologies and applications |
-| 2️⃣ | Initial Implementation | Project setup, GitHub, code quality, apps and database models |
-| 3️⃣ | Apps & Raw Templates | Business logic, views, URLs and raw templates |
-| 4️⃣ | Frontend & UI | TailwindCSS, responsive UI and user experience |
-| 5️⃣ | Advanced Features, Testing & Optimization | Notifications, advanced workflows, testing and optimization |
-| 6️⃣ | Development & Deployment | Production configuration, Docker, server deployment and release |
+| فاز | عنوان | توضیحات |
+|-----|--------|----------|
+| 1️⃣ | برنامه‌ریزی و آماده‌سازی | نیازمندی‌ها، پروپوزال، معماری، تکنولوژی‌ها و اپلیکیشن‌ها |
+| 2️⃣ | پیاده‌سازی اولیه | راه‌اندازی پروژه، GitHub، کیفیت کد، اپ‌ها و مدل‌های دیتابیس |
+| 3️⃣ | اپ‌ها و قالب‌های خام | منطق تجاری، ویوها، URLها و قالب‌های خام |
+| 4️⃣ | فرانت‌اند و UI | TailwindCSS، UI واکنش‌گرا و تجربه کاربری |
+| 5️⃣ | قابلیت‌های پیشرفته، تست و بهینه‌سازی | اعلان‌ها، گردش‌کارهای پیشرفته، تست و بهینه‌سازی |
+| 6️⃣ | توسعه و دیپلوی | تنظیمات Production، Docker، دیپلوی سرور و انتشار |
 
 ---
 
-# 🧱 Phase 1 – Planning & Preparation
+# 🧱 فاز ۱ – برنامه‌ریزی و آماده‌سازی
 
-## Step 1 – Requirements Analysis
+## مرحله ۱ – تحلیل نیازمندی‌ها
+بررسی و استخراج تمام نیازمندی‌های پروژه از پروپوزال.
 
-Review and extract all functional requirements from the project proposal.
+## مرحله ۲ – پروپوزال پروژه
+نهایی‌سازی پروپوزال و محدوده پروژه.
 
-## Step 2 – Project Proposal
-
-Finalize the project proposal and scope.
-
-## Step 3 – Technologies
-
-Define:
-
+## مرحله ۳ – تکنولوژی‌ها
+تعریف تکنولوژی‌های مورد استفاده:
 - Python
 - Django
 - Django Templates
 - Django ORM
 - PostgreSQL
-- REST API when required
+- REST API در صورت نیاز
 - HTML
 - CSS
 - JavaScript
@@ -140,992 +87,424 @@ Define:
 - Git
 - GitHub
 
-## Step 4 – Applications
+## مرحله ۴ – اپلیکیشن‌ها
+تعریف اپ‌های پروژه.
 
-Define the project applications.
+## مرحله ۵ – معماری
+تعریف معماری Modular Monolith و مسئولیت اپ‌ها.
 
-## Step 5 – Architecture
+## مرحله ۶ – گردش‌کار پروژه
+تعریف فازهای توسعه.
 
-Define the modular monolithic architecture and application responsibilities.
-
-## Step 6 – Project Workflow
-
-Define the development workflow and project phases.
-
-## Step 7 – Phase 2 Roadmap
-
-Define the implementation sequence before starting development.
+## مرحله ۷ – نقشه راه فاز ۲
+تعریف ترتیب پیاده‌سازی قبل از شروع توسعه.
 
 ---
 
-# ⚙️ Phase 2 – Initial Implementation
+# ⚙️ فاز ۲ – پیاده‌سازی اولیه
 
-## Step 1 – Project Setup
+## مرحله ۱ – راه‌اندازی پروژه
+- ساخت ریپازیتوری
+- ساخت پروژه Django
+- تنظیم ساختار پروژه
+- تنظیم settings
+- تنظیم متغیرهای محیطی
+- تنظیم PostgreSQL
+- تنظیم Git
+- ساخت `.gitignore`
+- ساخت `.editorconfig`
+- ساخت README اولیه
+- ساخت ساختار مستندات
 
-- Create repository
-- Create Django project
-- Configure project structure
-- Configure settings
-- Configure environment variables
-- Configure PostgreSQL
-- Configure Git
-- Configure `.gitignore`
-- Configure `.editorconfig`
-- Create initial README
-- Create documentation structure
-
-## Step 2 – Code Quality
-
-Configure:
-
+## مرحله ۲ – کیفیت کد
+تنظیم:
 - Pre-commit
 - Ruff
 - Formatter
-- Import sorting
-- Basic static checks
-- Test configuration
+- مرتب‌سازی ایمپورت‌ها
+- چک‌های استاتیک پایه
+- تنظیمات تست
 
-## Step 3 – Core
+## مرحله ۳ – core
+پیاده‌سازی زیرساخت مشترک پروژه.
 
-Implement shared project infrastructure.
+## مرحله ۴ – accounts
+پیاده‌سازی احراز هویت، کاربران، نقش‌ها و دسترسی‌ها.
 
-## Step 4 – Accounts
+## مرحله ۵ – students
+پیاده‌سازی اطلاعات دانش‌آموز و والدین.
 
-Implement authentication, users, roles and permissions.
+## مرحله ۶ – teachers
+پیاده‌سازی معلمان و کارکنان.
 
-## Step 5 – Students
+## مرحله ۷ – academics
+پیاده‌سازی ساختار آموزشی.
 
-Implement student and parent/guardian data.
+## مرحله ۸ – attendance
+پیاده‌سازی حضور و غیاب و تأخیرها.
 
-## Step 6 – Teachers
+## مرحله ۹ – education
+پیاده‌سازی فعالیت‌های آموزشی، امتحانات، نمرات و تکالیف.
 
-Implement teachers and staff.
+## مرحله ۱۰ – discipline
+پیاده‌سازی انضباط و سوابق تربیتی.
 
-## Step 7 – Academics
+## مرحله ۱۱ – finance
+پیاده‌سازی شهریه، اقساط، بدهی‌ها، هزینه‌ها، درآمدها و حقوق کارکنان.
 
-Implement academic structure.
+## مرحله ۱۲ – payment
+پیاده‌سازی پرداخت آنلاین و اتصال به درگاه.
 
-## Step 8 – Attendance
+## مرحله ۱۳ – communication
+پیاده‌سازی اعلان‌ها، اطلاعیه‌ها و پیام‌رسان داخلی.
 
-Implement attendance and late records.
+## مرحله ۱۴ – admissions
+پیاده‌سازی پیش‌ثبت‌نام آنلاین.
 
-## Step 9 – Education
+## مرحله ۱۵ – public
+پیاده‌سازی ساختار داده‌های وب‌سایت عمومی.
 
-Implement academic activities, exams, grades and assignments.
+## مرحله ۱۶ – dashboard
+پیاده‌سازی ساختار داشبورد و آمارها.
 
-## Step 10 – Discipline
+## مرحله ۱۷ – دیتابیس
+- ساخت migrations
+- بررسی روابط
+- افزودن constraints
+- افزودن indexها
+- آماده‌سازی داده اولیه
 
-Implement discipline and educational records.
+## مرحله ۱۸ – بازبینی
+بازبینی:
+- معماری
+- مدل‌ها
+- روابط
+- نام‌گذاری
+- کیفیت کد
+- طراحی دیتابیس
 
-## Step 11 – Finance
-
-Implement tuition, installments, debts, expenses, income and staff salaries.
-
-## Step 12 – Payment
-
-Implement online payment infrastructure and gateway integration.
-
-## Step 13 – Communication
-
-Implement notifications, announcements and internal messaging.
-
-## Step 14 – Admissions
-
-Implement online pre-registration.
-
-## Step 15 – Public
-
-Implement public website data structures.
-
-## Step 16 – Dashboard
-
-Implement dashboard data structures and statistics.
-
-## Step 17 – Database
-
-- Create migrations
-- Review relationships
-- Add constraints
-- Add indexes
-- Prepare initial data
-
-## Step 18 – Review
-
-Review:
-
-- Architecture
-- Models
-- Relationships
-- Naming
-- Code quality
-- Database design
-
-## Step 19 – Phase 3 Roadmap
-
-Define detailed business logic and raw template implementation steps.
+## مرحله ۱۹ – نقشه راه فاز ۳
+تعریف منطق تجاری و قالب‌های خام.
 
 ---
 
-# 🗂️ Applications & Models
+# 🗂️ اپلیکیشن‌ها و مدل‌ها
 
 # 1️⃣ core
 
-## Responsibility
+## مسئولیت
+زیرساخت مشترک و کامپوننت‌های قابل استفاده مجدد.
 
-Shared infrastructure and reusable components.
-
-## Models
+## مدل‌ها
 
 ### BaseModel
+پایه مشترک مدل‌ها.
 
-Common base for project models.
-
-Potential fields:
-
+فیلدهای احتمالی:
 - id
 - created_at
 - updated_at
 
 ### SchoolSetting
+تنظیمات سطح مدرسه.
 
-General school-level configuration.
-
-Potential fields:
-
+فیلدهای احتمالی:
 - school_name
 - phone
 - email
 - address
 - academic_year
-- configuration data
+- داده‌های تنظیمات
 
-## Other Components
-
-- Common Mixins
-- Constants
-- Validators
-- Utilities
-- Shared Exceptions
-- Common Choices
-- Model Helpers
+## سایر کامپوننت‌ها
+- Mixins مشترک
+- ثابت‌ها
+- اعتبارسنج‌ها
+- ابزارها
+- استثناهای مشترک
+- انتخاب‌ها
+- کمک‌های مدل
 
 ---
 
 # 2️⃣ accounts
 
-## Responsibility
+## مسئولیت
+احراز هویت، کاربران، نقش‌ها و دسترسی‌ها.
 
-Authentication, users, roles and permissions.
-
-## Models
+## مدل‌ها
 
 ### User
-
-Main authentication model.
-
-Possible responsibilities:
-
-- Authentication
-- User status
-- Phone/email
-- Last login
-- Active status
+مدل اصلی احراز هویت.
 
 ### Role
-
-Defines system roles.
-
-Examples:
-
-- Administrator
-- Manager
-- Teacher
-- Parent
-- Student
-- Staff
+تعریف نقش‌های سیستم.
 
 ### UserProfile
-
-Additional user information.
+اطلاعات تکمیلی کاربر.
 
 ### Permission
+ساختار دسترسی‌های سفارشی.
 
-Permission structure when custom permissions are required.
-
-## Access Rules
-
-- Manager → School management
-- Teacher → Assigned classes and students
-- Parent → Own children
-- Student → Personal academic information
+## قوانین دسترسی
+- مدیر → مدیریت مدرسه
+- معلم → کلاس‌ها و دانش‌آموزان اختصاص داده شده
+- والد → فرزندان خود
+- دانش‌آموز → اطلاعات آموزشی خود
 
 ---
 
 # 3️⃣ students
 
-## Responsibility
+## مسئولیت
+اطلاعات دانش‌آموز و پروفایل جامع.
 
-Student information and comprehensive student profile.
-
-## Models
+## مدل‌ها
 
 ### Student
-
-Main student entity.
-
-Potential information:
-
-- Personal information
-- Student code
-- Birth information
-- Contact information
-- Status
-- Academic references
-
-### Guardian
-
-Parent/guardian information.
-
-### StudentGuardian
-
-Relationship between student and guardian.
-
-Potential information:
-
-- relation type
-- is_primary
-- contact priority
-
-### StudentProfile
-
-Extended student information when separation is useful.
-
-### StudentActivity
-
-Student educational/activity records.
+اطلاعات اصلی دانش‌آموز.
 
 ### StudentNote
+یادداشت‌های عمومی دانش‌آموز.
 
-General student notes.
-
-## Student Comprehensive Profile
-
-The student profile should provide access to:
-
-- Personal information
-- Guardian information
-- Academic status
-- Grades
-- Average
-- Attendance
-- Late records
-- Discipline
-- Educational records
-- Assignments
-- Exams
-- Financial status
-- Payment history
-- Notes
+## پروفایل جامع دانش‌آموز
+شامل:
+- اطلاعات شخصی
+- اطلاعات والدین
+- وضعیت آموزشی
+- نمرات
+- معدل
+- حضور و غیاب
+- تأخیرها
+- انضباط
+- سوابق تربیتی
+- تکالیف
+- امتحانات
+- وضعیت مالی
+- تاریخچه پرداخت
+- یادداشت‌ها
 
 ---
 
 # 4️⃣ teachers
 
-## Responsibility
+## مسئولیت
+مدیریت معلمان و کارکنان.
 
-Teacher and school staff management.
-
-## Models
-
-### Teacher
-
-Teacher information.
-
-### Staff
-
-Non-teaching school staff.
-
-### EmploymentRecord
-
-Employment and work history.
-
-### WorkSchedule
-
-Working hours and work schedule.
-
-### LeaveRequest
-
-Leave records.
-
-### SalaryRecord
-
-Salary and benefits information.
-
-### SalaryPayment
-
-Salary payments.
-
-> Financial salary records may be linked to the finance app
-> depending on the final database architecture.
+## مدل‌ها
+- Teacher
+- Staff
+- EmploymentRecord
+- WorkSchedule
+- LeaveRequest
+- SalaryRecord
+- SalaryPayment
 
 ---
 
 # 5️⃣ academics
 
-## Responsibility
+## مسئولیت
+ساختار آموزشی مدرسه.
 
-Academic structure of the school.
-
-## Models
-
-### AcademicYear
-
-School academic year.
-
-### Grade
-
-Educational grade.
-
-Examples:
-
-- Seventh
-- Eighth
-- Ninth
-
-### Classroom
-
-School class.
-
-Examples:
-
-- 7A
-- 8A
-- 9B
-
-### Subject
-
-Educational subject.
-
-### ClassSubject
-
-Subject assigned to a classroom.
-
-### TeacherAssignment
-
-Teacher assigned to a subject/class.
-
-### StudentEnrollment
-
-Student enrollment in an academic year/class.
-
-### WeeklySchedule
-
-Weekly class schedule.
-
-### ScheduleSession
-
-Individual scheduled session.
-
-Potential information:
-
-- day
-- start_time
-- end_time
-- classroom
-- subject
-- teacher
+## مدل‌ها
+- AcademicYear
+- Grade
+- Classroom
+- Subject
+- ClassSubject
+- TeacherAssignment
+- StudentEnrollment
+- WeeklySchedule
+- ScheduleSession
 
 ---
 
 # 6️⃣ attendance
 
-## Responsibility
+## مسئولیت
+حضور و غیاب دانش‌آموزان و کارکنان.
 
-Student and staff attendance.
-
-## Models
-
-### StudentAttendance
-
-Student attendance record.
-
-Possible statuses:
-
-- Present
-- Absent
-- Late
-- Excused
-
-### StaffAttendance
-
-Teacher/staff attendance.
-
-### AttendanceSession
-
-Attendance session related to a class.
-
-### LateRecord
-
-Detailed late-arrival record.
-
-## Requirements
-
-- Daily attendance
-- Attendance history
-- Late tracking
-- Attendance reports
-- Parent visibility
-- Teacher registration
+## مدل‌ها
+- StudentAttendance
+- StaffAttendance
+- AttendanceSession
+- LateRecord
 
 ---
 
 # 7️⃣ education
 
-## Responsibility
+## مسئولیت
+فعالیت‌های آموزشی و ارزیابی.
 
-Educational activities and academic evaluation.
-
-## Models
-
-### Exam
-
-Exam information.
-
-### ExamResult
-
-Student exam result.
-
-### Grade
-
-Academic grade record.
-
-### DailyGrade
-
-Daily evaluation.
-
-### Assignment
-
-Homework/assignment.
-
-### AssignmentStatus
-
-Student assignment completion status.
-
-### EducationalActivity
-
-Educational activity record.
-
-### TeacherNote
-
-Teacher notes about students.
-
-## Requirements
-
-- Grade registration
-- Daily grades
-- Exams
-- Assignments
-- Assignment status
-- Educational activities
-- Teacher notes
-- Academic reports
+## مدل‌ها
+- Exam
+- ExamResult
+- Grade
+- DailyGrade
+- Assignment
+- AssignmentStatus
+- EducationalActivity
+- TeacherNote
 
 ---
 
 # 8️⃣ discipline
 
-## Responsibility
+## مسئولیت
+انضباط و سوابق تربیتی.
 
-Discipline and educational/behavioral records.
-
-## Models
-
-### DisciplineType
-
-Type/category of discipline record.
-
-### DisciplineRecord
-
-Student discipline event.
-
-Potential information:
-
-- student
-- teacher/staff
-- date
-- type
-- description
-- status
-
-### BehavioralEvaluation
-
-Behavioral evaluation.
-
-### EducationalRecord
-
-Educational/ تربیتی record.
-
-## Requirements
-
-- Discipline records
-- Behavioral history
-- Educational records
-- Parent visibility
-- Management review
+## مدل‌ها
+- DisciplineType
+- DisciplineRecord
+- BehavioralEvaluation
+- EducationalRecord
 
 ---
 
 # 9️⃣ finance
 
-## Responsibility
+## مسئولیت
+مدیریت مالی مدرسه.
 
-School financial management.
-
-## Models
-
-### Tuition
-
-Student tuition record.
-
-### TuitionInstallment
-
-Tuition installment.
-
-### PaymentRecord
-
-Financial payment record.
-
-### StudentDebt
-
-Student financial debt.
-
-### SchoolExpense
-
-School expense.
-
-### SchoolIncome
-
-School income.
-
-### StaffSalary
-
-Staff salary information.
-
-### SalaryPayment
-
-Salary payment record.
-
-### FinancialReport
-
-Financial reporting data when required.
-
-## Requirements
-
-- Tuition management
-- Installments
-- Debts
-- Payments
-- Expenses
-- Income
-- Salary
-- Financial reports
+## مدل‌ها
+- Tuition
+- TuitionInstallment
+- PaymentRecord
+- StudentDebt
+- SchoolExpense
+- SchoolIncome
+- StaffSalary
+- SalaryPayment
+- FinancialReport
 
 ---
 
 # 🔟 payment
 
-## Responsibility
+## مسئولیت
+پرداخت آنلاین و اتصال به درگاه.
 
-Online payment and payment gateway integration.
-
-## Models
-
-### PaymentTransaction
-
-Main online payment transaction.
-
-Potential fields:
-
-- user
-- amount
-- authority
-- reference_id
-- gateway
-- status
-- created_at
-- paid_at
-
-### PaymentRequest
-
-Payment request information.
-
-### PaymentCallback
-
-Gateway callback information.
-
-### PaymentVerification
-
-Payment verification result.
-
-## Requirements
-
-- Create payment request
-- Redirect to gateway
-- Receive callback
-- Verify transaction
-- Handle success/failure
-- Prevent duplicate payment processing
-- Connect verified payments to finance
+## مدل‌ها
+- PaymentTransaction
+- PaymentRequest
+- PaymentCallback
+- PaymentVerification
 
 ---
 
 # 1️⃣1️⃣ communication
 
-## Responsibility
+## مسئولیت
+سیستم ارتباطی و اعلان‌ها.
 
-School communication and notification system.
-
-## Models
-
-### Notification
-
-System notification.
-
-Examples:
-
-- Attendance notification
-- New grade notification
-- Schedule change
-- School announcement
-
-### NotificationRecipient
-
-Notification recipient and read status.
-
-### NotificationTemplate
-
-Reusable notification templates.
-
-### Announcement
-
-School announcements.
-
-### MessageThread
-
-Conversation/thread.
-
-### InternalMessage
-
-Internal message.
-
-## Communication Channels
-
-- Manager ↔ Teacher
-- Manager ↔ Parent
-- Teacher ↔ Parent
-- School ↔ Family
+## مدل‌ها
+- Notification
+- NotificationRecipient
+- NotificationTemplate
+- Announcement
+- MessageThread
+- InternalMessage
 
 ---
 
 # 1️⃣2️⃣ admissions
 
-## Responsibility
+## مسئولیت
+پیش‌ثبت‌نام آنلاین.
 
-Online pre-registration and applicant management.
-
-## Models
-
-### PreRegistration
-
-Main pre-registration request.
-
-### Applicant
-
-Applicant information.
-
-### ApplicantGuardian
-
-Applicant guardian information.
-
-### AdmissionStatus
-
-Pre-registration status.
-
-Examples:
-
-- Pending
-- Reviewing
-- Approved
-- Rejected
-- Completed
-
-### AdmissionReview
-
-Administrative review of an application.
-
-## Workflow
-
-```text
-Public Website
-      │
-      ▼
-Pre-registration
-      │
-      ▼
-Applicant
-      │
-      ▼
-Review
-      │
- ┌────┴────┐
- ▼         ▼
-Approve   Reject
- │
- ▼
-Student
-```
+## مدل‌ها
+- PreRegistration
+- Applicant
+- ApplicantGuardian
+- AdmissionStatus
+- AdmissionReview
 
 ---
 
 # 1️⃣3️⃣ public
 
-## Responsibility
+## مسئولیت
+وب‌سایت عمومی مدرسه.
 
-Public-facing school website.
-
-## Public Sections
-
-### Home
-
-- School introduction
-- Important information
-- Latest news
-- Important announcements
-
-### About
-
-- School introduction
-- Mission
-- Achievements
-- General information
-
-### News
-
-Public school news and announcements.
-
-### Events
-
-Publicly visible school events.
-
-### Contact
-
-- Phone
-- Address
-- Contact information
-
-### Pre-registration
-
-Public access to online pre-registration.
-
-## Notes
-
-The public app should not contain private student,
-teacher, financial, or internal school information.
+## بخش‌ها
+- خانه
+- درباره
+- اخبار
+- رویدادها
+- تماس
+- پیش‌ثبت‌نام
 
 ---
 
 # 1️⃣4️⃣ dashboard
 
-## Responsibility
+## مسئولیت
+داشبور مدیریتی و آمارها.
 
-Management dashboards and summarized statistics.
-
-## Dashboard Sections
-
-### Student Statistics
-
-- Total students
-- Present students
-- Absent students
-- Late students
-- New discipline records
-
-### Academic Statistics
-
-- Average grades
-- Classroom status
-- Upcoming exams
-- Students requiring attention
-
-### Financial Statistics
-
-- Collected tuition
-- Outstanding tuition
-- Recent payments
-- School expenses
-
-### Staff Statistics
-
-- Present teachers
-- Absent staff
-- Leave status
-- Salary payment status
-
-## Architecture Note
-
-Dashboard should primarily aggregate data from domain apps
-rather than becoming the owner of business data.
+## بخش‌ها
+- آمار دانش‌آموزان
+- آمار آموزشی
+- آمار مالی
+- آمار کارکنان
 
 ---
 
-# 🔗 Application Relationships
-
-```text
-accounts
-   │
-   ├── students
-   ├── teachers
-   └── admissions
-           │
-           └── students
-
-students ───────── academics
-teachers ───────── academics
-
-academics ──────── attendance
-academics ──────── education
-students ───────── education
-students ───────── discipline
-
-students ───────── finance
-teachers ───────── finance
-
-finance ────────── payment
-
-All relevant apps ── communication
-
-admissions ──────── public
-
-All domain apps ─── dashboard
-```
+# 🔗 روابط اپلیکیشن‌ها
+(مطابق نسخه اصلی)
 
 ---
 
-# 🔐 Authorization Model
+# 🔐 مدل دسترسی
 
-The system should follow role-based access control.
+## مدیر
+دسترسی کامل مدیریتی.
 
-## Manager
+## معلم
+کلاس‌ها، دانش‌آموزان، نمرات، حضور و غیاب، تکالیف، انضباط، یادداشت‌ها، برنامه هفتگی، حقوق شخصی.
 
-- Full school management
-- Student management
-- Teacher/staff management
-- Academic management
-- Financial management
-- Reports
-- Dashboard
-- Communication
+## والد
+فرزندان خود، اطلاعات آموزشی، مالی، حضور و غیاب، تکالیف، امتحانات، ارتباطات.
 
-## Teacher
-
-- Assigned classes
-- Assigned students
-- Attendance
-- Grades
-- Daily evaluation
-- Assignments
-- Discipline records
-- Student notes
-- Schedule
-- Personal salary information
-
-## Parent
-
-- Own children
-- Academic information
-- Attendance
-- Discipline
-- Schedule
-- Exams
-- Assignments
-- Financial information
-- Notifications
-- Communication
-
-## Student
-
-- Personal academic information
-- Attendance
-- Grades
-- Assignments
-- Exams
-- Schedule
-- Relevant notifications
+## دانش‌آموز
+اطلاعات آموزشی خود.
 
 ---
 
-# 🧪 Testing Strategy
+# 🧪 استراتژی تست
 
-Testing should cover:
-
-- Models
-- Relationships
-- Constraints
-- Authentication
-- Permissions
-- Attendance
-- Education
-- Discipline
-- Finance
-- Payment
-- Admissions
-- Communication
-
-Target:
-
-- Reliable business logic
-- Safe financial transactions
-- Correct access control
-- Stable database relationships
+تست باید شامل:
+- مدل‌ها
+- روابط
+- محدودیت‌ها
+- احراز هویت
+- دسترسی‌ها
+- حضور و غیاب
+- آموزش
+- انضباط
+- مالی
+- پرداخت
+- پیش‌ثبت‌نام
+- ارتباطات
 
 ---
 
-# 🚀 Future Extensibility
+# 🚀 توسعه آینده
 
-The architecture should allow future implementation of:
-
-- SMS integration
-- Email notifications
-- Online education
-- Assignment submission
-- Mobile application
-- Advanced analytics
-- Additional payment gateways
-- External service integrations
-
-These features are considered future extensions unless explicitly included
-in the current implementation scope.
+قابلیت توسعه برای:
+- SMS
+- ایمیل
+- آموزش آنلاین
+- ارسال تکلیف
+- اپ موبایل
+- تحلیل‌های پیشرفته
+- درگاه‌های پرداخت بیشتر
+- سرویس‌های خارجی
 
 ---
 
-# 📌 Phase Completion Rule
+# 📌 قانون تکمیل فاز
 
-Each phase must be completed and reviewed before the next phase roadmap
-is finalized.
-
-```text
-Phase N
-   │
-   ▼
-Implementation
-   │
-   ▼
-Review
-   │
-   ▼
-Completion
-   │
-   ▼
-Define next phase
-```
+هر فاز باید کامل شود و سپس فاز بعدی تعریف شود.
 

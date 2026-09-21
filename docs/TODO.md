@@ -64,10 +64,10 @@ Development & Deployment  ░░░░░░░░░░ 0%
 | 2️⃣ | Configure Code Quality Tools & Pre-commit | ✅ |
 | 3️⃣ | Create Core App & Base Infrastructure     | ✅ |
 | 4️⃣ | Create Accounts App & Models              | ✅ |
-| 5️⃣ | Create Students App & Models              | 🎯 |
-| 6️⃣ | Create Teachers App & Models              | 📌 |
-| 7️⃣ | Create Academics App & Models             | 📌 |
-| 8️⃣ | Create Attendance App & Models            | 📌 |
+| 5️⃣ | Create Students App & Models              | ✅ |
+| 6️⃣ | Create Teachers App & Models              | ✅ |
+| 7️⃣ | Create Academics App & Models             | ✅ |
+| 8️⃣ | Create Attendance App & Models            | 🎯 |
 | 9️⃣ | Create Education App & Models             | 📌 |
 | 🔟 | Create Discipline App & Models            | 📌 |
 | 1️⃣1️⃣ | Create Finance App & Models               | 📌 |

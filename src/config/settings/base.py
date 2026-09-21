@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     # apps
     "apps.core.apps.CoreConfig",
     "apps.account.apps.AccountConfig",
+    "apps.student.apps.StudentConfig",
+    "apps.teacher.apps.TeacherConfig",
+    "apps.academic.apps.AcademicConfig",
 ]
 
 MIDDLEWARE = [
@@ -131,7 +134,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # ---Auth-------------------------------------------------------
-# AUTH_USER_MODEL = "account.User"
+AUTH_USER_MODEL = "account.User"
 # ---------------------------------------------------------------
 
 

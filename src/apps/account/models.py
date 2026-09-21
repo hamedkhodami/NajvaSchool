@@ -16,7 +16,9 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField("نام", max_length=128, null=True, blank=True)
     last_name = models.CharField("نام خانوادگی", max_length=128, null=True, blank=True)
 
-    role = models.CharField("نقش", max_length=128, choices=Role.choices, default=Role.STUDENT)
+    role = models.CharField(
+        "نقش", max_length=128, choices=Role.choices, default=Role.STUDENT
+    )
 
     is_active = models.BooleanField("فعال", default=True)
     is_admin = models.BooleanField("ادمین", default=False)

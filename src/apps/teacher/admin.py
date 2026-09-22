@@ -98,6 +98,7 @@ class TeacherNoteAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "teacher",
+        "attendance_session",
         "title",
         "created_at",
         "updated_at",
@@ -135,6 +136,7 @@ class TeacherNoteAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "teacher",
+                    "attendance_session",
                     "title",
                     "content",
                 )

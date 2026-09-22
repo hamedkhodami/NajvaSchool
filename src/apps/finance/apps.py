@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class FinanceConfig(AppConfig):
-    name = "finance"
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.finance"
+    verbose_name = "مدیریت مالی مدرسه"

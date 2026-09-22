@@ -45,6 +45,13 @@ INSTALLED_APPS = [
     "apps.student.apps.StudentConfig",
     "apps.teacher.apps.TeacherConfig",
     "apps.academic.apps.AcademicConfig",
+    "apps.attendance.apps.AttendanceConfig",
+    "apps.education.apps.EducationConfig",
+    "apps.finance.apps.FinanceConfig",
+    "apps.payment.apps.PaymentConfig",
+    "apps.notification.apps.NotificationConfig",
+    "apps.public.apps.PublicConfig",
+    "apps.dashboard.apps.DashboardConfig",
 ]
 
 MIDDLEWARE = [

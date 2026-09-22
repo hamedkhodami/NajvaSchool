@@ -293,12 +293,8 @@
 
 ## مدل‌ها
 - Teacher
-- Staff
-- EmploymentRecord
-- WorkSchedule
-- LeaveRequest
-- SalaryRecord
-- SalaryPayment
+- TeacherNoteModel
+- EmploymentRecordModel
 
 ---
 
@@ -308,15 +304,12 @@
 ساختار آموزشی مدرسه.
 
 ## مدل‌ها
-- AcademicYear
-- Grade
-- Classroom
-- Subject
-- ClassSubject
-- TeacherAssignment
-- StudentEnrollment
-- WeeklySchedule
-- ScheduleSession
+- AcademicYearModel
+- GradeModel
+- ClassroomModel
+- SubjectModel
+- StudentEnrollmentModel
+- ScheduleSessionModel
 
 ---
 
@@ -387,43 +380,21 @@
 پرداخت آنلاین و اتصال به درگاه.
 
 ## مدل‌ها
-- PaymentTransaction
-- PaymentRequest
-- PaymentCallback
-- PaymentVerification
+- Payment
 
 ---
 
-# 1️⃣1️⃣ communication
+# 1️⃣1️⃣ notification
 
 ## مسئولیت
 سیستم ارتباطی و اعلان‌ها.
 
 ## مدل‌ها
 - Notification
-- NotificationRecipient
-- NotificationTemplate
-- Announcement
-- MessageThread
-- InternalMessage
 
 ---
 
-# 1️⃣2️⃣ admissions
-
-## مسئولیت
-پیش‌ثبت‌نام آنلاین.
-
-## مدل‌ها
-- PreRegistration
-- Applicant
-- ApplicantGuardian
-- AdmissionStatus
-- AdmissionReview
-
----
-
-# 1️⃣3️⃣ public
+# 1️⃣2️⃣ public
 
 ## مسئولیت
 وب‌سایت عمومی مدرسه.
@@ -434,11 +405,10 @@
 - اخبار
 - رویدادها
 - تماس
-- پیش‌ثبت‌نام
 
 ---
 
-# 1️⃣4️⃣ dashboard
+# 1️⃣3️⃣ dashboard
 
 ## مسئولیت
 داشبور مدیریتی و آمارها.

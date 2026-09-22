@@ -2,4 +2,9 @@ from django.apps import AppConfig
 
 
 class NotificationConfig(AppConfig):
-    name = "notification"
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.notification"
+    verbose_name = "اعلان ها"
+
+    def ready(self):
+        from . import signals  # noqa: F401

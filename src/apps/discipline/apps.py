@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class DisciplineConfig(AppConfig):
-    name = "discipline"
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.discipline"
+    verbose_name = "پرورش"

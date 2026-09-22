@@ -9,6 +9,14 @@ urlpatterns = [
     path("accounts/", include("apps.account.urls", namespace="account")),
     path("student/", include("apps.student.urls", namespace="student")),
     path("academic/", include("apps.academic.urls", namespace="academic")),
+    path("attendance/", include("apps.attendance.urls", namespace="attendance")),
+    path("education/", include("apps.education.urls", namespace="education")),
+    path("discipline/", include("apps.discipline.urls", namespace="discipline")),
+    path("finance/", include("apps.finance.urls", namespace="finance")),
+    path("payment/", include("apps.payment.urls", namespace="payment")),
+    path("notification/", include("apps.notification.urls", namespace="notification")),
+    path("public/", include("apps.public.urls", namespace="public")),
+    path("dashboard/", include("apps.dashboard.urls", namespace="dashboard")),
 ]
 
 # --- Static files ---

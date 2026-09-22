@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class PublicConfig(AppConfig):
-    name = "public"
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.public"
+    verbose_name = "عمومی"

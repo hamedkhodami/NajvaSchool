@@ -64,6 +64,15 @@ class TeacherNoteModel(BaseModel):
         verbose_name="معلم",
     )
 
+    attendance_session = models.ForeignKey(
+        "attendance.AttendanceSessionModel",
+        on_delete=models.CASCADE,
+        related_name="teacher_notes",
+        null=True,
+        blank=True,
+        verbose_name="جلسه",
+    )
+
     title = models.CharField(
         max_length=200,
         verbose_name="عنوان",
@@ -71,6 +80,11 @@ class TeacherNoteModel(BaseModel):
 
     content = models.TextField(
         verbose_name="متن یادداشت",
+    )
+
+    is_completed = models.BooleanField(
+        default=False,
+        verbose_name="انجام شده",
     )
 
     class Meta:

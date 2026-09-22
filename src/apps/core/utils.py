@@ -84,3 +84,7 @@ def toast_form_errors(request, form):
         for error in message:
             messages.error(request, error)
             return False
+
+
+def send_sms(request):
+    pass

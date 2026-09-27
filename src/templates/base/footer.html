@@ -1,0 +1,18 @@
+{% load static %}
+
+<footer class="bg-white border-t mt-10">
+    <div class="container max-w-screen py-4 flex flex-col md:flex-row items-center justify-between text-[15px] text-ink-700">
+
+        <!-- Copy -->
+        <div class="mb-3 md:mb-0">
+            © مدرسه
+        </div>
+
+        <!-- Links -->
+        <nav class="flex items-center gap-6">
+            <a href="{% url 'public:index' %}" class="hover:text-primary transition">خانه</a>
+            <a href="{% url 'account:login' %}" class="hover:text-primary transition">ورود به بخش مدرسه</a>
+        </nav>
+
+    </div>
+</footer>

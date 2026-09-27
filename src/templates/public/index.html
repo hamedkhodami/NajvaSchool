@@ -1,0 +1,69 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}خانه{% endblock %}
+
+{% block content %}
+
+<!-- About Section -->
+<section class="container max-w-screen py-10">
+    <h2 class="text-xl font-bold mb-4">درباره مدرسه</h2>
+
+    {% if about %}
+        {% if about.image %}
+            <img src="{{ about.image.url }}" class="w-full max-w-md rounded-lg mb-4">
+        {% endif %}
+        <p class="text-ink-700 leading-7">{{ about.content|linebreaks }}</p>
+    {% endif %}
+</section>
+
+
+<!-- News Section -->
+<section class="container max-w-screen py-10">
+    <h2 class="text-xl font-bold mb-4">اخبار مدرسه</h2>
+
+    {% if news %}
+        <div class="grid gap-6 md:grid-cols-2">
+            {% for item in news %}
+                <a href="{% url 'public:news_detail' item.id %}"
+                   class="bg-white shadow-card rounded-xl p-4 block hover:bg-paper-card transition">
+
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}"
+                             class="w-full h-40 object-cover rounded-lg mb-3">
+                    {% endif %}
+
+                    <h3 class="font-semibold text-[16px] mb-2">{{ item.title }}</h3>
+
+                    <p class="text-ink-700 text-[14px] leading-6 line-clamp-3">
+                        {{ item.content }}
+                    </p>
+                </a>
+            {% endfor %}
+        </div>
+
+        <div class="mt-6">
+            <a href="{% url 'public:news_list' %}"
+               class="inline-block px-4 py-2 bg-primary text-white rounded-lg">
+                مشاهده همه اخبار
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+
+<!-- Contact Section -->
+<section class="container max-w-screen py-10">
+    <h2 class="text-xl font-bold mb-4">اطلاعات تماس</h2>
+
+    {% if contact %}
+        <ul class="space-y-2 text-ink-700">
+            <li>شماره تلفن: {{ contact.phone_number }}</li>
+            <li>شماره موبایل: {{ contact.mobile_number }}</li>
+            <li>شماره مدرسه: {{ contact.school_number }}</li>
+            <li>آدرس: {{ contact.address }}</li>
+        </ul>
+    {% endif %}
+</section>
+
+{% endblock %}

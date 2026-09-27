@@ -1,0 +1,33 @@
+{% extends "base/base.html" %}
+{% block title %}اخبار{% endblock %}
+
+{% block content %}
+
+<section class="container max-w-screen py-10">
+    <h2 class="text-xl font-bold mb-6">همه اخبار</h2>
+
+    {% if news %}
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% for item in news %}
+                <a href="{% url 'public:news_detail' item.id %}"
+                   class="bg-white shadow-card rounded-xl p-4 block hover:bg-paper-card transition">
+
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}"
+                             class="w-full h-40 object-cover rounded-lg mb-3">
+                    {% endif %}
+
+                    <h3 class="font-semibold text-[16px] mb-2">{{ item.title }}</h3>
+
+                    <p class="text-ink-700 text-[14px] leading-6 line-clamp-3">
+                        {{ item.content }}
+                    </p>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-600">خبری ثبت نشده است.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

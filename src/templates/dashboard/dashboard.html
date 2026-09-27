@@ -1,0 +1,13 @@
+{% block content %}
+
+  {% if role == "admin" %}
+    {% include "dashboard/dashboard_admin.html" %}
+
+  {% elif role == "student" %}
+    {% include "dashboard/dashboard_student.html" %}
+
+  {% elif role == "teacher" %}
+    {% include "dashboard/dashboard_teacher.html" %}
+
+  {% endif %}
+{% endblock %}

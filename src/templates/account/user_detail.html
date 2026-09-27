@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block title %}جزئیات کاربر{% endblock %}
+
+{% block content %}
+<section class="container max-w-screen py-10">
+    <h2 class="text-xl font-bold mb-6">جزئیات کاربر</h2>
+
+    <div class="bg-white shadow rounded-xl p-6 space-y-4">
+        <p><strong>نام:</strong> {{ user.full_name }}</p>
+        <p><strong>شماره تماس:</strong> {{ user.phone_number }}</p>
+        <p><strong>نقش:</strong> {{ user.get_role_display }}</p>
+    </div>
+
+    <div class="mt-6">
+        <a href="{% url 'account:user_list' %}"
+           class="inline-block px-4 py-2 bg-primary text-white rounded-lg">
+            بازگشت به لیست کاربران
+        </a>
+    </div>
+</section>
+{% endblock %}

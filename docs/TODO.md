@@ -35,7 +35,7 @@
 
 Planning & Preparation    ██████████ 100%
 Initial Implementation    ██████████ 100%
-Apps & Raw Templates      █░░░░░░░░░ 10%
+Apps & Raw Templates      ██░░░░░░░░ 20%
 Frontend & UI             ░░░░░░░░░░ 0%
 Advanced Features         ░░░░░░░░░░ 0%
 Development & Deployment  ░░░░░░░░░░ 0%
@@ -85,9 +85,9 @@ Development & Deployment  ░░░░░░░░░░ 0%
 | Step   | Title                                           | Status |
 | ------ |-------------------------------------------------| ------ |
 | 1️⃣    | Setup Tailwind CSS & Frontend Infrastructure    | ✅     |
-| 2️⃣    | Create Public App Views                         | 🎯      |
-| 3️⃣    | Create Accounts App Views & Authentication Flow | ⏳      |
-| 4️⃣    | Create Students App Views                       | ⏳      |
+| 2️⃣    | Create Public App Views                         | ✅      |
+| 3️⃣    | Create Accounts App Views & Authentication Flow | ✅      |
+| 4️⃣    | Create Students App Views                       | 🎯      |
 | 5️⃣    | Create Teachers App Views                       | ⏳      |
 | 6️⃣    | Create Academics App Views                      | ⏳      |
 | 7️⃣    | Create Attendance App Views                     | ⏳      |

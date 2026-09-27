@@ -27,9 +27,9 @@ if int(os.getenv("ENABLE_WHITENOISE", default=0)):
     ]
     STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
 
-ENABLE_MEDIA_SERVE_IN_LOCAL = False
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 3600
+# ENABLE_MEDIA_SERVE_IN_LOCAL = False
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_SECONDS = 3600
 # ----------------------------------------------------------------

@@ -125,6 +125,11 @@ USE_TZ = True
 
 # ---Static files-------------------------------------------------
 STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / os.getenv("STATICFILES_DIRS", "static/assets"),
+]
+
 STATIC_ROOT = BASE_DIR / os.getenv("STATIC_ROOT", "staticfiles")
 # ----------------------------------------------------------------
 

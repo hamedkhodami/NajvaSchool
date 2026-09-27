@@ -1,0 +1,68 @@
+{% extends "base/base.html" %}
+{% block title %}لیست کاربران{% endblock %}
+
+{% block content %}
+<section class="container max-w-screen py-10">
+
+    <h2 class="text-xl font-bold mb-6">لیست کاربران</h2>
+
+    <!-- Search & Filter -->
+    <form method="get" class="mb-6 flex flex-col md:flex-row gap-4">
+
+        <input type="text"
+               name="search"
+               value="{{ search_value }}"
+               placeholder="جستجو بر اساس نام، نام خانوادگی یا شماره تماس"
+               class="w-full md:w-1/2 p-2 border rounded-lg">
+
+        <select name="role"
+                class="w-full md:w-1/4 p-2 border rounded-lg">
+            <option value="">همه نقش‌ها</option>
+
+            {% for value, label in roles %}
+                <option value="{{ value }}"
+                        {% if selected_role == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+            جستجو
+        </button>
+    </form>
+
+    <!-- Users Table -->
+    <table class="w-full bg-white shadow rounded overflow-hidden">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-3 text-right">نام</th>
+                <th class="p-3 text-right">نقش</th>
+                <th class="p-3 text-right">شماره تماس</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+            <tr class="border-b">
+                <td class="p-3">{{ user.full_name }}</td>
+                <td class="p-3">{{ user.get_role_display }}</td>
+                <td class="p-3">
+                    <a href="{% url 'account:user_detail' user.id %}"
+                       class="text-primary hover:underline">
+                        {{ user.phone_number }}
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="p-4 text-center text-gray-500">
+                    کاربری یافت نشد.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</section>
+{% endblock %}

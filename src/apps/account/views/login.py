@@ -19,7 +19,7 @@ class LogoutView(View):
 class LoginView(LogoutRequiredMixin, FormView):
     template_name = "account/login.html"
     form_class = forms.LoginForm
-    success_url = reverse_lazy("public:home")
+    success_url = reverse_lazy("dashboard:dashboard")
 
     def remember_me(self, form):
         if not form.cleaned_data.get("remember_me"):

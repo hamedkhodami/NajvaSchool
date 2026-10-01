@@ -7,6 +7,12 @@ class AcademicYearStatusEnum(TextChoices):
     COMPLETED = "completed", "پایان‌یافته"
 
 
+class AcademicGradeStatusEnum(TextChoices):
+    SEVEN = "Seven", "هفتم"
+    EIGHT = "Eight", "هشتم"
+    NINE = "Nine", "نهم"
+
+
 class ClassroomStatusEnum(TextChoices):
     ACTIVE = "active", "فعال"
     INACTIVE = "inactive", "غیرفعال"

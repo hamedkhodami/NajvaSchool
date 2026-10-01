@@ -38,6 +38,11 @@
             سال‌های تحصیلی
         </a>
 
+        <a href="{% url 'academic:classroom_list' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            مدریت کلاس ها
+        </a>
+
         <form method="post" action="{% url 'account:logout' %}">
             {% csrf_token %}
             <button class="px-4 py-2 bg-down text-white rounded-lg">

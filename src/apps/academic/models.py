@@ -37,34 +37,9 @@ class AcademicYearModel(BaseModel):
         return self.name
 
 
-class GradeModel(BaseModel):
-    name = models.CharField(
-        max_length=100,
-        verbose_name="نام پایه",
-    )
-
-    code = models.CharField(
-        max_length=20,
-        unique=True,
-        verbose_name="کد پایه",
-    )
-
-    description = models.TextField(
-        blank=True,
-        verbose_name="توضیحات",
-    )
-
-    class Meta:
-        verbose_name = "پایه تحصیلی"
-        verbose_name_plural = "پایه‌های تحصیلی"
-        ordering = ("name",)
-
-    def __str__(self):
-        return self.name
-
-
 class ClassroomModel(BaseModel):
     Status = enums.ClassroomStatusEnum
+    Grade = enums.AcademicGradeStatusEnum
 
     academic_year = models.ForeignKey(
         "academic.AcademicYearModel",
@@ -73,21 +48,16 @@ class ClassroomModel(BaseModel):
         verbose_name="سال تحصیلی",
     )
 
-    grade = models.ForeignKey(
-        "academic.GradeModel",
-        on_delete=models.PROTECT,
-        related_name="classrooms",
+    grade = models.CharField(
+        max_length=20,
+        choices=Grade.choices,
+        default=Grade.SEVEN,
         verbose_name="پایه",
     )
 
     name = models.CharField(
         max_length=100,
         verbose_name="نام کلاس",
-    )
-
-    code = models.CharField(
-        max_length=30,
-        verbose_name="کد کلاس",
     )
 
     capacity = models.PositiveIntegerField(
@@ -107,8 +77,8 @@ class ClassroomModel(BaseModel):
         verbose_name_plural = "کلاس‌ها"
         ordering = ("-created_at",)
 
-    def __str__(self):
-        return f"{self.name} - {self.grade.name}"
+    def str(self):
+        return f"{self.name} - {self.academic_year.name}"
 
 
 class SubjectModel(BaseModel):

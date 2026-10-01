@@ -1,0 +1,39 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}تغییر وضعیت سال تحصیلی{% endblock %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-lg font-bold mb-4">تغییر وضعیت سال تحصیلی</h1>
+
+    <p class="text-sm mb-4">
+        سال انتخاب‌شده:
+        <span class="font-bold">{{ year.name }}</span>
+    </p>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <label class="text-sm">وضعیت جدید</label>
+        <select name="status" class="w-full border rounded-lg p-2 text-sm">
+
+            {% for value, label in year.Status.choices %}
+                {% if value != year.Status.ACTIVE %}
+                    <option value="{{ value }}" {% if year.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endif %}
+            {% endfor %}
+
+        </select>
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm">
+            ذخیره تغییرات
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

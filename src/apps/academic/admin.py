@@ -3,7 +3,6 @@ from django.contrib import admin
 from apps.academic.models import (
     AcademicYearModel,
     ClassroomModel,
-    GradeModel,
     ScheduleSessionModel,
     StudentEnrollmentModel,
     SubjectModel,
@@ -37,39 +36,10 @@ class AcademicYearAdmin(admin.ModelAdmin):
     date_hierarchy = "start_date"
 
 
-@admin.register(GradeModel)
-class GradeAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "code",
-        "description",
-        "created_at",
-    )
-
-    list_display_links = (
-        "name",
-        "code",
-    )
-
-    search_fields = (
-        "name",
-        "code",
-    )
-
-    readonly_fields = (
-        "id",
-        "created_at",
-        "updated_at",
-    )
-
-    ordering = ("name",)
-
-
 @admin.register(ClassroomModel)
 class ClassroomAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "code",
         "grade",
         "academic_year",
         "capacity",
@@ -77,10 +47,7 @@ class ClassroomAdmin(admin.ModelAdmin):
         "created_at",
     )
 
-    list_display_links = (
-        "name",
-        "code",
-    )
+    list_display_links = ("name",)
 
     list_filter = (
         "status",
@@ -90,7 +57,6 @@ class ClassroomAdmin(admin.ModelAdmin):
 
     search_fields = (
         "name",
-        "code",
         "grade__name",
         "academic_year__name",
     )
@@ -101,10 +67,7 @@ class ClassroomAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    autocomplete_fields = (
-        "academic_year",
-        "grade",
-    )
+    autocomplete_fields = ("academic_year",)
 
     ordering = ("-created_at",)
 

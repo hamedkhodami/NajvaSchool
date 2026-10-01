@@ -1,32 +1,5 @@
 # 4. Academic
 
-## AcademicYearModel
-
-### Views
-
-* `AcademicYearListView`
-* `AcademicYearCreateView`
-
-## GradeModel
-
-### Views
-
-* `GradeListView`
-* `GradeDetailView`
-* `GradeCreateView`
-* `GradeUpdateView`
-* `GradeDeleteView`
-
-## ClassroomModel
-
-### Views
-
-* `ClassroomListView`
-* `ClassroomDetailView`
-* `ClassroomCreateView`
-* `ClassroomUpdateView`
-* `ClassroomDeleteView`
-
 ## SubjectModel
 
 ### Views

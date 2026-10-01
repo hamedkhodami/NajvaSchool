@@ -1,0 +1,70 @@
+{% extends "base/base_dashboard.html" %}
+{% load jalali %}
+
+{% block title %}لیست کلاس‌ها{% endblock %}
+
+{% block content %}
+
+<div class="w-full max-w-5xl mx-auto bg-white shadow rounded-lg p-6">
+
+    {% if active_year %}
+        <div class="mb-4 text-sm text-gray-700">
+            سال تحصیلی فعال:
+            <span class="font-bold">{{ active_year.name }}</span>
+            ({{ active_year.start_date|jalali }} تا {{ active_year.end_date|jalali }})
+        </div>
+    {% else %}
+        <div class="mb-4 text-sm text-red-600">
+            هیچ سال تحصیلی فعالی انتخاب نشده است.
+        </div>
+    {% endif %}
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold">لیست کلاس‌ها</h1>
+
+        <a href="{% url 'academic:classroom_create' %}"
+           class="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm">
+            افزودن کلاس جدید
+        </a>
+    </div>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">پایه</th>
+                <th class="p-2 border">نام کلاس</th>
+                <th class="p-2 border">ظرفیت</th>
+                <th class="p-2 border">وضعیت</th>
+                <th class="p-2 border">عملیات</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for cls in classrooms %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ cls.get_grade_display }}</td>
+                <td class="p-2 border">{{ cls.name }}</td>
+                <td class="p-2 border">{{ cls.capacity }}</td>
+                <td class="p-2 border">{{ cls.get_status_display }}</td>
+
+                <td class="p-2 border text-center space-x-2">
+
+                    <a href="{% url 'academic:classroom_update' cls.id %}"
+                       class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg">
+                        ویرایش
+                    </a>
+
+                    <a href="{% url 'academic:classroom_delete' cls.id %}"
+                       class="px-3 py-1 text-xs bg-red-600 text-white rounded-lg">
+                        حذف
+                    </a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

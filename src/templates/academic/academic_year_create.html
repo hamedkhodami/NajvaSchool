@@ -1,0 +1,50 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}افزودن سال تحصیلی{% endblock %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-lg font-bold mb-4">افزودن سال تحصیلی جدید</h1>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div>
+            <label class="text-sm">عنوان</label>
+            {{ form.name }}
+        </div>
+
+        <div>
+            <label class="text-sm">تاریخ شروع</label>
+            <div class="flex gap-2">
+                {{ form.start_month }}
+                {{ form.start_year }}
+            </div>
+        </div>
+
+        <div>
+            <label class="text-sm">تاریخ پایان</label>
+            <div class="flex gap-2">
+                {{ form.end_month }}
+                {{ form.end_year }}
+            </div>
+        </div>
+
+        <div>
+            <label class="text-sm">وضعیت</label>
+            {{ form.status }}
+        </div>
+
+        <button type="submit"
+                class="w-full bg-yellow-500 text-white py-2 rounded-lg text-sm">
+            ذخیره
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

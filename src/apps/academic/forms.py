@@ -1,7 +1,7 @@
 from django import forms
 from khayyam import JalaliDate
 
-from apps.academic.models import AcademicYearModel
+from apps.academic.models import AcademicYearModel, ClassroomModel
 
 
 class AcademicYearForm(forms.ModelForm):
@@ -47,3 +47,17 @@ class AcademicYearForm(forms.ModelForm):
         if commit:
             obj.save()
         return obj
+
+
+class ClassroomForm(forms.ModelForm):
+    class Meta:
+        model = ClassroomModel
+        fields = ["grade", "name", "capacity", "status"]
+
+    def init(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["grade"].label = "پایه تحصیلی"
+        self.fields["name"].label = "نام کلاس"
+        self.fields["capacity"].label = "ظرفیت"
+        self.fields["status"].label = "وضعیت"

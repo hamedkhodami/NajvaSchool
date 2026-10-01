@@ -8,6 +8,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("apps.account.urls", namespace="account")),
     path("student/", include("apps.student.urls", namespace="student")),
+    path("teacher/", include("apps.teacher.urls", namespace="teacher")),
     path("academic/", include("apps.academic.urls", namespace="academic")),
     path("attendance/", include("apps.attendance.urls", namespace="attendance")),
     path("education/", include("apps.education.urls", namespace="education")),

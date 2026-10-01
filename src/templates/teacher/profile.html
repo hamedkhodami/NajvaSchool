@@ -1,0 +1,52 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}پروفایل معلم{% endblock %}
+
+{% block content %}
+
+<div class="w-full max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-xl font-bold text-center mb-6">پروفایل معلم</h1>
+
+    <div class="grid grid-cols-2 gap-4 text-sm">
+
+        <div>
+            <strong>شماره موبایل:</strong>
+            <p>{{ teacher.user.phone_number }}</p>
+        </div>
+
+        <div>
+            <strong>نام و نام خانوادگی:</strong>
+            <p>{{ teacher.user.full_name }}</p>
+        </div>
+
+        <div>
+            <strong>کد ملی:</strong>
+            <p>{{ teacher.national_id }}</p>
+        </div>
+
+        <div>
+            <strong>وضعیت همکاری:</strong>
+            <p>{{ teacher.get_status_display }}</p>
+        </div>
+
+        <div>
+            <strong>نوع همکاری:</strong>
+            <p>{{ teacher.get_employment_type_display }}</p>
+        </div>
+
+        <div>
+            <strong>مدرک تحصیلی:</strong>
+            <p>{{ teacher.education }}</p>
+        </div>
+
+        <div>
+            <strong>تخصص:</strong>
+            <p>{{ teacher.specialization }}</p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

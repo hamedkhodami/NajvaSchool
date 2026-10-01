@@ -1,1 +1,50 @@
-admin
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}داشبورد ادمین{% endblock %}
+
+{% block content %}
+
+<div class="container max-w-screen py-10">
+    <h1 class="text-xl font-bold mb-6">داشبورد ادمین</h1>
+
+    <div class="space-y-4">
+        <a href="{% url 'account:user_list' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg">
+            لیست کاربران
+        </a>
+        <a href="{% url 'teacher:create_teacher' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            ساخت معلم جدید
+        </a>
+
+        <a href="{% url 'student:create_student' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            ساخت دانش آموز جدید
+        </a>
+
+        <a href="{% url 'student:list' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            لیست دانش‌آموزان
+        </a>
+
+        <a href="{% url 'teacher:list' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            لیست معلمان
+        </a>
+
+        <a href="{% url 'academic:academic_year_list' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            سال‌های تحصیلی
+        </a>
+
+        <form method="post" action="{% url 'account:logout' %}">
+            {% csrf_token %}
+            <button class="px-4 py-2 bg-down text-white rounded-lg">
+                خروج
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,10 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
+
+<html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Tailwind Build -->
+    <link rel="stylesheet" href="{% static 'public/css/styles.css' %}">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'public/css/fonts.css' %}">
+
+    {% block extra_style %}{% endblock %}
+</head>
+
+<body class="min-h-screen flex flex-col bg-public-bg text-ink-800 font-sans">
+
+    {% if messages %}
+        <div class="w-full max-w-2xl mx-auto mt-4 px-4">
+            {% for message in messages %}
+                <div class="dashboard-message mb-3 p-3 rounded-xl shadow-card
+                    {% if message.tags == 'success' %} bg-up text-white {% endif %}
+                    {% if message.tags == 'error' %} bg-down text-white {% endif %}
+                    {% if message.tags == 'warning' %} bg-brass-100 text-brass-700 {% endif %}
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'base/footer.html' %}
+
+    <script src="{% static 'public/js/dashboard.js' %}"></script>
+
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.dashboard-message').forEach(msg => {
+                msg.style.transition = "opacity 0.5s";
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 500);
+            });
+        }, 2000);
+    </script>
+
+    {% block extra_script %}{% endblock %}
 </body>
+
 </html>

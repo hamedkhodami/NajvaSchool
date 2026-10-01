@@ -1,0 +1,52 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}جزییات معلم{% endblock %}
+
+{% block content %}
+
+<div class="w-full max-w-xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-xl font-bold mb-6 text-center">جزییات معلم</h1>
+
+    <div class="space-y-4 text-sm">
+
+        <div>
+            <strong>شماره موبایل:</strong>
+            <span>{{ teacher.user.phone_number }}</span>
+        </div>
+
+        <div>
+            <strong>نام و نام خانوادگی:</strong>
+            <span>{{ teacher.user.full_name }}</span>
+        </div>
+
+        <div>
+            <strong>کد ملی:</strong>
+            <span>{{ teacher.national_id }}</span>
+        </div>
+
+        <div>
+            <strong>وضعیت همکاری:</strong>
+            <span>{{ teacher.get_status_display }}</span>
+        </div>
+
+        <div>
+            <strong>نوع همکاری:</strong>
+            <span>{{ teacher.get_employment_type_display }}</span>
+        </div>
+
+        <div>
+            <strong>مدرک تحصیلی:</strong>
+            <span>{{ teacher.education }}</span>
+        </div>
+
+        <div>
+            <strong>تخصص:</strong>
+            <span>{{ teacher.specialization }}</span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

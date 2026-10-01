@@ -1,0 +1,41 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}لیست معلمان{% endblock %}
+
+{% block content %}
+
+<div class="w-full max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-xl font-bold mb-6 text-center">لیست معلمان</h1>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">شماره موبایل</th>
+                <th class="p-2 border">نام و نام خانوادگی</th>
+                <th class="p-2 border">وضعیت همکاری</th>
+                <th class="p-2 border">نوع همکاری</th>
+                <th class="p-2 border">تخصص</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for teacher in teachers %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">
+                    <a href="{% url 'teacher:detail' teacher.pk %}" class="text-blue-600">
+                        {{ teacher.user.phone_number }}
+                    </a>
+                </td>
+                <td class="p-2 border">{{ teacher.user.full_name }}</td>
+                <td class="p-2 border">{{ teacher.get_status_display }}</td>
+                <td class="p-2 border">{{ teacher.get_employment_type_display }}</td>
+                <td class="p-2 border">{{ teacher.specialization }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

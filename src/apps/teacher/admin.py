@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from apps.teacher.models import (
-    EmploymentRecordModel,
     TeacherModel,
     TeacherNoteModel,
 )
@@ -158,71 +157,3 @@ class TeacherNoteAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
 
     date_hierarchy = "created_at"
-
-
-@admin.register(EmploymentRecordModel)
-class EmploymentRecordAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "teacher",
-        "employment_type",
-        "start_date",
-        "end_date",
-        "created_at",
-    )
-
-    list_display_links = (
-        "id",
-        "teacher",
-    )
-
-    list_filter = (
-        "employment_type",
-        "start_date",
-        "end_date",
-    )
-
-    search_fields = (
-        "teacher__national_id",
-        "teacher__user__first_name",
-        "teacher__user__last_name",
-        "description",
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
-    )
-
-    autocomplete_fields = ("teacher",)
-
-    fieldsets = (
-        (
-            "اطلاعات همکاری",
-            {
-                "fields": (
-                    "teacher",
-                    "employment_type",
-                    "start_date",
-                    "end_date",
-                    "description",
-                )
-            },
-        ),
-        (
-            "اطلاعات سیستمی",
-            {
-                "fields": (
-                    "created_at",
-                    "updated_at",
-                    "deleted_at",
-                    "is_deleted",
-                )
-            },
-        ),
-    )
-
-    ordering = ("-start_date",)
-
-    date_hierarchy = "start_date"

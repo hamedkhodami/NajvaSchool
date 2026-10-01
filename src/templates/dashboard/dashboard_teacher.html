@@ -1,1 +1,24 @@
-teacher
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}داشبورد معلم{% endblock %}
+
+{% block content %}
+
+<div class="container max-w-screen py-10">
+    <h1 class="text-xl font-bold mb-6">داشبورد معلم</h1>
+
+        <a href="{% url 'teacher:profile' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            پروفایل معلم
+        </a>
+
+    <form method="post" action="{% url 'account:logout' %}">
+        {% csrf_token %}
+        <button class="px-4 py-2 bg-down text-white rounded-lg">
+            خروج
+        </button>
+    </form>
+</div>
+
+{% endblock %}

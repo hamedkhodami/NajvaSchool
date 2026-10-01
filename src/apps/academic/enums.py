@@ -5,7 +5,6 @@ class AcademicYearStatusEnum(TextChoices):
     PLANNED = "planned", "در حال برنامه‌ریزی"
     ACTIVE = "active", "فعال"
     COMPLETED = "completed", "پایان‌یافته"
-    ARCHIVED = "archived", "بایگانی‌شده"
 
 
 class ClassroomStatusEnum(TextChoices):

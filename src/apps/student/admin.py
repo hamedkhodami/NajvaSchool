@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.student.models import StudentModel, StudentNoteModel
+from apps.student.models import StudentModel
 
 
 @admin.register(StudentModel)
@@ -12,7 +12,6 @@ class StudentAdmin(admin.ModelAdmin):
         "father_name",
         "parent_phone_number",
         "status",
-        "enrollment_date",
         "created_at",
     )
 
@@ -24,7 +23,6 @@ class StudentAdmin(admin.ModelAdmin):
 
     list_filter = (
         "status",
-        "enrollment_date",
         "created_at",
     )
 
@@ -64,12 +62,7 @@ class StudentAdmin(admin.ModelAdmin):
         ),
         (
             "وضعیت تحصیلی",
-            {
-                "fields": (
-                    "status",
-                    "enrollment_date",
-                )
-            },
+            {"fields": ("status",)},
         ),
         (
             "اطلاعات سیستمی",
@@ -95,68 +88,3 @@ class StudentAdmin(admin.ModelAdmin):
         return obj.user.full_name
 
     get_full_name.short_description = "نام و نام خانوادگی"
-
-
-@admin.register(StudentNoteModel)
-class StudentNoteAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "student",
-        "title",
-        "created_at",
-        "updated_at",
-    )
-
-    list_display_links = (
-        "id",
-        "title",
-    )
-
-    search_fields = (
-        "title",
-        "content",
-        "student__national_id",
-        "student__user__first_name",
-        "student__user__last_name",
-    )
-
-    list_filter = (
-        "created_at",
-        "updated_at",
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
-    )
-
-    autocomplete_fields = ("student",)
-
-    fieldsets = (
-        (
-            "اطلاعات یادداشت",
-            {
-                "fields": (
-                    "student",
-                    "title",
-                    "content",
-                )
-            },
-        ),
-        (
-            "اطلاعات سیستمی",
-            {
-                "fields": (
-                    "created_at",
-                    "updated_at",
-                    "deleted_at",
-                    "is_deleted",
-                )
-            },
-        ),
-    )
-
-    ordering = ("-created_at",)
-
-    date_hierarchy = "created_at"

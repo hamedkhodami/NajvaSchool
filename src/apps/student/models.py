@@ -46,12 +46,6 @@ class StudentModel(BaseModel):
         verbose_name="وضعیت دانش‌آموز",
     )
 
-    enrollment_date = models.DateField(
-        null=True,
-        blank=True,
-        verbose_name="تاریخ ثبت ‌نام",
-    )
-
     class Meta:
         verbose_name = "دانش‌آموز"
         verbose_name_plural = "دانش‌آموزان"
@@ -59,29 +53,3 @@ class StudentModel(BaseModel):
 
     def __str__(self):
         return f"{self.national_id} - {self.user.full_name}"
-
-
-class StudentNoteModel(BaseModel):
-    student = models.ForeignKey(
-        "student.StudentModel",
-        on_delete=models.CASCADE,
-        related_name="notes",
-        verbose_name="دانش‌آموز",
-    )
-
-    title = models.CharField(
-        max_length=200,
-        verbose_name="عنوان",
-    )
-
-    content = models.TextField(
-        verbose_name="متن یادداشت",
-    )
-
-    class Meta:
-        verbose_name = "یادداشت دانش‌آموز"
-        verbose_name_plural = "یادداشت‌های دانش‌آموزان"
-        ordering = ("-created_at",)
-
-    def __str__(self):
-        return f"{self.student} - {self.title}"

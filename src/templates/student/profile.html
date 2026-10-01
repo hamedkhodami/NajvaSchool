@@ -1,0 +1,30 @@
+{% extends "base/base_dashboard.html" %}
+{% block title %}پروفایل دانش‌آموز{% endblock %}
+
+{% block content %}
+<section class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">پروفایل دانش‌آموز</h1>
+
+    <div class="bg-white shadow-card rounded-xl p-6 space-y-4">
+
+        <p><strong>نام و نام خانوادگی:</strong> {{ student.user.full_name }}</p>
+        <p><strong>کد ملی:</strong> {{ student.national_id }}</p>
+        <p><strong>نام پدر:</strong> {{ student.father_name }}</p>
+        <p><strong>تاریخ تولد:</strong> {{ student.birth_date }}</p>
+        <p><strong>شماره تماس ولی:</strong> {{ student.parent_phone_number }}</p>
+        <p><strong>آدرس:</strong> {{ student.address }}</p>
+        <p><strong>وضعیت دانش‌آموز:</strong> {{ student.get_status_display }}</p>
+        <p><strong>تاریخ ثبت‌نام:</strong> {{ student.enrollment_date }}</p>
+
+    </div>
+
+    <div class="mt-6">
+        <a href="{% url 'dashboard:dashboard' %}"
+           class="inline-block px-4 py-2 bg-primary text-white rounded-lg">
+            بازگشت به داشبورد
+        </a>
+    </div>
+
+</section>
+{% endblock %}

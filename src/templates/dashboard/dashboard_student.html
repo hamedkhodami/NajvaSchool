@@ -1,1 +1,28 @@
-student
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}داشبورد دانش‌آموز{% endblock %}
+
+{% block content %}
+
+<div class="container max-w-screen py-10">
+    <h1 class="text-xl font-bold mb-6">داشبورد دانش‌آموز</h1>
+
+    <div class="space-y-4">
+
+        <a href="{% url 'student:profile' %}"
+           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+            پروفایل دانش‌آموز
+        </a>
+
+        <form method="post" action="{% url 'account:logout' %}">
+            {% csrf_token %}
+            <button class="px-4 py-2 bg-down text-white rounded-lg">
+                خروج
+            </button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

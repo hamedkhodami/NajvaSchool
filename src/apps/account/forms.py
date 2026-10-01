@@ -11,69 +11,55 @@ class UserCreationForm(forms.ModelForm):
     phone_number = forms.CharField(
         label="شماره موبایل",
         max_length=11,
+        widget=forms.TextInput(
+            attrs={
+                "class": "w-full px-4 py-2 border rounded-lg",
+                "placeholder": "09__",
+            }
+        ),
     )
 
     first_name = forms.CharField(
         label="نام",
         max_length=128,
+        widget=forms.TextInput(
+            attrs={
+                "class": "w-full px-4 py-2 border rounded-lg",
+            }
+        ),
     )
 
     last_name = forms.CharField(
         label="نام خانوادگی",
         max_length=128,
+        widget=forms.TextInput(
+            attrs={
+                "class": "w-full px-4 py-2 border rounded-lg",
+            }
+        ),
     )
 
     password1 = forms.CharField(
         label="رمز عبور",
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "w-full px-4 py-2 border rounded-lg",
+            }
+        ),
     )
 
     password2 = forms.CharField(
         label="تکرار رمز عبور",
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "w-full px-4 py-2 border rounded-lg",
+            }
+        ),
     )
 
     class Meta:
         model = User
-        fields = (
-            "phone_number",
-            "first_name",
-            "last_name",
-            "role",
-        )
-
-    def clean_phone_number(self):
-        phone_number = digits.convert_to_en(self.cleaned_data.get("phone_number"))
-
-        if not check_phone_number(phone_number):
-            raise ValidationError("شماره موبایل واردشده معتبر نیست.")
-
-        if User.objects.filter(phone_number=phone_number).exists():
-            raise ValidationError("این شماره موبایل قبلاً ثبت شده است.")
-
-        return phone_number
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("رمزهای عبور یکسان نیستند.")
-
-        return password2
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-
-        user.first_name = self.cleaned_data["first_name"]
-        user.last_name = self.cleaned_data["last_name"]
-
-        user.set_password(self.cleaned_data["password1"])
-
-        if commit:
-            user.save()
-
-        return user
+        fields = ("phone_number", "first_name", "last_name")
 
 
 class LoginForm(forms.Form):
@@ -84,6 +70,7 @@ class LoginForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "09__",
+                "class": "w-full px-4 py-2 border rounded-lg",
             }
         ),
     )
@@ -92,7 +79,11 @@ class LoginForm(forms.Form):
         label="رمز عبور",
         max_length=128,
         required=True,
-        widget=forms.PasswordInput(),
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "w-full px-4 py-2 border rounded-lg",
+            }
+        ),
     )
 
     remember_me = forms.BooleanField(
@@ -100,7 +91,7 @@ class LoginForm(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                "class": "form-check-input",
+                "class": "h-4 w-4 text-auth-gold border-gray-300 rounded focus:ring-auth-gold",
             }
         ),
     )
@@ -117,21 +108,12 @@ class LoginForm(forms.Form):
         phone = digits.convert_to_en(phone)
 
         if not check_phone_number(phone):
-            raise ValidationError(
-                "شماره موبایل واردشده معتبر نیست.",
-                code="BAD-PHONE",
-            )
+            raise ValidationError("شماره موبایل واردشده معتبر نیست.")
 
-        user = authenticate(
-            username=phone,
-            password=password,
-        )
+        user = authenticate(username=phone, password=password)
 
         if not user:
-            raise ValidationError(
-                "شماره موبایل یا رمز عبور اشتباه است.",
-                code="INVALID-CREDENTIALS",
-            )
+            raise ValidationError("شماره موبایل یا رمز عبور اشتباه است.")
 
         cleaned_data["phone_number"] = phone
         cleaned_data["user"] = user

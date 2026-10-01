@@ -1,0 +1,116 @@
+{% extends "base/base_dashboard.html" %}
+{% load jalali %}
+
+{% block title %}سال‌های تحصیلی{% endblock %}
+
+{% block content %}
+
+<div class="w-full max-w-4xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold">سال‌های تحصیلی</h1>
+
+        <button
+            type="button"
+            onclick="openModal()"
+            class="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm">
+            افزودن سال تحصیلی
+        </button>
+    </div>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">عنوان</th>
+                <th class="p-2 border">تاریخ شروع</th>
+                <th class="p-2 border">تاریخ پایان</th>
+                <th class="p-2 border">وضعیت</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for year in years %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ year.name }}</td>
+                <td class="p-2 border">{{ year.start_date|jalali }}</td>
+                <td class="p-2 border">{{ year.end_date|jalali }}</td>
+                <td class="p-2 border">{{ year.get_status_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-4 text-center text-gray-500">
+                    هنوز سال تحصیلی ثبت نشده است.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<!-- مودال -->
+<div id="year-modal"
+     class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden">
+
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 class="text-lg font-bold mb-4">افزودن سال تحصیلی جدید</h2>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <div>
+                <label class="text-sm">عنوان سال تحصیلی</label>
+                {{ form.name }}
+            </div>
+
+            <div>
+                <label class="text-sm">تاریخ شروع</label>
+                <div class="flex gap-2">
+                    {{ form.start_month }}
+                    {{ form.start_year }}
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm">تاریخ پایان</label>
+                <div class="flex gap-2">
+                    {{ form.end_month }}
+                    {{ form.end_year }}
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm">وضعیت</label>
+                {{ form.status }}
+            </div>
+
+            <div class="flex items-center gap-2 mt-4">
+                <button type="submit"
+                        class="flex-1 bg-yellow-500 text-white py-2 rounded-lg text-sm">
+                    ذخیره
+                </button>
+
+                <button type="button"
+                        onclick="closeModal()"
+                        class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg text-sm">
+                    انصراف
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function openModal() {
+        document.getElementById('year-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('year-modal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

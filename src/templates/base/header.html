@@ -11,7 +11,16 @@
         <!-- Desktop Nav -->
         <nav class="hidden md:flex items-center gap-8 text-ink-800 text-[15px]">
             <a href="{% url 'public:index' %}" class="hover:text-primary transition">خانه</a>
-            <a href="{% url 'account:login' %}" class="hover:text-primary transition">ورود به بخش مدرسه</a>
+
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard:dashboard' %}" class="hover:text-primary transition">
+                    داشبورد
+                </a>
+            {% else %}
+                <a href="{% url 'account:login' %}" class="hover:text-primary transition">
+                    ورود به بخش مدرسه
+                </a>
+            {% endif %}
         </nav>
 
         <!-- Mobile Menu Button -->
@@ -28,7 +37,17 @@
     <!-- Mobile Nav -->
     <nav id="mobileMenu"
          class="md:hidden hidden flex flex-col gap-4 px-6 pb-4 text-ink-800 text-[15px]">
+
         <a href="{% url 'public:index' %}" class="py-2 border-b border-paper-line">خانه</a>
-        <a href="{% url 'account:login' %}" class="py-2 border-b border-paper-line">ورود به بخش مدرسه</a>
+
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'dashboard:dashboard' %}" class="py-2 border-b border-paper-line">
+                داشبورد
+            </a>
+        {% else %}
+            <a href="{% url 'account:login' %}" class="py-2 border-b border-paper-line">
+                ورود به بخش مدرسه
+            </a>
+        {% endif %}
     </nav>
 </header>

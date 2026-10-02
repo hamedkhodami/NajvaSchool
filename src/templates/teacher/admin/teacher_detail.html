@@ -1,52 +1,58 @@
 {% extends "base/base_dashboard.html" %}
-
 {% block title %}جزییات معلم{% endblock %}
-
 {% block content %}
-
 <div class="w-full max-w-xl mx-auto bg-white shadow rounded-lg p-6">
 
     <h1 class="text-xl font-bold mb-6 text-center">جزییات معلم</h1>
 
     <div class="space-y-4 text-sm">
-
-        <div>
-            <strong>شماره موبایل:</strong>
-            <span>{{ teacher.user.phone_number }}</span>
-        </div>
-
-        <div>
-            <strong>نام و نام خانوادگی:</strong>
-            <span>{{ teacher.user.full_name }}</span>
-        </div>
-
-        <div>
-            <strong>کد ملی:</strong>
-            <span>{{ teacher.national_id }}</span>
-        </div>
-
-        <div>
-            <strong>وضعیت همکاری:</strong>
-            <span>{{ teacher.get_status_display }}</span>
-        </div>
-
-        <div>
-            <strong>نوع همکاری:</strong>
-            <span>{{ teacher.get_employment_type_display }}</span>
-        </div>
-
-        <div>
-            <strong>مدرک تحصیلی:</strong>
-            <span>{{ teacher.education }}</span>
-        </div>
-
-        <div>
-            <strong>تخصص:</strong>
-            <span>{{ teacher.specialization }}</span>
-        </div>
-
+        <div><strong>شماره موبایل:</strong> {{ teacher.user.phone_number }}</div>
+        <div><strong>نام و نام خانوادگی:</strong> {{ teacher.user.full_name }}</div>
+        <div><strong>کد ملی:</strong> {{ teacher.national_id }}</div>
+        <div><strong>وضعیت همکاری:</strong> {{ teacher.get_status_display }}</div>
+        <div><strong>نوع همکاری:</strong> {{ teacher.get_employment_type_display }}</div>
+        <div><strong>مدرک تحصیلی:</strong> {{ teacher.education }}</div>
+        <div><strong>تخصص:</strong> {{ teacher.specialization }}</div>
     </div>
 
-</div>
+    {% if active_year %}
+    <div class="mt-6 bg-white p-6 rounded-xl shadow-card">
+        <h2 class="text-lg font-bold mb-4">اطلاعات سال تحصیلی فعال</h2>
+        <p><strong>سال تحصیلی:</strong> {{ active_year.name }}</p>
 
+        <h3 class="text-md font-bold mt-4 mb-2">کلاس‌های معلم</h3>
+        <ul class="list-disc pl-6 text-sm mb-6">
+            {% for cls in classrooms %}
+                <li>{{ cls.name }} ({{ cls.get_grade_display }})</li>
+            {% empty %}
+                <li>هیچ کلاسی ثبت نشده است.</li>
+            {% endfor %}
+        </ul>
+
+        <h3 class="text-md font-bold mb-2">برنامهٔ هفتگی</h3>
+        <table class="w-full text-sm border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2 border">روز</th>
+                    <th class="p-2 border">زنگ</th>
+                    <th class="p-2 border">درس</th>
+                    <th class="p-2 border">کلاس</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sessions %}
+                <tr class="hover:bg-gray-50">
+                    <td class="p-2 border">{{ s.get_weekday_display }}</td>
+                    <td class="p-2 border">{{ s.session_number }}</td>
+                    <td class="p-2 border">{{ s.subject }}</td>
+                    <td class="p-2 border">{{ s.classroom.name }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="p-2 text-center">هیچ جلسه‌ای ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

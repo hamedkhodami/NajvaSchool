@@ -1,36 +1,3 @@
-# 4. Academic
-
-## SubjectModel
-
-### Views
-
-* `SubjectListView`
-* `SubjectDetailView`
-* `SubjectCreateView`
-* `SubjectUpdateView`
-* `SubjectDeleteView`
-
-## StudentEnrollmentModel
-
-### Views
-
-* `StudentEnrollmentListView`
-* `StudentEnrollmentDetailView`
-* `StudentEnrollmentCreateView`
-* `StudentEnrollmentUpdateView`
-* `StudentEnrollmentDeleteView`
-
-## ScheduleSessionModel
-
-### Views
-
-* `ScheduleSessionListView`
-* `ScheduleSessionDetailView`
-* `ScheduleSessionCreateView`
-* `ScheduleSessionUpdateView`
-* `ScheduleSessionDeleteView`
-
----
 
 # 5. Attendance
 

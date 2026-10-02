@@ -1,0 +1,28 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}حذف درس{% endblock %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-lg font-bold mb-4 text-red-600">حذف درس</h1>
+
+    <p class="text-sm mb-4">
+        آیا مطمئن هستید که می‌خواهید درس
+        <span class="font-bold">{{ subject.name }}</span>
+        را حذف کنید؟
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <button type="submit"
+                class="w-full bg-red-600 text-white py-2 rounded-lg text-sm">
+            حذف درس
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

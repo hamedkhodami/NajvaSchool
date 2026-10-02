@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import DetailView, ListView
 
+from apps.academic.models import ScheduleSessionModel
+from apps.academic.services.active_year import get_active_year
 from apps.account.enums import UserRoleEnum
 from apps.account.forms import UserCreationForm
 from apps.account.mixins import AdminRequiredMixin
@@ -34,6 +36,22 @@ class StudentDetailView(AdminRequiredMixin, DetailView):
     model = StudentModel
     template_name = "student/admin/student_detail.html"
     context_object_name = "student"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        student = self.object
+        active_year = get_active_year(self.request)
+
+        classrooms = student.classrooms.filter(academic_year=active_year)
+
+        sessions = ScheduleSessionModel.objects.filter(
+            classroom__in=classrooms
+        ).select_related("subject", "teacher")
+
+        context["active_year"] = active_year
+        context["classrooms"] = classrooms
+        context["sessions"] = sessions
+        return context
 
 
 class CreateStudentUserView(AdminRequiredMixin, View):

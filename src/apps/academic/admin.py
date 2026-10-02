@@ -4,7 +4,6 @@ from apps.academic.models import (
     AcademicYearModel,
     ClassroomModel,
     ScheduleSessionModel,
-    StudentEnrollmentModel,
     SubjectModel,
 )
 
@@ -100,48 +99,6 @@ class SubjectAdmin(admin.ModelAdmin):
     ordering = ("name",)
 
 
-@admin.register(StudentEnrollmentModel)
-class StudentEnrollmentAdmin(admin.ModelAdmin):
-    list_display = (
-        "student",
-        "classroom",
-        "status",
-        "enrollment_date",
-        "created_at",
-    )
-
-    list_display_links = ("student",)
-
-    list_filter = (
-        "status",
-        "classroom__academic_year",
-        "classroom__grade",
-    )
-
-    search_fields = (
-        "student__user__first_name",
-        "student__user__last_name",
-        "student__national_id",
-        "classroom__name",
-        "classroom__code",
-    )
-
-    readonly_fields = (
-        "id",
-        "created_at",
-        "updated_at",
-    )
-
-    autocomplete_fields = (
-        "student",
-        "classroom",
-    )
-
-    ordering = ("-created_at",)
-
-    date_hierarchy = "enrollment_date"
-
-
 @admin.register(ScheduleSessionModel)
 class ScheduleSessionAdmin(admin.ModelAdmin):
     list_display = (
@@ -149,8 +106,6 @@ class ScheduleSessionAdmin(admin.ModelAdmin):
         "subject",
         "teacher",
         "weekday",
-        "start_time",
-        "end_time",
         "session_number",
         "created_at",
     )

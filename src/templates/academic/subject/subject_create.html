@@ -1,0 +1,39 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}افزودن درس{% endblock %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-lg font-bold mb-4">افزودن درس جدید</h1>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div>
+            <label class="text-sm">نام درس</label>
+            {{ form.name }}
+        </div>
+
+        <div>
+            <label class="text-sm">کد درس</label>
+            {{ form.code }}
+        </div>
+
+        <div>
+            <label class="text-sm">توضیحات</label>
+            {{ form.description }}
+        </div>
+
+        <button type="submit"
+                class="w-full bg-yellow-500 text-white py-2 rounded-lg text-sm">
+            ذخیره
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

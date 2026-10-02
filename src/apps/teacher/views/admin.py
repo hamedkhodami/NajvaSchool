@@ -2,6 +2,8 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import DetailView, ListView
 
+from apps.academic.models import ScheduleSessionModel
+from apps.academic.services.active_year import get_active_year
 from apps.account.enums import UserRoleEnum
 from apps.account.forms import UserCreationForm
 from apps.account.mixins import AdminRequiredMixin
@@ -59,3 +61,19 @@ class TeacherDetailView(AdminRequiredMixin, DetailView):
     model = TeacherModel
     template_name = "teacher/admin/teacher_detail.html"
     context_object_name = "teacher"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        teacher = self.object
+        active_year = get_active_year(self.request)
+
+        sessions = ScheduleSessionModel.objects.filter(
+            teacher=teacher, classroom__academic_year=active_year
+        ).select_related("classroom", "subject")
+
+        classrooms = {s.classroom for s in sessions}
+
+        context["active_year"] = active_year
+        context["classrooms"] = classrooms
+        context["sessions"] = sessions
+        return context

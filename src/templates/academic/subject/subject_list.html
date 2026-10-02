@@ -1,0 +1,53 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}لیست دروس{% endblock %}
+
+{% block content %}
+
+<div class="w-full max-w-5xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold">لیست دروس</h1>
+
+        <a href="{% url 'academic:subject_create' %}"
+           class="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm">
+            افزودن درس جدید
+        </a>
+    </div>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">نام درس</th>
+                <th class="p-2 border">کد</th>
+                <th class="p-2 border">عملیات</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for subject in subjects %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ subject.name }}</td>
+                <td class="p-2 border">{{ subject.code }}</td>
+
+                <td class="p-2 border text-center space-x-2">
+
+                    <a href="{% url 'academic:subject_update' subject.id %}"
+                       class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg">
+                        ویرایش
+                    </a>
+
+                    <a href="{% url 'academic:subject_delete' subject.id %}"
+                       class="px-3 py-1 text-xs bg-red-600 text-white rounded-lg">
+                        حذف
+                    </a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

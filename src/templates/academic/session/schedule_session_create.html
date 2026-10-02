@@ -1,0 +1,16 @@
+{% extends "base/base_dashboard.html" %}
+{% block title %}افزودن جلسه جدید{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+    <h1 class="text-lg font-bold mb-4">افزودن جلسه جدید برای کلاس {{ classroom.name }}</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div><label>درس</label>{{ form.subject }}</div>
+        <div><label>معلم</label>{{ form.teacher }}</div>
+        <div><label>روز هفته</label>{{ form.weekday }}</div>
+        <div><label>شماره زنگ</label>{{ form.session_number }}</div>
+        <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg">ذخیره</button>
+    </form>
+</div>
+{% endblock %}

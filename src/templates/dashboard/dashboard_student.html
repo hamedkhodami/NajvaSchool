@@ -1,28 +1,56 @@
 {% extends "base/base_dashboard.html" %}
-{% load static %}
-
 {% block title %}داشبورد دانش‌آموز{% endblock %}
-
 {% block content %}
-
 <div class="container max-w-screen py-10">
     <h1 class="text-xl font-bold mb-6">داشبورد دانش‌آموز</h1>
 
-    <div class="space-y-4">
+    <a href="{% url 'student:profile' %}"
+       class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+        پروفایل دانش‌آموز
+    </a>
 
-        <a href="{% url 'student:profile' %}"
-           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
-            پروفایل دانش‌آموز
-        </a>
+    {% if active_year %}
+        <p class="text-sm mb-4">سال تحصیلی فعال: {{ active_year.name }}</p>
+    {% endif %}
 
-        <form method="post" action="{% url 'account:logout' %}">
-            {% csrf_token %}
-            <button class="px-4 py-2 bg-down text-white rounded-lg">
-                خروج
-            </button>
-        </form>
-    </div>
+    <h2 class="text-lg font-bold mb-4">کلاس‌های دانش‌آموز</h2>
+    <ul class="list-disc pl-6 text-sm mb-6">
+        {% for cls in classrooms %}
+            <li>{{ cls.name }} ({{ cls.get_grade_display }})</li>
+        {% empty %}
+            <li>هیچ کلاسی ثبت نشده است.</li>
+        {% endfor %}
+    </ul>
 
+    <h2 class="text-lg font-bold mb-4">برنامهٔ هفتگی</h2>
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">روز</th>
+                <th class="p-2 border">زنگ</th>
+                <th class="p-2 border">درس</th>
+                <th class="p-2 border">معلم</th>
+                <th class="p-2 border">کلاس</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ s.get_weekday_display }}</td>
+                <td class="p-2 border">{{ s.session_number }}</td>
+                <td class="p-2 border">{{ s.subject }}</td>
+                <td class="p-2 border">{{ s.teacher }}</td>
+                <td class="p-2 border">{{ s.classroom.name }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-2 text-center">هیچ جلسه‌ای ثبت نشده است.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="post" action="{% url 'account:logout' %}" class="mt-6">
+        {% csrf_token %}
+        <button class="px-4 py-2 bg-down text-white rounded-lg">خروج</button>
+    </form>
 </div>
-
 {% endblock %}

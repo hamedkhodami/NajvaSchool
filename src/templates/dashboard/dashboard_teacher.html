@@ -1,24 +1,45 @@
 {% extends "base/base_dashboard.html" %}
-{% load static %}
-
 {% block title %}داشبورد معلم{% endblock %}
-
 {% block content %}
-
 <div class="container max-w-screen py-10">
     <h1 class="text-xl font-bold mb-6">داشبورد معلم</h1>
 
-        <a href="{% url 'teacher:profile' %}"
-           class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
-            پروفایل معلم
-        </a>
+    <a href="{% url 'teacher:profile' %}"
+       class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
+        پروفایل معلم
+    </a>
 
-    <form method="post" action="{% url 'account:logout' %}">
+    {% if active_year %}
+        <p class="text-sm mb-4">سال تحصیلی فعال: {{ active_year.name }}</p>
+    {% endif %}
+
+    <h2 class="text-lg font-bold mb-4">برنامهٔ هفتگی</h2>
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">روز</th>
+                <th class="p-2 border">زنگ</th>
+                <th class="p-2 border">درس</th>
+                <th class="p-2 border">کلاس</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ s.get_weekday_display }}</td>
+                <td class="p-2 border">{{ s.session_number }}</td>
+                <td class="p-2 border">{{ s.subject }}</td>
+                <td class="p-2 border">{{ s.classroom.name }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="p-2 text-center">هیچ جلسه‌ای ثبت نشده است.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="post" action="{% url 'account:logout' %}" class="mt-6">
         {% csrf_token %}
-        <button class="px-4 py-2 bg-down text-white rounded-lg">
-            خروج
-        </button>
+        <button class="px-4 py-2 bg-down text-white rounded-lg">خروج</button>
     </form>
 </div>
-
 {% endblock %}

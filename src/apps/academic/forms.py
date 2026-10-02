@@ -1,7 +1,15 @@
 from django import forms
 from khayyam import JalaliDate
 
-from apps.academic.models import AcademicYearModel, ClassroomModel
+from apps.academic.models import (
+    AcademicYearModel,
+    ClassroomModel,
+    ScheduleSessionModel,
+    SubjectModel,
+)
+from apps.academic.validators import validate_student_enrollment
+from apps.student.models import StudentModel
+from apps.teacher.models import TeacherModel
 
 
 class AcademicYearForm(forms.ModelForm):
@@ -54,10 +62,92 @@ class ClassroomForm(forms.ModelForm):
         model = ClassroomModel
         fields = ["grade", "name", "capacity", "status"]
 
-    def init(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["grade"].label = "پایه تحصیلی"
         self.fields["name"].label = "نام کلاس"
         self.fields["capacity"].label = "ظرفیت"
         self.fields["status"].label = "وضعیت"
+
+
+class ClassroomStudentForm(forms.Form):
+    student = forms.ModelChoiceField(
+        queryset=StudentModel.objects.filter(is_deleted=False),
+        label="دانش‌آموز",
+    )
+
+    def __init__(self, classroom, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.classroom = classroom
+
+    def clean_student(self):
+        student = self.cleaned_data["student"]
+
+        if self.classroom.students.count() >= self.classroom.capacity:
+            raise forms.ValidationError(
+                "ظرفیت کلاس تکمیل شده است و امکان افزودن دانش‌آموز جدید وجود ندارد."
+            )
+
+        error = validate_student_enrollment(student, self.classroom)
+        if error:
+            raise forms.ValidationError(error)
+
+        return student
+
+
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = SubjectModel
+        fields = ["name", "code", "description"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["name"].label = "نام درس"
+        self.fields["code"].label = "کد درس"
+        self.fields["description"].label = "توضیحات"
+
+
+class ScheduleSessionForm(forms.ModelForm):
+    class Meta:
+        model = ScheduleSessionModel
+        fields = ["subject", "teacher", "weekday", "session_number"]
+
+    def __init__(self, classroom, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.classroom = classroom
+
+        self.fields["subject"].queryset = SubjectModel.objects.filter(is_deleted=False)
+        self.fields["teacher"].queryset = TeacherModel.objects.filter(is_deleted=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        weekday = cleaned_data.get("weekday")
+        session_number = cleaned_data.get("session_number")
+
+        if (
+            ScheduleSessionModel.objects.filter(
+                classroom=self.classroom, weekday=weekday, session_number=session_number
+            )
+            .exclude(id=self.instance.id)
+            .exists()
+        ):
+            raise forms.ValidationError(
+                "این شماره جلسه در این روز برای این کلاس از قبل ثبت شده است."
+            )
+
+        if (
+            ScheduleSessionModel.objects.filter(
+                teacher=cleaned_data.get("teacher"),
+                weekday=weekday,
+                session_number=session_number,
+            )
+            .exclude(id=self.instance.id)
+            .exists()
+        ):
+            raise forms.ValidationError(
+                "این معلم در همین بازه زمانی در کلاس دیگری حضور دارد."
+            )
+
+        return cleaned_data

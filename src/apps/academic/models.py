@@ -65,6 +65,13 @@ class ClassroomModel(BaseModel):
         verbose_name="ظرفیت کلاس",
     )
 
+    students = models.ManyToManyField(
+        "student.StudentModel",
+        related_name="classrooms",
+        blank=True,
+        verbose_name="دانش آموزان",
+    )
+
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
@@ -77,7 +84,7 @@ class ClassroomModel(BaseModel):
         verbose_name_plural = "کلاس‌ها"
         ordering = ("-created_at",)
 
-    def str(self):
+    def __str__(self):
         return f"{self.name} - {self.academic_year.name}"
 
 
@@ -105,45 +112,6 @@ class SubjectModel(BaseModel):
 
     def __str__(self):
         return self.name
-
-
-class StudentEnrollmentModel(BaseModel):
-    Status = enums.EnrollmentStatusEnum
-
-    student = models.ForeignKey(
-        "student.StudentModel",
-        on_delete=models.PROTECT,
-        related_name="enrollments",
-        verbose_name="دانش‌آموز",
-    )
-
-    classroom = models.ForeignKey(
-        "academic.ClassroomModel",
-        on_delete=models.PROTECT,
-        related_name="student_enrollments",
-        verbose_name="کلاس",
-    )
-
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIVE,
-        verbose_name="وضعیت ثبت‌نام",
-    )
-
-    enrollment_date = models.DateField(
-        null=True,
-        blank=True,
-        verbose_name="تاریخ ثبت‌نام",
-    )
-
-    class Meta:
-        verbose_name = "ثبت‌نام دانش‌آموز"
-        verbose_name_plural = "ثبت‌نام‌های دانش‌آموزان"
-        ordering = ("-created_at",)
-
-    def __str__(self):
-        return f"{self.student} - {self.classroom}"
 
 
 class ScheduleSessionModel(BaseModel):
@@ -176,16 +144,8 @@ class ScheduleSessionModel(BaseModel):
         verbose_name="روز هفته",
     )
 
-    start_time = models.TimeField(
-        verbose_name="زمان شروع",
-    )
-
-    end_time = models.TimeField(
-        verbose_name="زمان پایان",
-    )
-
     session_number = models.PositiveSmallIntegerField(
-        verbose_name="شماره جلسه",
+        verbose_name="شماره زنگ",
     )
 
     class Meta:

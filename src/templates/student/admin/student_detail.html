@@ -1,13 +1,11 @@
 {% extends "base/base_dashboard.html" %}
 {% block title %}جزییات دانش‌آموز{% endblock %}
-
 {% block content %}
 <section class="container max-w-screen py-10">
 
     <h1 class="text-xl font-bold mb-6">جزییات دانش‌آموز</h1>
 
     <div class="bg-white p-6 rounded-xl shadow-card space-y-4">
-
         <p><strong>نام و نام خانوادگی:</strong> {{ student.user.full_name }}</p>
         <p><strong>شماره موبایل:</strong> {{ student.user.phone_number }}</p>
         <p><strong>کد ملی:</strong> {{ student.national_id }}</p>
@@ -16,8 +14,49 @@
         <p><strong>تاریخ تولد:</strong> {{ student.birth_date }}</p>
         <p><strong>آدرس:</strong> {{ student.address }}</p>
         <p><strong>وضعیت:</strong> {{ student.get_status_display }}</p>
-
     </div>
+
+    {% if active_year %}
+    <div class="mt-6 bg-white p-6 rounded-xl shadow-card">
+        <h2 class="text-lg font-bold mb-4">اطلاعات سال تحصیلی فعال</h2>
+        <p><strong>سال تحصیلی:</strong> {{ active_year.name }}</p>
+
+        <h3 class="text-md font-bold mt-4 mb-2">کلاس‌های دانش‌آموز</h3>
+        <ul class="list-disc pl-6 text-sm mb-6">
+            {% for cls in classrooms %}
+                <li>{{ cls.name }} ({{ cls.get_grade_display }})</li>
+            {% empty %}
+                <li>هیچ کلاسی ثبت نشده است.</li>
+            {% endfor %}
+        </ul>
+
+        <h3 class="text-md font-bold mb-2">برنامهٔ هفتگی</h3>
+        <table class="w-full text-sm border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2 border">روز</th>
+                    <th class="p-2 border">زنگ</th>
+                    <th class="p-2 border">درس</th>
+                    <th class="p-2 border">معلم</th>
+                    <th class="p-2 border">کلاس</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sessions %}
+                <tr class="hover:bg-gray-50">
+                    <td class="p-2 border">{{ s.get_weekday_display }}</td>
+                    <td class="p-2 border">{{ s.session_number }}</td>
+                    <td class="p-2 border">{{ s.subject }}</td>
+                    <td class="p-2 border">{{ s.teacher }}</td>
+                    <td class="p-2 border">{{ s.classroom.name }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="p-2 text-center">هیچ جلسه‌ای ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 
     <div class="mt-6">
         <a href="{% url 'student:list' %}"

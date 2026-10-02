@@ -1,0 +1,40 @@
+{% extends "base/base_dashboard.html" %}
+{% block title %}مدیریت دانش‌آموزان کلاس{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
+    <h1 class="text-lg font-bold mb-4">مدیریت دانش‌آموزان کلاس {{ classroom.name }}</h1>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div>
+            <label class="text-sm">افزودن دانش‌آموز</label>
+            {{ form.student }}
+        </div>
+        <button type="submit"
+                class="w-full bg-green-600 text-white py-2 rounded-lg text-sm">
+            افزودن دانش‌آموز
+        </button>
+    </form>
+
+    <div class="mt-6">
+        <h2 class="text-md font-bold mb-2">دانش‌آموزان ثبت‌شده:</h2>
+        <ul class="list-disc pl-6 text-sm">
+            {% for student in students %}
+                <li class="flex justify-between items-center">
+                    {{ student }}
+                    <form method="post" action="{% url 'academic:classroom_remove_student' classroom.id student.id %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="px-2 py-1 text-xs bg-red-600 text-white rounded-lg">
+                            حذف
+                        </button>
+                    </form>
+                </li>
+            {% empty %}
+                <li>هیچ دانش‌آموزی ثبت نشده است.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

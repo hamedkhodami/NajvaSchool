@@ -89,8 +89,8 @@ Development & Deployment  ░░░░░░░░░░ 0%
 | 3️⃣    | Create Accounts App Views & Authentication Flow | ✅      |
 | 4️⃣    | Create Students App Views                       | ✅      |
 | 5️⃣    | Create Teachers App Views                       | ✅      |
-| 6️⃣    | Create Academics App Views                      | 🎯      |
-| 7️⃣    | Create Attendance App Views                     | ⏳      |
+| 6️⃣    | Create Academics App Views                      | ✅      |
+| 7️⃣    | Create Attendance App Views                     | 🎯      |
 | 8️⃣    | Create Education App Views                      | ⏳      |
 | 9️⃣    | Create Discipline App Views                     | ⏳      |
 | 🔟     | Create Finance App Views                       | ⏳      |

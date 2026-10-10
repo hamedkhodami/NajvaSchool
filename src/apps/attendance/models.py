@@ -5,13 +5,6 @@ from apps.core.models import BaseModel
 
 
 class AttendanceSessionModel(BaseModel):
-    classroom = models.ForeignKey(
-        "academic.ClassroomModel",
-        on_delete=models.PROTECT,
-        related_name="attendance_sessions",
-        verbose_name="کلاس",
-    )
-
     schedule_session = models.ForeignKey(
         "academic.ScheduleSessionModel",
         on_delete=models.PROTECT,

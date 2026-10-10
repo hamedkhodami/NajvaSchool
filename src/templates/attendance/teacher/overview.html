@@ -1,0 +1,55 @@
+{% extends "base/base_dashboard.html" %}
+{% load jalali %}
+
+{% block title %}حضور و غیاب — لیست جلسات{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">جلسات برنامه هفتگی شما</h1>
+
+    <div class="bg-white p-4 rounded-lg shadow">
+
+        <table class="w-full text-sm border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2 border">کلاس</th>
+                    <th class="p-2 border">درس</th>
+                    <th class="p-2 border">روز هفته</th>
+                    <th class="p-2 border">زنگ</th>
+                    <th class="p-2 border">عملیات</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for s in schedules %}
+                <tr class="hover:bg-gray-50">
+
+                    <td class="p-2 border">{{ s.classroom.name }}</td>
+                    <td class="p-2 border">{{ s.subject.name }}</td>
+                    <td class="p-2 border">{{ s.get_weekday_display }}</td>
+                    <td class="p-2 border">{{ s.session_number }}</td>
+
+                    <td class="p-2 border text-center">
+                        <a href="{% url 'attendance:teacher_session' s.id %}"
+                           class="px-3 py-1 bg-primary text-white rounded-lg text-xs">
+                            ورود به جلسه
+                        </a>
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="p-4 text-center text-gray-500">
+                        هیچ جلسه‌ای یافت نشد.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+{% endblock %}

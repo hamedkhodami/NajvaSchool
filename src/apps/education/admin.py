@@ -37,7 +37,6 @@ class ExamAdmin(admin.ModelAdmin):
 
     search_fields = (
         "title",
-        "classroom__name",
         "subject__name",
         "teacher__user__first_name",
         "teacher__user__last_name",
@@ -126,7 +125,6 @@ class DailyGradeAdmin(admin.ModelAdmin):
         "teacher__user__first_name",
         "teacher__user__last_name",
         "subject__name",
-        "classroom__name",
     )
 
     autocomplete_fields = (
@@ -134,7 +132,6 @@ class DailyGradeAdmin(admin.ModelAdmin):
         "teacher",
         "classroom",
         "subject",
-        "attendance_session",
     )
 
     ordering = ("-created_at",)
@@ -182,7 +179,6 @@ class AssignmentAdmin(admin.ModelAdmin):
         "classroom",
         "subject",
         "teacher",
-        "attendance_session",
     )
 
     ordering = ("-created_at",)
@@ -228,7 +224,6 @@ class EducationalActivityAdmin(admin.ModelAdmin):
         "classroom",
         "subject",
         "teacher",
-        "attendance_session",
     )
 
     ordering = ("-created_at",)

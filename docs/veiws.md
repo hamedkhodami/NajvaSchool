@@ -1,36 +1,4 @@
 
-# 5. Attendance
-
-## AttendanceSessionModel
-
-### Views
-
-* `AttendanceSessionListView`
-* `AttendanceSessionDetailView`
-* `AttendanceSessionCreateView`
-* `AttendanceSessionUpdateView`
-* `AttendanceSessionDeleteView`
-
-## StudentAttendanceModel
-
-### Views
-
-* `StudentAttendanceListView`
-* `StudentAttendanceDetailView`
-* `StudentAttendanceCreateView`
-* `StudentAttendanceUpdateView`
-* `StudentAttendanceDeleteView`
-
-## StaffAttendanceModel
-
-### Views
-
-* `StaffAttendanceListView`
-* `StaffAttendanceDetailView`
-* `StaffAttendanceCreateView`
-* `StaffAttendanceUpdateView`
-* `StaffAttendanceDeleteView`
-
 ---
 
 ## TeacherNoteModel

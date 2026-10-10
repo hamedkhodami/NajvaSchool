@@ -1,7 +1,11 @@
 {% extends "base/base_dashboard.html" %}
+{% load jalali %}
+{% load static %}
 {% block title %}داشبورد معلم{% endblock %}
+
 {% block content %}
 <div class="container max-w-screen py-10">
+
     <h1 class="text-xl font-bold mb-6">داشبورد معلم</h1>
 
     <a href="{% url 'teacher:profile' %}"
@@ -9,12 +13,17 @@
         پروفایل معلم
     </a>
 
+    <a href="{% url 'attendance:teacher_attendance_overview' %}"
+       class="block px-4 py-3 bg-blue-600 text-white rounded-lg mb-4">
+        حضور و غیاب کلاس‌ها
+    </a>
+
     {% if active_year %}
         <p class="text-sm mb-4">سال تحصیلی فعال: {{ active_year.name }}</p>
     {% endif %}
 
     <h2 class="text-lg font-bold mb-4">برنامهٔ هفتگی</h2>
-    <table class="w-full text-sm border">
+    <table class="w-full text-sm border mb-10">
         <thead class="bg-gray-100">
             <tr>
                 <th class="p-2 border">روز</th>
@@ -28,7 +37,7 @@
             <tr class="hover:bg-gray-50">
                 <td class="p-2 border">{{ s.get_weekday_display }}</td>
                 <td class="p-2 border">{{ s.session_number }}</td>
-                <td class="p-2 border">{{ s.subject }}</td>
+                <td class="p-2 border">{{ s.subject.name }}</td>
                 <td class="p-2 border">{{ s.classroom.name }}</td>
             </tr>
             {% empty %}
@@ -37,9 +46,33 @@
         </tbody>
     </table>
 
+    <!-- 🔥 غیبت‌های معلم -->
+    <h2 class="text-lg font-bold mb-4">غیبت‌های من</h2>
+
+    <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <p class="text-sm mb-2">
+            تعداد روزهایی که غایب بودم:
+            <strong>{{ total_absents }}</strong>
+        </p>
+
+        <h3 class="font-bold text-sm mt-4 mb-2">تاریخ‌های غیبت:</h3>
+        <ul class="list-disc pl-6 text-sm">
+            {% for item in absent_dates %}
+                <li>
+                    {{ item.date|jalali }}
+                    {% if item.description %}
+                        — توضیح: {{ item.description }}
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>هیچ غیبتی ثبت نشده است.</li>
+            {% endfor %}
+        </ul>
+    </div>
     <form method="post" action="{% url 'account:logout' %}" class="mt-6">
         {% csrf_token %}
         <button class="px-4 py-2 bg-down text-white rounded-lg">خروج</button>
     </form>
+
 </div>
 {% endblock %}

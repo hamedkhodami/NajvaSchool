@@ -1,5 +1,6 @@
 {% extends "base/base_dashboard.html" %}
 {% load static %}
+{% load jalali %}
 
 {% block title %}داشبورد ادمین{% endblock %}
 
@@ -46,6 +47,14 @@
         <a href="{% url 'academic:subject_list' %}"
            class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
             مدیریت دروس
+        </a>
+        <a href="{% url 'attendance:admin_absence_list' %}"
+           class="block px-4 py-3 bg-red-600 text-white rounded-lg mb-4">
+            لیست غیبت‌ها
+        </a>
+        <a href="{% url 'attendance:admin_teacher_absence_list' %}"
+           class="block px-4 py-3 bg-blue-600 text-white rounded-lg mb-4">
+            لیست غیبت‌های معلمان
         </a>
 
         <form method="post" action="{% url 'account:logout' %}">

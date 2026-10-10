@@ -11,27 +11,15 @@ from apps.attendance.models import (
 class AttendanceSessionAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "classroom",
         "schedule_session",
         "date",
         "session_number",
         "created_at",
     )
 
-    list_display_links = (
-        "id",
-        "classroom",
-    )
+    list_display_links = ("id",)
 
-    list_filter = (
-        "date",
-        "classroom",
-    )
-
-    search_fields = (
-        "classroom__name",
-        "classroom__code",
-    )
+    list_filter = ("date",)
 
     readonly_fields = (
         "created_at",
@@ -65,7 +53,6 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
     list_filter = (
         "status",
         "session__date",
-        "session__classroom",
     )
 
     search_fields = (

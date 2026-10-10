@@ -1,0 +1,102 @@
+{% extends "base/base_dashboard.html" %}
+{% load jalali get_item %}
+
+{% block title %}حضور و غیاب جلسه{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">
+        {{ schedule.classroom.name }} — {{ schedule.subject.name }}
+        ({{ schedule.get_weekday_display }} — زنگ {{ schedule.session_number }})
+    </h1>
+
+    <!-- تاریخ جلسه -->
+    <div class="mb-6 bg-white p-4 rounded-lg shadow">
+        <form method="get">
+            <label class="text-sm font-bold">تاریخ جلسه (شمسی):</label>
+            <input type="text" name="date" value="{{ date_jalali }}"
+                   class="border rounded-lg p-2 text-sm w-40"
+                   placeholder="1405-07-10">
+
+            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">
+                برو به تاریخ
+            </button>
+        </form>
+    </div>
+
+    <!-- فرم حضور و غیاب -->
+    <form method="post" class="bg-white p-4 rounded-lg shadow mb-6">
+        {% csrf_token %}
+        <input type="hidden" name="date" value="{{ date_jalali }}">
+
+        <h2 class="text-lg font-bold mb-4">لیست دانش‌آموزان</h2>
+
+        <table class="w-full text-sm border mb-6">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2 border">نام دانش‌آموز</th>
+                    <th class="p-2 border">وضعیت</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for st in students %}
+                <tr class="hover:bg-gray-50">
+
+                    <td class="p-2 border">{{ st.user.full_name }}</td>
+
+                    <td class="p-2 border">
+                        <input type="hidden" name="student_id" value="{{ st.id }}">
+
+                        {% with rec=attendance_map|get_item:st.id %}
+                            <select name="attendance_{{ st.id }}"
+                                    class="border rounded-lg p-2 text-sm">
+                                <option value="present"
+                                    {% if rec and rec.status == "present" %}selected{% endif %}>
+                                    حاضر
+                                </option>
+                                <option value="absent"
+                                    {% if rec and rec.status == "absent" %}selected{% endif %}>
+                                    غایب
+                                </option>
+                            </select>
+                        {% endwith %}
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- یادداشت -->
+        <h2 class="text-lg font-bold mb-2">یادداشت جلسه</h2>
+
+        <textarea name="note"
+                  class="w-full border rounded-lg p-3 text-sm"
+                  rows="4"
+                  placeholder="یادداشت جدید برای جلسه بعد..."></textarea>
+
+        <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
+            ثبت حضور و غیاب + یادداشت
+        </button>
+    </form>
+
+    <!-- یادداشت‌های قبلی -->
+    {% if notes %}
+    <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-bold mb-4">یادداشت‌های قبلی</h2>
+
+        {% for n in notes %}
+        <div class="border-b py-2">
+            <div class="text-sm text-gray-700">{{ n.content }}</div>
+            <div class="text-xs text-gray-500 mt-1">
+                ثبت شده در {{ n.created_at|jalali }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base/base_dashboard.html" %}
+{% load jalali %}
+
+{% block title %}بانک سوالات{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">بانک سوالات</h1>
+
+    <!-- فیلتر درس -->
+    <form method="get" class="mb-6">
+        <label class="block text-sm font-bold mb-2">فیلتر بر اساس درس:</label>
+        <select name="subject" class="border p-2 rounded w-64">
+            <option value="">همهٔ درس‌ها</option>
+            {% for s in subjects %}
+                <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>
+                    {{ s.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button class="px-4 py-2 bg-primary text-white rounded-lg ml-2">
+            اعمال فیلتر
+        </button>
+    </form>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">درس</th>
+                <th class="p-2 border">معلم</th>
+                <th class="p-2 border">کلاس</th>
+                <th class="p-2 border">توضیحات</th>
+                <th class="p-2 border">فایل</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exam in exams %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ exam.subject.name }}</td>
+                <td class="p-2 border">{{ exam.teacher.user.full_name }}</td>
+                <td class="p-2 border">
+                    {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
+                    ({{ exam.classroom.academic_year.name }})
+                </td>
+                <td class="p-2 border">{{ exam.description|default:"—" }}</td>
+                <td class="p-2 border">
+                    <a href="{{ exam.file.url }}" class="text-blue-600">دانلود</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="p-2 text-center">هیچ سوالی در بانک سوالات وجود ندارد.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

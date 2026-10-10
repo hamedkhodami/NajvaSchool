@@ -1,0 +1,52 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}ثبت نمرات{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">
+        ثبت نمرات — {{ exam.subject.name }} — {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
+    </h1>
+
+    <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
+        {% csrf_token %}
+
+        <table class="w-full text-sm border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2 border">دانش‌آموز</th>
+                    <th class="p-2 border">نمره</th>
+                    <th class="p-2 border">توضیحات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr class="hover:bg-gray-50">
+                    <td class="p-2 border">{{ student.user.full_name }}</td>
+
+                    <td class="p-2 border">
+                        <input type="number"
+                               step="0.01"
+                               name="score_{{ student.id }}"
+                               value="{% if student.exam_result %}{{ student.exam_result.score }}{% endif %}"
+                               class="border p-2 rounded w-24">
+                    </td>
+
+                    <td class="p-2 border">
+                        <textarea name="desc_{{ student.id }}"
+                                  class="border p-2 rounded w-full"
+                                  rows="1">{% if student.exam_result %}{{ student.exam_result.description }}{% endif %}</textarea>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+            ذخیره نمرات
+        </button>
+    </form>
+
+</div>
+{% endblock %}

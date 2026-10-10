@@ -1,0 +1,37 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}جزئیات امتحان{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">{{ exam.title }}</h1>
+
+    <div class="bg-white p-6 rounded-lg shadow space-y-4">
+
+        <p><strong>کلاس:</strong> {{ exam.classroom.name }}</p>
+        <p><strong>درس:</strong> {{ exam.subject.name }}</p>
+        <p><strong>تاریخ امتحان:</strong> {{ exam.created_at }}</p>
+        <p><strong>نمره کل:</strong> {{ exam.max_score }}</p>
+        <p><strong>مدت امتحان:</strong> {{ exam.duration }} دقیقه</p>
+
+        <p><strong>توضیحات:</strong> {{ exam.description|default:"—" }}</p>
+
+        <p><strong>فایل سوال:</strong>
+            {% if exam.file %}
+                <a href="{{ exam.file.url }}" class="text-blue-600">دانلود فایل</a>
+            {% else %}
+                —
+            {% endif %}
+        </p>
+
+        <a href="{% url 'education:exam_edit' exam.id %}"
+           class="px-4 py-2 bg-primary text-white rounded-lg inline-block">
+            ویرایش امتحان
+        </a>
+
+    </div>
+
+</div>
+{% endblock %}

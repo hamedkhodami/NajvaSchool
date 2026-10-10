@@ -95,8 +95,7 @@ Development & Deployment  ░░░░░░░░░░ 0%
 | 9️⃣    | Create Discipline App Views                     | ⏳      |
 | 🔟     | Create Finance App Views                       | ⏳      |
 | 1️⃣1️⃣ | Create Dashboard App Views                      | ⏳      |
-| 1️⃣2️⃣ | Create Notification App Views                   | ⏳      |
-| 1️⃣3️⃣ | Phase 3 Integration, Testing & Cleanup          | ⏳      |
+| 1️⃣2️⃣ | Phase 3 Integration, Testing & Cleanup          | ⏳      |
 
 
 # 📌 Global TODO

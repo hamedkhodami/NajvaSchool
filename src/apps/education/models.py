@@ -25,19 +25,9 @@ class ExamModel(BaseModel):
         related_name="exams",
         verbose_name="معلم",
     )
-
-    title = models.CharField(
-        max_length=200,
-        verbose_name="عنوان امتحان",
-    )
-
     description = models.TextField(
         blank=True,
         verbose_name="توضیحات",
-    )
-
-    exam_date = models.DateField(
-        verbose_name="تاریخ امتحان",
     )
 
     max_score = models.DecimalField(
@@ -53,6 +43,10 @@ class ExamModel(BaseModel):
         verbose_name="مدت امتحان (دقیقه)",
     )
 
+    file = models.FileField(
+        upload_to="education/exams/", blank=True, null=True, verbose_name="فایل"
+    )
+
     is_published = models.BooleanField(
         default=False,
         verbose_name="اعلام نتایج",
@@ -61,7 +55,7 @@ class ExamModel(BaseModel):
     class Meta:
         verbose_name = "امتحان"
         verbose_name_plural = "امتحانات"
-        ordering = ("-exam_date",)
+        ordering = ("-created_at",)
 
     def __str__(self):
         return f"{self.title} - {self.classroom}"
@@ -89,6 +83,7 @@ class ExamResultModel(BaseModel):
     )
 
     description = models.TextField(
+        null=True,
         blank=True,
         verbose_name="توضیحات",
     )
@@ -167,72 +162,6 @@ class DailyGradeModel(BaseModel):
 
     def __str__(self):
         return f"{self.student} - {self.subject} - {self.score}"
-
-
-class AssignmentModel(BaseModel):
-    classroom = models.ForeignKey(
-        "academic.ClassroomModel",
-        on_delete=models.PROTECT,
-        related_name="assignments",
-        verbose_name="کلاس",
-    )
-
-    subject = models.ForeignKey(
-        "academic.SubjectModel",
-        on_delete=models.PROTECT,
-        related_name="assignments",
-        verbose_name="درس",
-    )
-
-    teacher = models.ForeignKey(
-        "teacher.TeacherModel",
-        on_delete=models.PROTECT,
-        related_name="assignments",
-        verbose_name="معلم",
-    )
-
-    attendance_session = models.ForeignKey(
-        "attendance.AttendanceSessionModel",
-        on_delete=models.PROTECT,
-        related_name="assignments",
-        verbose_name="جلسه",
-    )
-
-    title = models.CharField(
-        max_length=200,
-        verbose_name="عنوان تکلیف",
-    )
-
-    description = models.TextField(
-        blank=True,
-        verbose_name="توضیحات",
-    )
-
-    assigned_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="زمان تعیین تکلیف",
-    )
-
-    due_date = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="مهلت انجام",
-    )
-
-    status = models.CharField(
-        max_length=20,
-        choices=enums.AssignmentStatusEnum.choices,
-        default=enums.AssignmentStatusEnum.PENDING,
-        verbose_name="وضعیت",
-    )
-
-    class Meta:
-        verbose_name = "تکلیف"
-        verbose_name_plural = "تکالیف"
-        ordering = ("-created_at",)
-
-    def __str__(self):
-        return f"{self.title} - {self.classroom}"
 
 
 class EducationalActivityModel(BaseModel):

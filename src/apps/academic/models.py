@@ -85,7 +85,9 @@ class ClassroomModel(BaseModel):
         ordering = ("-created_at",)
 
     def __str__(self):
-        return f"{self.name} - {self.academic_year.name}"
+        return (
+            f"{self.get_grade_display()} ({self.name}) --- ({self.academic_year.name})"
+        )
 
 
 class SubjectModel(BaseModel):

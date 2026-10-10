@@ -1,0 +1,83 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}لیست امتحانات{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">لیست امتحانات من</h1>
+
+    <a href="{% url 'education:exam_create' %}"
+       class="px-4 py-2 bg-primary text-white rounded-lg mb-6 inline-block">
+        ایجاد امتحان جدید
+    </a>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">کلاس</th>
+                <th class="p-2 border">درس</th>
+                <th class="p-2 border">نتیجه</th>
+                <th class="p-2 border">فایل</th>
+                <th class="p-2 border">جزئیات</th>
+                <th class="p-2 border">نمرات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exam in exams %}
+            <tr class="hover:bg-gray-50">
+
+                <!-- کلاس -->
+                <td class="p-2 border">
+                    {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
+                </td>
+
+                <!-- درس -->
+                <td class="p-2 border">{{ exam.subject.name }}</td>
+
+                <!-- نتیجه -->
+                <td class="p-2 border">
+                    {% if exam.is_published %}
+                        <span class="text-green-600 font-bold">اعلام شده</span>
+                    {% else %}
+                        <span class="text-red-600 font-bold">اعلام نشده</span>
+                    {% endif %}
+                </td>
+
+                <!-- فایل -->
+                <td class="p-2 border">
+                    {% if exam.file %}
+                        <a href="{{ exam.file.url }}" class="text-blue-600">دانلود</a>
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+
+                <!-- جزئیات -->
+                <td class="p-2 border">
+                    <a href="{% url 'education:exam_detail' exam.id %}"
+                       class="text-primary">مشاهده</a>
+                </td>
+
+                <!-- ثبت نمرات -->
+                <td class="p-2 border">
+                    <a href="{% url 'education:exam_results' exam.id %}"
+                       class="px-3 py-1 bg-primary text-white rounded-lg">
+                        ثبت نمرات
+                    </a>
+                </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="p-2 text-center">
+                    هیچ امتحانی ثبت نشده است.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

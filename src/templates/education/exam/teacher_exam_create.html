@@ -1,0 +1,56 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}ایجاد امتحان جدید{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">ایجاد امتحان جدید</h1>
+
+    <form method="post" enctype="multipart/form-data"
+          class="bg-white p-6 rounded-lg shadow space-y-6">
+        {% csrf_token %}
+
+        <!-- کلاس -->
+        <div>
+            <label class="block text-sm font-bold mb-1">کلاس</label>
+            {{ form.classroom }}
+        </div>
+
+        <!-- درس -->
+        <div>
+            <label class="block text-sm font-bold mb-1">درس</label>
+            {{ form.subject }}
+        </div>
+        <!-- توضیحات -->
+        <div>
+            <label class="block text-sm font-bold mb-1">توضیحات</label>
+            {{ form.description }}
+        </div>
+
+        <!-- نمره کل -->
+        <div>
+            <label class="block text-sm font-bold mb-1">نمره کل</label>
+            {{ form.max_score }}
+        </div>
+
+        <!-- مدت امتحان -->
+        <div>
+            <label class="block text-sm font-bold mb-1">مدت امتحان (دقیقه)</label>
+            {{ form.duration }}
+        </div>
+
+        <!-- فایل سوال -->
+        <div>
+            <label class="block text-sm font-bold mb-1">فایل سوال (اختیاری)</label>
+            {{ form.file }}
+        </div>
+
+        <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">
+            ثبت امتحان
+        </button>
+    </form>
+
+</div>
+{% endblock %}

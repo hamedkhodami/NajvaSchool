@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from apps.education.models import (
-    AssignmentModel,
     DailyGradeModel,
     EducationalActivityModel,
     ExamModel,
@@ -13,23 +12,17 @@ from apps.education.models import (
 class ExamAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "title",
         "classroom",
         "subject",
         "teacher",
-        "exam_date",
         "max_score",
         "is_published",
     )
 
-    list_display_links = (
-        "id",
-        "title",
-    )
+    list_display_links = ("id",)
 
     list_filter = (
         "is_published",
-        "exam_date",
         "subject",
         "classroom",
         "teacher",
@@ -49,10 +42,7 @@ class ExamAdmin(admin.ModelAdmin):
         "teacher",
     )
 
-    ordering = (
-        "-exam_date",
-        "-created_at",
-    )
+    ordering = ("-created_at",)
 
 
 @admin.register(ExamResultModel)
@@ -80,7 +70,6 @@ class ExamResultAdmin(admin.ModelAdmin):
         "student__national_id",
         "student__user__first_name",
         "student__user__last_name",
-        "exam__title",
     )
 
     autocomplete_fields = (
@@ -132,53 +121,6 @@ class DailyGradeAdmin(admin.ModelAdmin):
         "teacher",
         "classroom",
         "subject",
-    )
-
-    ordering = ("-created_at",)
-
-
-@admin.register(AssignmentModel)
-class AssignmentAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "title",
-        "classroom",
-        "subject",
-        "teacher",
-        "attendance_session",
-        "assigned_at",
-        "due_date",
-        "status",
-    )
-
-    list_display_links = (
-        "id",
-        "title",
-    )
-
-    list_filter = (
-        "status",
-        "subject",
-        "teacher",
-        "classroom",
-        "assigned_at",
-        "due_date",
-    )
-
-    search_fields = (
-        "title",
-        "description",
-        "classroom__name",
-        "subject__name",
-        "teacher__user__first_name",
-        "teacher__user__last_name",
-        "teacher__national_id",
-    )
-
-    autocomplete_fields = (
-        "classroom",
-        "subject",
-        "teacher",
     )
 
     ordering = ("-created_at",)

@@ -18,6 +18,18 @@
         حضور و غیاب کلاس‌ها
     </a>
 
+    <a href="{% url 'education:exam_list' %}"
+       class="block px-4 py-3 bg-blue-600 text-white rounded-lg mb-4">
+        لیست امتحانات
+    </a>
+
+    <a href="{% url 'education:question_bank' %}"
+       class="block px-4 py-3 bg-blue-600 text-white rounded-lg mb-4">
+        بانک سوالات
+    </a>
+
+
+
     {% if active_year %}
         <p class="text-sm mb-4">سال تحصیلی فعال: {{ active_year.name }}</p>
     {% endif %}
@@ -69,6 +81,8 @@
             {% endfor %}
         </ul>
     </div>
+
+
     <form method="post" action="{% url 'account:logout' %}" class="mt-6">
         {% csrf_token %}
         <button class="px-4 py-2 bg-down text-white rounded-lg">خروج</button>

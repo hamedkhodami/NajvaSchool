@@ -48,7 +48,7 @@ class CreateTeacherUserView(AdminRequiredMixin, View):
         teacher.user = user
         teacher.save()
 
-        return redirect("dashboard:dashboard")
+        return redirect("teacher:list")
 
 
 class TeacherListView(AdminRequiredMixin, ListView):

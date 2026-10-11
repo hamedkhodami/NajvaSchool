@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
@@ -26,7 +27,10 @@ class SubjectCreateView(AdminRequiredMixin, View):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "درس جدید با موفقیت ثبت شد.")
             return redirect("academic:subject_list")
+
+        messages.error(request, "اطلاعات وارد شده معتبر نیست.")
         return render(request, self.template_name, {"form": form})
 
 
@@ -44,8 +48,10 @@ class SubjectUpdateView(AdminRequiredMixin, View):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "درس با موفقیت بروزرسانی شد.")
             return redirect("academic:subject_list")
 
+        messages.error(request, "اطلاعات وارد شده معتبر نیست.")
         return render(request, self.template_name, {"form": form, "subject": subject})
 
 
@@ -59,4 +65,5 @@ class SubjectDeleteView(AdminRequiredMixin, View):
     def post(self, request, subject_id):
         subject = get_object_or_404(SubjectModel, id=subject_id)
         subject.delete()  # SoftDelete
+        messages.success(request, "درس با موفقیت حذف شد.")
         return redirect("academic:subject_list")

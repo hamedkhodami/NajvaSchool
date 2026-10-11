@@ -28,7 +28,7 @@
             {% for subject in subjects %}
             <tr class="hover:bg-gray-50">
                 <td class="p-2 border">{{ subject.name }}</td>
-                <td class="p-2 border">{{ subject.code }}</td>
+                <td class="p-2 border">{{ subject.get_code_display }}</td>
 
                 <td class="p-2 border text-center space-x-2">
 

@@ -53,7 +53,7 @@ class TeacherModel(BaseModel):
         ordering = ("-created_at",)
 
     def __str__(self):
-        return f"{self.national_id} - {self.user.full_name}"
+        return f"{self.specialization} - {self.user.full_name}"
 
 
 class TeacherNoteModel(BaseModel):

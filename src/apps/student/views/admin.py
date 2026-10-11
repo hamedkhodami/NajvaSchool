@@ -92,8 +92,6 @@ class CreateStudentUserView(AdminRequiredMixin, View):
 
         student = student_form.save(commit=False)
         student.user = user
-        print(user_form.errors)
-        print(student_form.errors)
         student.save()
 
-        return redirect("dashboard:dashboard")
+        return redirect("student:list")

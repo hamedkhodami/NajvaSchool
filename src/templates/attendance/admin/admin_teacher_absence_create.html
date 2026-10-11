@@ -1,0 +1,33 @@
+{% extends "base/base_dashboard.html" %}
+{% block title %}ثبت غیبت معلم{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">ثبت غیبت معلم</h1>
+
+    <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
+        {% csrf_token %}
+
+        <div>
+            <label class="block font-bold mb-2">معلم:</label>
+            {{ form.teacher }}
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">وضعیت:</label>
+            {{ form.status }}
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">توضیحات:</label>
+            {{ form.description }}
+        </div>
+
+        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+            ثبت غیبت
+        </button>
+    </form>
+
+</div>
+{% endblock %}

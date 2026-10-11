@@ -83,6 +83,7 @@ class ClassroomModel(BaseModel):
         verbose_name = "کلاس"
         verbose_name_plural = "کلاس‌ها"
         ordering = ("-created_at",)
+        unique_together = ("academic_year", "grade", "name")
 
     def __str__(self):
         return (
@@ -91,6 +92,8 @@ class ClassroomModel(BaseModel):
 
 
 class SubjectModel(BaseModel):
+    Grade = enums.AcademicGradeStatusEnum
+
     name = models.CharField(
         max_length=100,
         verbose_name="نام درس",
@@ -98,8 +101,8 @@ class SubjectModel(BaseModel):
 
     code = models.CharField(
         max_length=30,
-        unique=True,
-        verbose_name="کد درس",
+        choices=Grade.choices,
+        verbose_name="پایه درس",
     )
 
     description = models.TextField(
@@ -113,7 +116,7 @@ class SubjectModel(BaseModel):
         ordering = ("name",)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.code}"
 
 
 class ScheduleSessionModel(BaseModel):

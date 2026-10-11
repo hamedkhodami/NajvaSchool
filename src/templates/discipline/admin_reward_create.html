@@ -1,0 +1,49 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}ثبت تشویقی{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">
+        ثبت تشویقی برای کلاس {{ classroom.get_grade_display }} {{ classroom.name }}
+    </h1>
+
+    <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
+        {% csrf_token %}
+
+        <div>
+            <label class="block font-bold mb-2">عنوان تشویقی:</label>
+            <input type="text" name="title" class="border p-2 rounded w-full" required>
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">توضیحات:</label>
+            <textarea name="description" class="border p-2 rounded w-full" rows="3"></textarea>
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">تاریخ:</label>
+            <input type="date" name="date" class="border p-2 rounded w-64" required>
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">انتخاب دانش‌آموزان:</label>
+
+            <div class="border rounded p-4 max-h-64 overflow-y-auto">
+                {% for student in students %}
+                <label class="flex items-center gap-2 mb-2">
+                    <input type="checkbox" name="students" value="{{ student.id }}">
+                    {{ student.user.full_name }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+            ثبت تشویقی
+        </button>
+    </form>
+
+</div>
+{% endblock %}

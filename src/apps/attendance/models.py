@@ -98,6 +98,7 @@ class StaffAttendanceModel(BaseModel):
 
     date = models.DateField(
         verbose_name="تاریخ",
+        editable=False,
     )
 
     status = models.CharField(
@@ -105,18 +106,6 @@ class StaffAttendanceModel(BaseModel):
         choices=Status.choices,
         default=Status.PRESENT,
         verbose_name="وضعیت حضور",
-    )
-
-    arrival_time = models.TimeField(
-        null=True,
-        blank=True,
-        verbose_name="زمان ورود",
-    )
-
-    departure_time = models.TimeField(
-        null=True,
-        blank=True,
-        verbose_name="زمان خروج",
     )
 
     description = models.TextField(
@@ -128,7 +117,6 @@ class StaffAttendanceModel(BaseModel):
         verbose_name = "حضور و غیاب معلم"
         verbose_name_plural = "حضور و غیاب معلمان"
         ordering = ("-date",)
-
         constraints = [
             models.UniqueConstraint(
                 fields=("teacher", "date"),
@@ -136,5 +124,11 @@ class StaffAttendanceModel(BaseModel):
             )
         ]
 
+    def save(self, *args, **kwargs):
+        # اگر تاریخ هنوز ست نشده باشد، از created_at گرفته می‌شود
+        if not self.date:
+            self.date = self.created_at.date()
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.teacher} - {self.date} - {self.status}"
+        return f"{self.teacher} - {self.status} - {self.date}"

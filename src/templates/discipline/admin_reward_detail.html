@@ -1,0 +1,41 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}جزئیات تشویقی{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">جزئیات تشویقی</h1>
+
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <p><strong>دانش‌آموز:</strong> {{ record.student.user.full_name }}</p>
+        <p><strong>کلاس:</strong> {{ record.classroom.get_grade_display }} {{ record.classroom.name }}</p>
+        <p><strong>ثبت‌کننده:</strong> {{ record.recorder.get_full_name }}</p>
+        <p><strong>تاریخ ثبت:</strong> {{ record.created_at }}</p>
+    </div>
+
+    <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
+        {% csrf_token %}
+
+        <div>
+            <label class="block font-bold mb-2">عنوان:</label>
+            <input type="text" name="title" value="{{ record.title }}" class="border p-2 rounded w-full">
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">توضیحات:</label>
+            <textarea name="description" class="border p-2 rounded w-full" rows="3">{{ record.description }}</textarea>
+        </div>
+
+        <div>
+            <label class="block font-bold mb-2">تاریخ:</label>
+            <input type="date" name="date" value="{{ record.date }}" class="border p-2 rounded w-64">
+        </div>
+
+        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+            ذخیره تغییرات
+        </button>
+    </form>
+
+</div>
+{% endblock %}

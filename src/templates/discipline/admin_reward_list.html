@@ -1,0 +1,56 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}لیست تشویقی‌ها{% endblock %}
+
+{% block content %}
+<div class="container max-w-screen py-10">
+
+    <h1 class="text-xl font-bold mb-6">لیست تشویقی‌ها — سال {{ active_year.name }}</h1>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">دانش‌آموز</th>
+                <th class="p-2 border">کلاس</th>
+                <th class="p-2 border">عنوان</th>
+                <th class="p-2 border">تاریخ</th>
+                <th class="p-2 border">ثبت‌کننده</th>
+                <th class="p-2 border">جزئیات</th>
+                <th class="p-2 border">حذف</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for record in records %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ record.student.user.full_name }}</td>
+                <td class="p-2 border">{{ record.classroom.get_grade_display }} {{ record.classroom.name }}</td>
+                <td class="p-2 border">{{ record.title }}</td>
+                <td class="p-2 border">{{ record.date }}</td>
+                <td class="p-2 border">{{ record.recorder.get_full_name }}</td>
+
+                <td class="p-2 border">
+                    <a href="{% url 'discipline:admin_reward_detail' record.id %}"
+                       class="text-blue-600">مشاهده</a>
+                </td>
+
+                <td class="p-2 border">
+                    <form method="post" action="{% url 'discipline:admin_reward_delete' record.id %}">
+                        {% csrf_token %}
+                        <button class="text-red-600"
+                                onclick="return confirm('حذف شود؟');">
+                            حذف
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="p-2 text-center">هیچ تشویقی ثبت نشده است.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

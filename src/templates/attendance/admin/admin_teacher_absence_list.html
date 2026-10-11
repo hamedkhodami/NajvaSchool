@@ -79,6 +79,11 @@
     <!-- لیست غیبت‌ها -->
     <div class="bg-white p-4 rounded-lg shadow">
 
+        <a href="{% url 'attendance:admin_teacher_absence_create' %}"
+           class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm mb-4 inline-block">
+            ثبت غیبت جدید
+        </a>
+
         <table class="w-full text-sm border">
             <thead class="bg-gray-100">
                 <tr>
@@ -96,7 +101,7 @@
                     <td class="p-2 border">{{ a.teacher.user.full_name }}</td>
                     <td class="p-2 border">{{ a.teacher.user.phone_number }}</td>
                     <td class="p-2 border">{{ a.teacher.specialization }}</td>
-                    <td class="p-2 border">{{ a.date|jalali }}</td>
+                    <td class="p-2 border">{{ a.created_at|jalali }}</td>
 
                 </tr>
                 {% empty %}

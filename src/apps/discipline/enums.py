@@ -1,6 +1,12 @@
 from django.db.models import TextChoices
 
 
+class StudentRecordCategoryEnum(TextChoices):
+    DISCIPLINE = "discipline", "انضباطی"
+    BEHAVIOR = "behavior", "رفتاری"
+    EDUCATIONAL = "educational", "تربیتی"
+
+
 class DisciplineEffectEnum(TextChoices):
     POSITIVE = "positive", "مثبت"
     NEGATIVE = "negative", "منفی"

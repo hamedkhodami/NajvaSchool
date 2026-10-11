@@ -1,10 +1,12 @@
+from django.contrib import messages
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 
 from apps.academic.services.active_year import get_active_year
 from apps.account.mixins import AdminRequiredMixin
 from apps.attendance.enums import AttendanceStatusEnum, StaffAttendanceStatusEnum
+from apps.attendance.forms import StaffAttendanceForm
 from apps.attendance.models import StaffAttendanceModel, StudentAttendanceModel
 from apps.core.templatetags.jalali import (
     gregorian_to_jalali,
@@ -160,3 +162,42 @@ class AdminTeacherAbsenceListView(AdminRequiredMixin, View):
                 "active_year": active_year,
             },
         )
+
+
+class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
+    template_name = "attendance/admin/admin_teacher_absence_create.html"
+
+    def get(self, request):
+        active_year = get_active_year(request)
+
+        if not active_year:
+            messages.error(request, "سال تحصیلی فعال یافت نشد.")
+            return redirect("attendance:admin_teacher_absence_list")
+
+        form = StaffAttendanceForm()
+        return render(
+            request, self.template_name, {"form": form, "active_year": active_year}
+        )
+
+    def post(self, request):
+        active_year = get_active_year(request)
+
+        if not active_year:
+            messages.error(request, "سال تحصیلی فعال یافت نشد.")
+            return redirect("attendance:admin_teacher_absence_list")
+
+        form = StaffAttendanceForm(request.POST)
+
+        if form.is_valid():
+            obj = form.save(commit=False)
+
+            # جلوگیری از ثبت غیبت خارج از سال تحصیلی
+            if not (active_year.start_date <= obj.date <= active_year.end_date):
+                form.add_error("date", "تاریخ انتخاب‌شده خارج از سال تحصیلی فعال است.")
+                return render(request, self.template_name, {"form": form})
+
+            obj.save()
+            messages.success(request, "غیبت معلم با موفقیت ثبت شد.")
+            return redirect("attendance:admin_teacher_absence_list")
+
+        return render(request, self.template_name, {"form": form})

@@ -77,10 +77,7 @@ class StaffAttendanceAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "teacher",
-        "date",
         "status",
-        "arrival_time",
-        "departure_time",
         "created_at",
     )
 
@@ -89,10 +86,7 @@ class StaffAttendanceAdmin(admin.ModelAdmin):
         "teacher",
     )
 
-    list_filter = (
-        "status",
-        "date",
-    )
+    list_filter = ("status",)
 
     search_fields = (
         "teacher__user__first_name",
@@ -105,9 +99,4 @@ class StaffAttendanceAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    ordering = (
-        "-date",
-        "teacher",
-    )
-
-    date_hierarchy = "date"
+    ordering = ("teacher",)

@@ -17,6 +17,11 @@ urlpatterns = [
         admin.AdminTeacherAbsenceListView.as_view(),
         name="admin_teacher_absence_list",
     ),
+    path(
+        "teacher/absences/create/",
+        admin.AdminTeacherAbsenceCreateView.as_view(),
+        name="admin_teacher_absence_create",
+    ),
     # Teacher
     path(
         "teacher/attendance/",

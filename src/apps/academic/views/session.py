@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
@@ -11,9 +12,17 @@ class ScheduleSessionListView(AdminRequiredMixin, View):
 
     def get(self, request, class_id):
         classroom = get_object_or_404(ClassroomModel, id=class_id)
-        sessions = classroom.schedule_sessions.all()
+
+        # فقط جلسات همین کلاس
+        sessions = classroom.schedule_sessions.select_related("subject", "teacher")
+
         return render(
-            request, self.template_name, {"classroom": classroom, "sessions": sessions}
+            request,
+            self.template_name,
+            {
+                "classroom": classroom,
+                "sessions": sessions,
+            },
         )
 
 
@@ -22,21 +31,38 @@ class ScheduleSessionCreateView(AdminRequiredMixin, View):
 
     def get(self, request, class_id):
         classroom = get_object_or_404(ClassroomModel, id=class_id)
+
         form = ScheduleSessionForm(classroom=classroom)
+
         return render(
-            request, self.template_name, {"form": form, "classroom": classroom}
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "classroom": classroom,
+            },
         )
 
     def post(self, request, class_id):
         classroom = get_object_or_404(ClassroomModel, id=class_id)
+
         form = ScheduleSessionForm(classroom, request.POST)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.classroom = classroom
             obj.save()
+
+            messages.success(request, "جلسه با موفقیت ثبت شد.")
             return redirect("academic:schedule_session_list", class_id=classroom.id)
+
         return render(
-            request, self.template_name, {"form": form, "classroom": classroom}
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "classroom": classroom,
+            },
         )
 
 
@@ -45,18 +71,39 @@ class ScheduleSessionUpdateView(AdminRequiredMixin, View):
 
     def get(self, request, session_id):
         session = get_object_or_404(ScheduleSessionModel, id=session_id)
+
         form = ScheduleSessionForm(session.classroom, instance=session)
-        return render(request, self.template_name, {"form": form, "session": session})
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "session": session,
+            },
+        )
 
     def post(self, request, session_id):
         session = get_object_or_404(ScheduleSessionModel, id=session_id)
+
         form = ScheduleSessionForm(session.classroom, request.POST, instance=session)
+
         if form.is_valid():
             form.save()
+
+            messages.success(request, "جلسه با موفقیت بروزرسانی شد.")
             return redirect(
                 "academic:schedule_session_list", class_id=session.classroom.id
             )
-        return render(request, self.template_name, {"form": form, "session": session})
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "session": session,
+            },
+        )
 
 
 class ScheduleSessionDeleteView(AdminRequiredMixin, View):
@@ -64,10 +111,21 @@ class ScheduleSessionDeleteView(AdminRequiredMixin, View):
 
     def get(self, request, session_id):
         session = get_object_or_404(ScheduleSessionModel, id=session_id)
-        return render(request, self.template_name, {"session": session})
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "session": session,
+            },
+        )
 
     def post(self, request, session_id):
         session = get_object_or_404(ScheduleSessionModel, id=session_id)
+
         class_id = session.classroom.id
+
         session.delete()
+
+        messages.success(request, "جلسه با موفقیت حذف شد.")
         return redirect("academic:schedule_session_list", class_id=class_id)

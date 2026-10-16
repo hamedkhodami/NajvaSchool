@@ -1,7 +1,6 @@
 from django.db import models
 
 from apps.core.models import BaseModel
-from apps.education import enums
 
 
 class ExamModel(BaseModel):
@@ -132,13 +131,6 @@ class DailyGradeModel(BaseModel):
         verbose_name="درس",
     )
 
-    attendance_session = models.ForeignKey(
-        "attendance.AttendanceSessionModel",
-        on_delete=models.PROTECT,
-        related_name="daily_grades",
-        verbose_name="جلسه حضور و غیاب",
-    )
-
     title = models.CharField(
         max_length=200,
         verbose_name="عنوان",
@@ -162,59 +154,3 @@ class DailyGradeModel(BaseModel):
 
     def __str__(self):
         return f"{self.student} - {self.subject} - {self.score}"
-
-
-class EducationalActivityModel(BaseModel):
-    Type = enums.EducationalActivityTypeEnum
-
-    classroom = models.ForeignKey(
-        "academic.ClassroomModel",
-        on_delete=models.PROTECT,
-        related_name="educational_activities",
-        verbose_name="کلاس",
-    )
-
-    subject = models.ForeignKey(
-        "academic.SubjectModel",
-        on_delete=models.PROTECT,
-        related_name="educational_activities",
-        verbose_name="درس",
-    )
-
-    teacher = models.ForeignKey(
-        "teacher.TeacherModel",
-        on_delete=models.PROTECT,
-        related_name="educational_activities",
-        verbose_name="معلم",
-    )
-
-    attendance_session = models.ForeignKey(
-        "attendance.AttendanceSessionModel",
-        on_delete=models.PROTECT,
-        related_name="educational_activities",
-        verbose_name="جلسه",
-    )
-
-    activity_type = models.CharField(
-        max_length=30,
-        choices=Type.choices,
-        verbose_name="نوع فعالیت",
-    )
-
-    title = models.CharField(
-        max_length=200,
-        verbose_name="عنوان فعالیت",
-    )
-
-    description = models.TextField(
-        blank=True,
-        verbose_name="توضیحات",
-    )
-
-    class Meta:
-        verbose_name = "فعالیت آموزشی"
-        verbose_name_plural = "فعالیت‌های آموزشی"
-        ordering = ("-created_at",)
-
-    def __str__(self):
-        return f"{self.title} - {self.classroom}"

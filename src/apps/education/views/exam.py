@@ -90,7 +90,7 @@ class TeacherExamUpdateView(TeacherRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, "امتحان با موفقیت ویرایش شد.")
-            return redirect("education:exam_list", exam_id=exam.id)
+            return redirect("education:exam_list")
 
         return render(request, self.template_name, {"form": form, "exam": exam})
 

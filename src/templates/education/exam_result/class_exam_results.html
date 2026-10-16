@@ -1,0 +1,55 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}نتایج امتحانات{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <h1 class="text-lg font-bold mb-4">
+        نتایج امتحانات — {{ classroom.get_grade_display }} {{ classroom.name }}
+    </h1>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">دانش‌آموز</th>
+
+                {% for exam in exams %}
+                    <th class="p-2 border">
+                        {{ exam.subject.name }} {{ forloop.counter }}
+                    </th>
+                {% endfor %}
+
+                <th class="p-2 border">میانگین</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in table_rows %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border font-bold">{{ row.student.user.full_name }}</td>
+
+                {% for score in row.scores %}
+                    <td class="p-2 border text-center">
+                        {% if score %}
+                            {{ score }}
+                        {% else %}
+                            <span class="text-gray-400">—</span>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+
+                <td class="p-2 border font-bold text-center">
+                    {% if row.avg %}
+                        {{ row.avg|floatformat:2 }}
+                    {% else %}
+                        <span class="text-gray-400">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

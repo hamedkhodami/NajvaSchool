@@ -1,0 +1,52 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}نمرات روزانه من{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <h1 class="text-lg font-bold mb-4">
+        نمرات روزانه — سال تحصیلی {{ active_year.name }}
+    </h1>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">درس</th>
+                <th class="p-2 border">عنوان</th>
+                <th class="p-2 border">نمره</th>
+                <th class="p-2 border">تاریخ</th>
+                <th class="p-2 border">معلم</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for g in grades %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ g.subject.name }}</td>
+                <td class="p-2 border">{{ g.title }}</td>
+                <td class="p-2 border font-bold">{{ g.score }}</td>
+                <td class="p-2 border">{{ g.created_at|date:"Y/m/d" }}</td>
+                <td class="p-2 border">{{ g.teacher.user.full_name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">
+                    هنوز نمره‌ای ثبت نشده است.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-4 text-md font-bold">
+        میانگین کل:
+        {% if avg_score %}
+            {{ avg_score|floatformat:2 }}
+        {% else %}
+            <span class="text-gray-400">—</span>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

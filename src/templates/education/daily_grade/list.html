@@ -1,0 +1,54 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}نمرات روزانه{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <h1 class="text-lg font-bold mb-4">
+        نمرات روزانه — {{ classroom.get_grade_display }} {{ classroom.name }}
+    </h1>
+
+    <div class="mb-4">
+        <a href="{% url 'education:teacher_daily_grade_create' classroom.id %}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            ثبت پرسش جدید
+        </a>
+    </div>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">دانش‌آموز</th>
+                <th class="p-2 border">نمرات</th>
+                <th class="p-2 border">میانگین</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in table_rows %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border font-bold">{{ row.student.user.full_name }}</td>
+
+                <td class="p-2 border">
+                    {% for g in row.grades %}
+                        <span class="px-2 py-1 bg-gray-100 rounded border">{{ g.score }}</span>
+                    {% empty %}
+                        <span class="text-gray-400">—</span>
+                    {% endfor %}
+                </td>
+
+                <td class="p-2 border font-bold">
+                    {% if row.avg %}
+                        {{ row.avg|floatformat:2 }}
+                    {% else %}
+                        <span class="text-gray-400">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

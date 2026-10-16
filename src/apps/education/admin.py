@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from apps.education.models import (
     DailyGradeModel,
-    EducationalActivityModel,
     ExamModel,
     ExamResultModel,
 )
@@ -88,7 +87,6 @@ class DailyGradeAdmin(admin.ModelAdmin):
         "subject",
         "teacher",
         "classroom",
-        "attendance_session",
         "title",
         "score",
         "created_at",
@@ -103,7 +101,6 @@ class DailyGradeAdmin(admin.ModelAdmin):
         "subject",
         "teacher",
         "classroom",
-        "attendance_session",
     )
 
     search_fields = (
@@ -121,51 +118,6 @@ class DailyGradeAdmin(admin.ModelAdmin):
         "teacher",
         "classroom",
         "subject",
-    )
-
-    ordering = ("-created_at",)
-
-
-@admin.register(EducationalActivityModel)
-class EducationalActivityAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "title",
-        "activity_type",
-        "classroom",
-        "subject",
-        "teacher",
-        "attendance_session",
-        "created_at",
-    )
-
-    list_display_links = (
-        "id",
-        "title",
-    )
-
-    list_filter = (
-        "activity_type",
-        "subject",
-        "teacher",
-        "classroom",
-        "attendance_session",
-    )
-
-    search_fields = (
-        "title",
-        "description",
-        "classroom__name",
-        "subject__name",
-        "teacher__user__first_name",
-        "teacher__user__last_name",
-        "teacher__national_id",
-    )
-
-    autocomplete_fields = (
-        "classroom",
-        "subject",
-        "teacher",
     )
 
     ordering = ("-created_at",)

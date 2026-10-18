@@ -1,0 +1,119 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}لیست حقوق معلمان{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow">
+
+    <h1 class="text-lg font-bold mb-4">لیست حقوق معلمان</h1>
+
+    <!-- دکمه‌های بالای صفحه -->
+    <div class="flex gap-3 mb-6">
+
+        <!-- تهیه لیست پرداختی معلمان برای ماه -->
+        <a href="{% url 'finance:salary_monthly_prepare' %}"
+           class="px-4 py-2 bg-indigo-600 text-white rounded">
+            تهیه لیست پرداخت حقوق معلمان برای ماه
+        </a>
+
+
+        <a href="{% url 'finance:salary_create' %}"
+           class="px-4 py-2 bg-green-600 text-white rounded">
+            ثبت حکم معلمان
+        </a>
+
+
+    </div>
+
+    <!-- فیلترها -->
+    <form method="get" class="grid grid-cols-4 gap-4 mb-6">
+
+        <!-- فیلتر سال تحصیلی -->
+        <div>
+            <label class="block mb-1 font-bold">سال تحصیلی</label>
+            <select name="year" class="border p-2 rounded w-full">
+                <option value="">همه</option>
+                {% for y in years %}
+                <option value="{{ y.id }}" {% if request.GET.year == y.id|stringformat:"s" %}selected{% endif %}>
+                    {{ y.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- جستجو -->
+        <div>
+            <label class="block mb-1 font-bold">جستجو معلم</label>
+            <input type="text" name="search" value="{{ request.GET.search }}"
+                   placeholder="نام، نام خانوادگی، کد ملی"
+                   class="border p-2 rounded w-full">
+        </div>
+
+        <div class="col-span-4">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded">
+                اعمال فیلتر
+            </button>
+        </div>
+
+    </form>
+
+    <!-- لیست پرداخت ماه (فعلاً خالی) -->
+    <div class="mb-4 p-4 bg-gray-100 rounded">
+        <span class="font-bold">پرداخت ماه:</span>
+        <span class="text-gray-600">— (بعداً تکمیل می‌شود)</span>
+    </div>
+
+    <!-- جدول -->
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">معلم</th>
+                <th class="p-2 border">سال تحصیلی</th>
+                <th class="p-2 border">حقوق پایه</th>
+                <th class="p-2 border">عملیات</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for s in salaries %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ s.teacher.user.full_name }}</td>
+                <td class="p-2 border">{{ s.academic_year.name }}</td>
+                <td class="p-2 border font-bold">{{ s.base_amount|floatformat:0 }}</td>
+
+                <td class="p-2 border flex gap-2">
+
+                    <!-- جزئیات -->
+                    <a href="{% url 'finance:salary_detail' s.id %}"
+                       class="px-3 py-1 bg-gray-700 text-white rounded">
+                        جزئیات
+                    </a>
+
+                    <!-- پرداخت حقوق -->
+                    <a href="{% url 'finance:salary_payment_create' s.id %}"
+                       class="px-3 py-1 bg-green-600 text-white rounded">
+                        پرداخت حقوق
+                    </a>
+
+                    <!-- ویرایش حکم -->
+                    <a href="{% url 'finance:salary_update' s.id %}"
+                       class="px-3 py-1 bg-yellow-500 text-white rounded">
+                        ویرایش
+                    </a>
+
+
+
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-4 text-center text-gray-500">
+                    هیچ حقوقی ثبت نشده است.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

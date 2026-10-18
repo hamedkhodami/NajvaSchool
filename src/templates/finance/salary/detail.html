@@ -1,0 +1,90 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}جزئیات حقوق معلم{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow max-w-4xl mx-auto">
+
+    <h1 class="text-xl font-bold mb-6">
+        جزئیات حقوق – {{ salary.teacher.user.full_name }}
+    </h1>
+
+    <!-- اطلاعات حکم -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">سال تحصیلی:</span>
+            <span class="font-bold">{{ salary.academic_year.name }}</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">حقوق پایه:</span>
+            <span class="font-bold text-green-700">{{ salary.base_amount|floatformat:0 }} تومان</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">مجموع پرداخت‌ها:</span>
+            <span class="font-bold text-blue-700">{{ total_paid|floatformat:0 }} تومان</span>
+        </div>
+
+    </div>
+
+    <!-- فیلتر سال تحصیلی -->
+    <form method="get" class="mb-6 max-w-xs">
+        <label class="block mb-1 font-bold">فیلتر سال تحصیلی</label>
+        <select name="year" class="border p-2 rounded w-full">
+            <option value="">همه</option>
+            {% for y in years %}
+            <option value="{{ y.id }}"
+                {% if selected_year.id == y.id %}
+                    selected
+                {% endif %}
+            >
+                {{ y.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+
+        <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded">
+            اعمال فیلتر
+        </button>
+    </form>
+
+    <!-- جدول پرداخت‌ها -->
+    <h2 class="text-lg font-bold mb-3">پرداخت‌های انجام‌شده</h2>
+
+    <table class="w-full text-sm border mb-6">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">مبلغ</th>
+                <th class="p-2 border">تاریخ پرداخت</th>
+                <th class="p-2 border">توضیحات</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for p in payments %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border font-bold">{{ p.amount|floatformat:0 }}</td>
+                <td class="p-2 border">{{ p.payment_date|date:"Y/m/d H:i" }}</td>
+                <td class="p-2 border">{{ p.description|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="p-4 text-center text-gray-500">
+                    هیچ پرداختی ثبت نشده است.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- دکمه بازگشت -->
+    <a href="{% url 'finance:salary_list' %}"
+       class="px-4 py-2 bg-gray-700 text-white rounded">
+        بازگشت به لیست حقوق‌ها
+    </a>
+
+</div>
+{% endblock %}

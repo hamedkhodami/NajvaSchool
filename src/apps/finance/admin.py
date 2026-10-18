@@ -5,7 +5,6 @@ from apps.finance.models import (
     SalaryPaymentModel,
     SchoolExpenseModel,
     StaffSalaryModel,
-    TuitionInstallmentModel,
     TuitionModel,
 )
 
@@ -18,18 +17,13 @@ class TuitionAdmin(admin.ModelAdmin):
         "academic_year",
         "amount",
         "discount",
+        "final_amount",  # 🔥 property
         "status",
     )
 
-    list_display_links = (
-        "id",
-        "student",
-    )
+    list_display_links = ("id", "student")
 
-    list_filter = (
-        "status",
-        "academic_year",
-    )
+    list_filter = ("status", "academic_year")
 
     search_fields = (
         "student__user__first_name",
@@ -37,49 +31,8 @@ class TuitionAdmin(admin.ModelAdmin):
         "student__national_id",
     )
 
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-    )
-
+    readonly_fields = ("created_at", "updated_at")
     ordering = ("-created_at",)
-
-
-@admin.register(TuitionInstallmentModel)
-class TuitionInstallmentAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "tuition",
-        "installment_number",
-        "amount",
-        "due_date",
-    )
-
-    list_display_links = (
-        "id",
-        "tuition",
-    )
-
-    list_filter = (
-        "due_date",
-        "tuition__status",
-    )
-
-    search_fields = (
-        "tuition__student__user__first_name",
-        "tuition__student__user__last_name",
-        "tuition__student__national_id",
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-    )
-
-    ordering = (
-        "tuition",
-        "installment_number",
-    )
 
 
 @admin.register(PaymentRecordModel)
@@ -88,12 +41,8 @@ class PaymentRecordAdmin(admin.ModelAdmin):
         "id",
         "student",
         "tuition",
-        "installment",
         "amount",
         "payment_method",
-        "status",
-        "payment_date",
-        "tracking_code",
     )
 
     list_display_links = (
@@ -101,17 +50,12 @@ class PaymentRecordAdmin(admin.ModelAdmin):
         "student",
     )
 
-    list_filter = (
-        "status",
-        "payment_method",
-        "payment_date",
-    )
+    list_filter = ("payment_method",)
 
     search_fields = (
         "student__user__first_name",
         "student__user__last_name",
         "student__national_id",
-        "tracking_code",
     )
 
     readonly_fields = (
@@ -119,9 +63,9 @@ class PaymentRecordAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    date_hierarchy = "payment_date"
+    date_hierarchy = "created_at"
 
-    ordering = ("-payment_date",)
+    ordering = ("-created_at",)
 
 
 @admin.register(StaffSalaryModel)
@@ -130,13 +74,7 @@ class StaffSalaryAdmin(admin.ModelAdmin):
         "id",
         "teacher",
         "academic_year",
-        "year",
-        "month",
         "base_amount",
-        "bonus_amount",
-        "deduction_amount",
-        "final_amount",
-        "status",
     )
 
     list_display_links = (
@@ -144,12 +82,7 @@ class StaffSalaryAdmin(admin.ModelAdmin):
         "teacher",
     )
 
-    list_filter = (
-        "status",
-        "academic_year",
-        "year",
-        "month",
-    )
+    list_filter = ("academic_year",)
 
     search_fields = (
         "teacher__user__first_name",
@@ -162,10 +95,7 @@ class StaffSalaryAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    ordering = (
-        "-year",
-        "-month",
-    )
+    ordering = ("created_at",)
 
 
 @admin.register(SalaryPaymentModel)
@@ -175,8 +105,6 @@ class SalaryPaymentAdmin(admin.ModelAdmin):
         "salary",
         "amount",
         "payment_date",
-        "payment_method",
-        "tracking_code",
     )
 
     list_display_links = (
@@ -184,16 +112,12 @@ class SalaryPaymentAdmin(admin.ModelAdmin):
         "salary",
     )
 
-    list_filter = (
-        "payment_method",
-        "payment_date",
-    )
+    list_filter = ("payment_date",)
 
     search_fields = (
         "salary__teacher__user__first_name",
         "salary__teacher__user__last_name",
         "salary__teacher__national_id",
-        "tracking_code",
     )
 
     readonly_fields = (
@@ -208,36 +132,6 @@ class SalaryPaymentAdmin(admin.ModelAdmin):
 
 @admin.register(SchoolExpenseModel)
 class SchoolExpenseAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "title",
-        "category",
-        "amount",
-        "expense_date",
-        "receipt_number",
-    )
-
-    list_display_links = (
-        "id",
-        "title",
-    )
-
-    list_filter = (
-        "category",
-        "expense_date",
-    )
-
-    search_fields = (
-        "title",
-        "receipt_number",
-        "description",
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-    )
-
-    date_hierarchy = "expense_date"
-
-    ordering = ("-expense_date",)
+    list_display = ("title", "category", "amount", "academic_year")
+    list_filter = ("category", "academic_year")
+    search_fields = ("title", "description")

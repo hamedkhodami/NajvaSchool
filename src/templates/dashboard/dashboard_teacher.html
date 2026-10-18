@@ -36,6 +36,12 @@
         ثبت نمره روزانه
     </a>
 
+    <a href="{% url 'finance:teacher_salary_dashboard' %}"
+       class="px-4 py-2 bg-blue-600 text-white rounded">
+        لیست پرداختی‌های من
+    </a>
+
+
     {% if active_year %}
         <p class="text-sm mb-4">سال تحصیلی فعال: {{ active_year.name }}</p>
     {% endif %}

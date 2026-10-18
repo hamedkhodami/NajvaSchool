@@ -4,7 +4,6 @@ from django.db.models import TextChoices
 class PaymentMethodEnum(TextChoices):
     CASH = "cash", "نقدی"
     CARD_TO_CARD = "card_to_card", "کارت به کارت"
-    GATEWAY = "gateway", "درگاه پرداخت"
 
 
 class PaymentStatusEnum(TextChoices):
@@ -21,12 +20,6 @@ class TuitionStatusEnum(TextChoices):
     CANCELLED = "cancelled", "لغو شده"
 
 
-class SalaryStatusEnum(TextChoices):
-    PENDING = "pending", "در انتظار پرداخت"
-    PARTIAL = "partial", "پرداخت ناقص"
-    PAID = "paid", "پرداخت شده"
-
-
 class ExpenseCategoryEnum(TextChoices):
     SALARY = "salary", "حقوق"
     EQUIPMENT = "equipment", "تجهیزات"
@@ -36,17 +29,3 @@ class ExpenseCategoryEnum(TextChoices):
     OFFICE = "office", "اداری"
     TRANSPORTATION = "transportation", "حمل‌ونقل"
     OTHER = "other", "سایر"
-
-
-class IncomeCategoryEnum(TextChoices):
-    TUITION = "tuition", "شهریه"
-    DONATION = "donation", "کمک و مشارکت"
-    OTHER = "other", "سایر"
-
-
-class FinancialReportTypeEnum(TextChoices):
-    TUITION = "tuition", "شهریه"
-    SALARY = "salary", "حقوق"
-    EXPENSE = "expense", "هزینه"
-    INCOME = "income", "درآمد"
-    GENERAL = "general", "گزارش کلی"

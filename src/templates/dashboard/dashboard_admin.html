@@ -66,6 +66,26 @@
            class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
             لیست تشویقی‌ها
         </a>
+        <a href="{% url 'finance:tuition_create' %}"
+           class="block p-3 border rounded hover:bg-gray-50">
+            ثبت شهریه جدید
+        </a>
+
+        <a href="{% url 'finance:tuition_list' %}"
+           class="block p-3 border rounded hover:bg-gray-50">
+            لیست شهریه‌ها
+        </a>
+
+        <a href="{% url 'finance:salary_list' %}"
+           class="px-4 py-2 bg-indigo-600 text-white rounded">
+            لیست حقوق معلمان
+        </a>
+
+        <a href="{% url 'finance:expense_list' %}"
+           class="px-4 py-2 bg-indigo-600 text-white rounded">
+            لیست هزینه‌های مدرسه
+        </a>
+
 
 
 

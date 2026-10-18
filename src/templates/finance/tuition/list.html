@@ -1,0 +1,124 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}لیست شهریه‌ها{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow">
+
+    <h1 class="text-lg font-bold mb-4">لیست شهریه‌ها</h1>
+
+    <!-- فیلترها -->
+    <form method="get" class="grid grid-cols-4 gap-4 mb-6">
+
+        <!-- سال تحصیلی -->
+        <div>
+            <label class="block mb-1 font-bold">سال تحصیلی</label>
+            <select name="year" class="border p-2 rounded w-full">
+                <option value="">همه</option>
+                {% for y in years %}
+                <option value="{{ y.id }}" {% if request.GET.year == y.id|stringformat:"s" %}selected{% endif %}>
+                    {{ y.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- وضعیت -->
+        <div>
+            <label class="block mb-1 font-bold">وضعیت</label>
+            <select name="status" class="border p-2 rounded w-full">
+                <option value="">همه</option>
+
+                <option value="pending"
+                    {% if request.GET.status == "pending" %}selected{% endif %}>
+                    در انتظار
+                </option>
+
+                <option value="paid"
+                    {% if request.GET.status == "paid" %}selected{% endif %}>
+                    پرداخت‌شده
+                </option>
+
+                <option value="failed"
+                    {% if request.GET.status == "failed" %}selected{% endif %}>
+                    ناموفق
+                </option>
+
+                <option value="cancelled"
+                    {% if request.GET.status == "cancelled" %}selected{% endif %}>
+                    لغو شده
+                </option>
+            </select>
+        </div>
+
+        <!-- جستجو -->
+        <div>
+            <label class="block mb-1 font-bold">جستجو</label>
+            <input type="text" name="search" value="{{ request.GET.search }}"
+                   placeholder="نام، نام خانوادگی، شماره ملی، شماره تماس"
+                   class="border p-2 rounded w-full">
+        </div>
+
+        <div class="col-span-4">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded">
+                اعمال فیلتر
+            </button>
+        </div>
+
+    </form>
+
+    <!-- جدول -->
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">دانش‌آموز</th>
+                <th class="p-2 border">سال تحصیلی</th>
+                <th class="p-2 border">مبلغ</th>
+                <th class="p-2 border">تخفیف</th>
+                <th class="p-2 border">مبلغ نهایی</th>
+                <th class="p-2 border text-blue-700">باقی‌مانده</th>
+                <th class="p-2 border">وضعیت</th>
+                <th class="p-2 border">عملیات</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for t in tuitions %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ t.student.user.full_name }}</td>
+                <td class="p-2 border">{{ t.academic_year.name }}</td>
+                <td class="p-2 border">{{ t.amount|floatformat:0 }}</td>
+                <td class="p-2 border">{{ t.discount|floatformat:0 }}</td>
+                <td class="p-2 border font-bold">{{ t.final_amount|floatformat:0 }}</td>
+
+                <!-- باقی‌مانده -->
+                <td class="p-2 border font-bold text-blue-700">
+                    {{ t.remaining_amount|floatformat:0 }}
+                </td>
+
+                <td class="p-2 border">{{ t.get_status_display }}</td>
+
+                <td class="p-2 border flex gap-2">
+                    <a href="{% url 'finance:tuition_detail' t.id %}"
+                       class="px-3 py-1 bg-gray-700 text-white rounded">
+                        جزئیات
+                    </a>
+
+                    <a href="{% url 'finance:tuition_payment_create' t.id %}"
+                       class="px-3 py-1 bg-green-600 text-white rounded">
+                        پرداخت
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="p-4 text-center text-gray-500">
+                    هیچ شهریه‌ای یافت نشد.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}ایجاد هزینه جدید{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow max-w-xl mx-auto">
+
+    <h1 class="text-lg font-bold mb-4">ایجاد هزینه جدید</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">سال تحصیلی</label>
+            {{ form.academic_year }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">عنوان هزینه</label>
+            {{ form.title }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">دسته‌بندی</label>
+            {{ form.category }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">مبلغ</label>
+            {{ form.amount }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">توضیحات</label>
+            {{ form.description }}
+        </div>
+
+        <button class="bg-green-600 text-white px-4 py-2 rounded">
+            ثبت هزینه
+        </button>
+
+        <a href="{% url 'finance:expense_list' %}"
+           class="px-4 py-2 bg-gray-700 text-white rounded ml-2">
+            بازگشت
+        </a>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}پرداخت حقوق معلم{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow max-w-xl mx-auto">
+
+    <h1 class="text-lg font-bold mb-4">
+        پرداخت حقوق برای {{ salary.teacher.user.full_name }}
+    </h1>
+
+    <div class="mb-4 p-4 bg-gray-100 rounded">
+        <p><span class="font-bold">سال تحصیلی:</span> {{ salary.academic_year.name }}</p>
+        <p><span class="font-bold">حقوق حکم:</span> {{ salary.base_amount|floatformat:0 }} تومان</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">مبلغ پرداخت</label>
+            {{ form.amount }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1 font-bold">توضیحات</label>
+            {{ form.description }}
+        </div>
+
+        <button class="bg-green-600 text-white px-4 py-2 rounded">
+            ثبت پرداخت
+        </button>
+
+        <a href="{% url 'finance:salary_list' %}"
+           class="px-4 py-2 bg-gray-700 text-white rounded ml-2">
+            بازگشت
+        </a>
+    </form>
+
+</div>
+{% endblock %}

@@ -19,16 +19,14 @@
 
 <body class="min-h-screen flex flex-col bg-public-bg text-ink-800 font-sans">
 
-    {% if messages %}
-        <div class="w-full max-w-2xl mx-auto mt-4 px-4">
-            {% for message in messages %}
-                <div class="dashboard-message mb-3 p-3 rounded-xl shadow-card
-                    {% if message.tags == 'success' %} bg-up text-white {% endif %}
-                    {% if message.tags == 'error' %} bg-down text-white {% endif %}
-                    {% if message.tags == 'warning' %} bg-brass-100 text-brass-700 {% endif %}
-                ">
-                    {{ message }}
-                </div>
+    {% if form.errors %}
+        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p>{{ field.label }}: {{ error }}</p>
+                {% endfor %}
             {% endfor %}
         </div>
     {% endif %}

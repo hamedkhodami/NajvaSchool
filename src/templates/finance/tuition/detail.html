@@ -1,0 +1,97 @@
+{% extends "base/base_dashboard.html" %}
+
+{% block title %}جزئیات شهریه{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow max-w-3xl mx-auto">
+
+    <h1 class="text-xl font-bold mb-6">
+        جزئیات شهریه – {{ tuition.student.user.full_name }}
+    </h1>
+
+    <!-- اطلاعات کلی شهریه -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">سال تحصیلی:</span>
+            <span class="font-bold">{{ tuition.academic_year.name }}</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">مبلغ شهریه:</span>
+            <span class="font-bold">{{ tuition.amount|floatformat:0 }} تومان</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">تخفیف:</span>
+            <span class="font-bold text-red-600">{{ tuition.discount|floatformat:0 }} تومان</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">مبلغ نهایی:</span>
+            <span class="font-bold text-green-600">{{ tuition.final_amount|floatformat:0 }} تومان</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">مبلغ پرداخت‌شده:</span>
+            <span class="font-bold text-blue-600">{{ tuition.paid_amount|floatformat:0 }} تومان</span>
+        </div>
+
+        <div class="p-4 border rounded">
+            <span class="text-gray-600">باقی‌مانده:</span>
+            <span class="font-bold text-orange-600">{{ tuition.remaining_amount|floatformat:0 }} تومان</span>
+        </div>
+
+        <div class="p-4 border rounded col-span-2">
+            <span class="text-gray-600">وضعیت:</span>
+            <span class="font-bold">{{ tuition.get_status_display }}</span>
+        </div>
+
+    </div>
+
+    <!-- لیست پرداخت‌ها -->
+    <h2 class="text-lg font-bold mb-3">پرداخت‌ها</h2>
+
+    <table class="w-full text-sm border mb-6">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">مبلغ</th>
+                <th class="p-2 border">روش پرداخت</th>
+                <th class="p-2 border">تاریخ</th>
+                <th class="p-2 border">توضیحات</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for p in payments %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-2 border">{{ p.amount|floatformat:0 }}</td>
+                <td class="p-2 border">{{ p.get_payment_method_display }}</td>
+                <td class="p-2 border">{{ p.created_at|date:"Y/m/d H:i" }}</td>
+                <td class="p-2 border">{{ p.description|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">
+                    هیچ پرداختی ثبت نشده است.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- دکمه‌ها -->
+    <div class="flex gap-3">
+        <a href="{% url 'finance:tuition_payment_create' tuition.id %}"
+           class="px-4 py-2 bg-green-600 text-white rounded">
+            ثبت پرداخت جدید
+        </a>
+
+        <a href="{% url 'finance:tuition_list' %}"
+           class="px-4 py-2 bg-gray-700 text-white rounded">
+            بازگشت به لیست شهریه‌ها
+        </a>
+    </div>
+
+</div>
+{% endblock %}

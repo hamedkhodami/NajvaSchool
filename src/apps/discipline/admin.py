@@ -15,7 +15,6 @@ class StudentDevelopmentRecordAdmin(admin.ModelAdmin):
         "title",
         "recorder",
         "classroom",
-        "date",
         "created_at",
     )
 
@@ -30,7 +29,6 @@ class StudentDevelopmentRecordAdmin(admin.ModelAdmin):
         "effect",
         "level",
         "educational_type",
-        "date",
         "classroom",
     )
 
@@ -48,12 +46,7 @@ class StudentDevelopmentRecordAdmin(admin.ModelAdmin):
         "classroom",
     )
 
-    date_hierarchy = "date"
-
-    ordering = (
-        "-date",
-        "-created_at",
-    )
+    ordering = ("-created_at",)
 
     readonly_fields = (
         "created_at",

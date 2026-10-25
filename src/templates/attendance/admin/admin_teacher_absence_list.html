@@ -1,22 +1,33 @@
 {% extends "base/base_dashboard.html" %}
 {% load jalali %}
+{% load static %}
 
 {% block title %}لیست غیبت معلمان{% endblock %}
+{% block dashboard_role %}مدیریت غیبت معلمان{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-8">
 
-    <h1 class="text-xl font-bold mb-6">لیست غیبت معلمان</h1>
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-danger"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            لیست غیبت معلمان
+        </h1>
+    </div>
 
-    <!-- فیلترها -->
-    <form method="get" class="bg-white p-4 rounded-lg shadow mb-6 space-y-4">
+    <!-- فرم فیلتر -->
+    <form method="get"
+          class="rounded-2xl bg-white p-6 shadow-card space-y-6">
 
         <!-- جستجو -->
         <div>
-            <label class="text-sm font-bold">جستجو (نام / شماره موبایل):</label>
-            <input type="text" name="q" value="{{ q }}"
-                   class="w-full border rounded-lg p-2 text-sm"
-                   placeholder="مثلاً خدامی یا 0912...">
+            <label class="text-sm font-bold text-ink-600">جستجو (نام / شماره موبایل):</label>
+            <input type="text"
+                   name="q"
+                   value="{{ q }}"
+                   placeholder="مثلاً خدامی یا 0912..."
+                   class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-danger focus:ring-2 focus:ring-danger">
         </div>
 
         <!-- فیلتر ماه و روز -->
@@ -24,9 +35,10 @@
 
             <!-- ماه -->
             <div>
-                <label class="text-sm font-bold">ماه:</label>
-                <select id="month-select" name="month"
-                        class="w-full border rounded-lg p-2 text-sm">
+                <label class="text-sm font-bold text-ink-600">ماه:</label>
+                <select id="month-select"
+                        name="month"
+                        class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-danger focus:ring-2 focus:ring-danger">
                     <option value="">انتخاب کنید</option>
                     {% for m in months %}
                         <option value="{{ m }}" {% if month == m|stringformat:"s" %}selected{% endif %}>
@@ -38,9 +50,10 @@
 
             <!-- روز -->
             <div>
-                <label class="text-sm font-bold">روز:</label>
-                <select id="day-select" name="day"
-                        class="w-full border rounded-lg p-2 text-sm">
+                <label class="text-sm font-bold text-ink-600">روز:</label>
+                <select id="day-select"
+                        name="day"
+                        class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-danger focus:ring-2 focus:ring-danger">
                     <option value="">انتخاب کنید</option>
 
                     {% if days_list %}
@@ -56,19 +69,19 @@
         </div>
 
         <!-- دکمه‌ها -->
-        <div class="flex items-center space-x-2">
+        <div class="flex flex-wrap gap-3">
 
-            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">
+            <button class="rounded-xl bg-danger px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-danger-hover">
                 اعمال فیلتر
             </button>
 
             <a href="?today=1"
-               class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
+               class="rounded-xl bg-success px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-success-hover">
                 امروز
             </a>
 
             <a href="{% url 'attendance:admin_teacher_absence_list' %}"
-               class="px-4 py-2 bg-gray-500 text-white rounded-lg text-sm">
+               class="rounded-xl bg-ink-400 px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-ink-500">
                 حذف فیلترها
             </a>
 
@@ -76,49 +89,78 @@
 
     </form>
 
-    <!-- لیست غیبت‌ها -->
-    <div class="bg-white p-4 rounded-lg shadow">
+    <!-- دکمه ثبت غیبت -->
+    <a href="{% url 'attendance:admin_teacher_absence_create' %}"
+       class="inline-flex items-center gap-2 rounded-xl bg-danger px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-danger-hover">
+        ثبت غیبت جدید
+        <span aria-hidden="true">←</span>
+    </a>
 
-        <a href="{% url 'attendance:admin_teacher_absence_create' %}"
-           class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm mb-4 inline-block">
-            ثبت غیبت جدید
-        </a>
-
-        <table class="w-full text-sm border">
-            <thead class="bg-gray-100">
+    <!-- جدول دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-2xl bg-white shadow-card">
+        <table class="w-full text-sm">
+            <thead class="bg-surface-muted text-ink-600">
                 <tr>
-                    <th class="p-2 border">نام معلم</th>
-                    <th class="p-2 border">شماره تماس</th>
-                    <th class="p-2 border">تخصص</th>
-                    <th class="p-2 border">تاریخ</th>
+                    <th class="p-4 text-right font-bold">نام معلم</th>
+                    <th class="p-4 text-right font-bold">شماره تماس</th>
+                    <th class="p-4 text-right font-bold">تخصص</th>
+                    <th class="p-4 text-right font-bold">تاریخ</th>
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody class="divide-y divide-surface-border">
                 {% for a in absences %}
-                <tr class="hover:bg-gray-50">
+                    <tr class="hover:bg-surface-muted/50 transition">
 
-                    <td class="p-2 border">{{ a.teacher.user.full_name }}</td>
-                    <td class="p-2 border">{{ a.teacher.user.phone_number }}</td>
-                    <td class="p-2 border">{{ a.teacher.specialization }}</td>
-                    <td class="p-2 border">{{ a.created_at|jalali }}</td>
+                        <td class="p-4 font-bold text-brand">{{ a.teacher.user.full_name }}</td>
+                        <td class="p-4 text-ink-600">{{ a.teacher.user.phone_number }}</td>
+                        <td class="p-4 text-ink-600">{{ a.teacher.specialization }}</td>
+                        <td class="p-4 text-ink-600">{{ a.created_at|jalali:"%Y/%m/%d" }}</td>
 
-                </tr>
+                    </tr>
                 {% empty %}
-                <tr>
-                    <td colspan="4" class="p-4 text-center text-gray-500">
-                        هیچ غیبتی یافت نشد.
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="4" class="p-6 text-center text-ink-400">
+                            هیچ غیبتی یافت نشد.
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
-
         </table>
+    </div>
 
+    <!-- کارت موبایل -->
+    <div class="md:hidden space-y-4">
+        {% for a in absences %}
+            <div class="rounded-2xl bg-white p-4 shadow-card space-y-3">
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">نام معلم</span>
+                    <span class="text-brand font-extrabold">{{ a.teacher.user.full_name }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">شماره تماس</span>
+                    <span class="text-ink-600">{{ a.teacher.user.phone_number }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">تخصص</span>
+                    <span class="text-ink-600">{{ a.teacher.specialization }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">تاریخ</span>
+                    <span class="text-ink-600">{{ a.created_at|jalali:"%Y/%m/%d" }}</span>
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-center text-ink-400">هیچ غیبتی یافت نشد.</p>
+        {% endfor %}
     </div>
 
 </div>
-
 {% endblock %}
 
 {% block extra_script %}
@@ -128,7 +170,6 @@
 
     monthSelect.addEventListener("change", function () {
         const month = parseInt(this.value);
-
         daySelect.innerHTML = '<option value="">انتخاب کنید</option>';
 
         if (!month) return;

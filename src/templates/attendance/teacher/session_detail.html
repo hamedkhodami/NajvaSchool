@@ -2,101 +2,167 @@
 {% load jalali get_item %}
 
 {% block title %}حضور و غیاب جلسه{% endblock %}
+{% block dashboard_role %}ثبت حضور و غیاب{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-10 py-6">
 
-    <h1 class="text-xl font-bold mb-6">
-        {{ schedule.classroom.name }} — {{ schedule.subject.name }}
-        ({{ schedule.get_weekday_display }} — زنگ {{ schedule.session_number }})
-    </h1>
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-[#101F33]"></span>
+        <div>
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                {{ schedule.classroom.get_grade_display }} {{ schedule.classroom.name }}
+                — {{ schedule.subject.name }}
+            </h1>
+            <p class="mt-1 text-sm text-ink-500">
+                {{ schedule.get_weekday_display }} — زنگ {{ schedule.session_number }}
+            </p>
+        </div>
+    </div>
 
-    <!-- تاریخ جلسه -->
-    <div class="mb-6 bg-white p-4 rounded-lg shadow">
-        <form method="get">
-            <label class="text-sm font-bold">تاریخ جلسه (شمسی):</label>
+    <!-- انتخاب تاریخ -->
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        <h2 class="font-extrabold text-brand mb-4">تاریخ جلسه</h2>
+
+        <form method="get" class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <input type="text" name="date" value="{{ date_jalali }}"
-                   class="border rounded-lg p-2 text-sm w-40"
+                   class="border border-surface-border rounded-xl p-3 text-sm w-full sm:w-48"
                    placeholder="1405-07-10">
 
-            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">
+            <button
+                class="rounded-xl bg-[#2563A6] px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-[#1E4F82] transition">
                 برو به تاریخ
             </button>
         </form>
-    </div>
+    </section>
 
     <!-- فرم حضور و غیاب -->
-    <form method="post" class="bg-white p-4 rounded-lg shadow mb-6">
-        {% csrf_token %}
-        <input type="hidden" name="date" value="{{ date_jalali }}">
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        <h2 class="font-extrabold text-brand mb-4">لیست دانش‌آموزان</h2>
 
-        <h2 class="text-lg font-bold mb-4">لیست دانش‌آموزان</h2>
+        <form id="attendanceForm" method="post" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ date_jalali }}">
 
-        <table class="w-full text-sm border mb-6">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2 border">نام دانش‌آموز</th>
-                    <th class="p-2 border">وضعیت</th>
-                </tr>
-            </thead>
+            <!-- جدول دسکتاپ -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full min-w-[600px] text-sm">
+                    <thead class="bg-surface-muted text-ink-600">
+                        <tr>
+                            <th class="p-4 text-right font-bold">نام دانش‌آموز</th>
+                            <th class="p-4 text-right font-bold">وضعیت</th>
+                        </tr>
+                    </thead>
 
-            <tbody>
+                    <tbody class="divide-y divide-surface-border">
+                        {% for st in students %}
+                            {% with rec=attendance_map|get_item:st.id %}
+                            <tr class="hover:bg-surface-muted/40 transition">
+
+                                <td class="p-4 font-semibold text-ink-700">
+                                    {{ st.user.full_name }}
+                                </td>
+
+                                <td class="p-4">
+                                    <select name="attendance_{{ st.id }}"
+                                            class="border border-surface-border rounded-xl p-2 text-sm w-40">
+                                        <option value="present"
+                                            {% if rec and rec.status == "present" %}selected{% endif %}>
+                                            حاضر
+                                        </option>
+                                        <option value="absent"
+                                            {% if rec and rec.status == "absent" %}selected{% endif %}>
+                                            غایب
+                                        </option>
+                                    </select>
+                                </td>
+
+                            </tr>
+                            {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- موبایل -->
+            <div class="md:hidden space-y-4">
                 {% for st in students %}
-                <tr class="hover:bg-gray-50">
+                    {% with rec=attendance_map|get_item:st.id %}
+                    <article class="rounded-2xl border border-surface-border bg-white p-4">
+                        <h3 class="font-extrabold text-brand">{{ st.user.full_name }}</h3>
 
-                    <td class="p-2 border">{{ st.user.full_name }}</td>
-
-                    <td class="p-2 border">
-                        <input type="hidden" name="student_id" value="{{ st.id }}">
-
-                        {% with rec=attendance_map|get_item:st.id %}
-                            <select name="attendance_{{ st.id }}"
-                                    class="border rounded-lg p-2 text-sm">
-                                <option value="present"
-                                    {% if rec and rec.status == "present" %}selected{% endif %}>
-                                    حاضر
-                                </option>
-                                <option value="absent"
-                                    {% if rec and rec.status == "absent" %}selected{% endif %}>
-                                    غایب
-                                </option>
-                            </select>
-                        {% endwith %}
-                    </td>
-
-                </tr>
+                        <select name="attendance_{{ st.id }}"
+                                class="mt-3 border border-surface-border rounded-xl p-2 text-sm w-full">
+                            <option value="present"
+                                {% if rec and rec.status == "present" %}selected{% endif %}>
+                                حاضر
+                            </option>
+                            <option value="absent"
+                                {% if rec and rec.status == "absent" %}selected{% endif %}>
+                                غایب
+                            </option>
+                        </select>
+                    </article>
+                    {% endwith %}
                 {% endfor %}
-            </tbody>
-        </table>
+            </div>
 
-        <!-- یادداشت -->
-        <h2 class="text-lg font-bold mb-2">یادداشت جلسه</h2>
+            <!-- یادداشت -->
+            <div>
+                <h2 class="font-extrabold text-brand mb-2">یادداشت جلسه</h2>
 
-        <textarea name="note"
-                  class="w-full border rounded-lg p-3 text-sm"
-                  rows="4"
-                  placeholder="یادداشت جدید برای جلسه بعد..."></textarea>
+                <textarea name="note"
+                          class="w-full border border-surface-border rounded-xl p-3 text-sm"
+                          rows="4"
+                          placeholder="یادداشت جدید برای جلسه..."></textarea>
+            </div>
 
-        <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
-            ثبت حضور و غیاب + یادداشت
-        </button>
-    </form>
+            <button
+                class="rounded-xl bg-[#101F33] px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-[#17293F] transition">
+                ثبت حضور و غیاب + یادداشت
+            </button>
+        </form>
+    </section>
 
     <!-- یادداشت‌های قبلی -->
     {% if notes %}
-    <div class="bg-white p-4 rounded-lg shadow">
-        <h2 class="text-lg font-bold mb-4">یادداشت‌های قبلی</h2>
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        <h2 class="font-extrabold text-brand mb-4">یادداشت‌های قبلی</h2>
 
-        {% for n in notes %}
-        <div class="border-b py-2">
-            <div class="text-sm text-gray-700">{{ n.content }}</div>
-            <div class="text-xs text-gray-500 mt-1">
-                ثبت شده در {{ n.created_at|jalali }}
-            </div>
+        <div class="space-y-4">
+            {% for n in notes %}
+                <div class="rounded-xl border-b pb-3">
+                    <p class="text-sm text-ink-700">{{ n.content }}</p>
+                    <p class="mt-1 text-xs text-ink-500">
+                        ثبت شده در {{ n.created_at|jalali }}
+                    </p>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+    </section>
     {% endif %}
 
 </div>
+
+<!-- JS: جلوگیری از ثبت ناقص -->
+<script>
+document.getElementById("attendanceForm").addEventListener("submit", function (e) {
+    const selects = document.querySelectorAll("select[name^='attendance_']");
+    let valid = true;
+
+    selects.forEach(sel => {
+        if (!sel.value) {
+            valid = false;
+            sel.classList.add("border-red-500");
+        }
+    });
+
+    if (!valid) {
+        e.preventDefault();
+        alert("لطفاً وضعیت همه دانش‌آموزان را انتخاب کنید.");
+    }
+});
+</script>
+
 {% endblock %}

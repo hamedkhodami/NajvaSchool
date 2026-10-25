@@ -1,28 +1,49 @@
+
 {% extends "base/base_dashboard.html" %}
 
 {% block title %}حذف درس{% endblock %}
 
 {% block content %}
+<div class="mx-auto max-w-xl">
+    <div class="overflow-hidden rounded-2xl border border-danger/20 bg-white shadow-card">
 
-<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+        <div class="border-b border-danger/10 bg-danger-soft px-6 py-5">
+            <div class="flex items-center gap-3">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-xl font-bold text-danger">
+                    !
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-danger">حذف درس</h1>
+                    <p class="mt-1 text-sm text-ink-600">تأیید حذف از فهرست دروس</p>
+                </div>
+            </div>
+        </div>
 
-    <h1 class="text-lg font-bold mb-4 text-red-600">حذف درس</h1>
+        <div class="space-y-5 p-6">
+            <p class="leading-7 text-ink-700">
+                آیا مطمئن هستید که می‌خواهید درس
+                <strong class="text-brand">{{ subject.name }}</strong>
+                را حذف کنید؟
+            </p>
 
-    <p class="text-sm mb-4">
-        آیا مطمئن هستید که می‌خواهید درس
-        <span class="font-bold">{{ subject.name }}</span>
-        را حذف کنید؟
-    </p>
+            <div class="rounded-xl border border-surface-border bg-surface-muted p-4">
+                <p class="text-sm text-ink-400">نام درس</p>
+                <p class="mt-1 font-bold text-brand">{{ subject.name }}</p>
+            </div>
 
-    <form method="post">
-        {% csrf_token %}
+            <form method="post" class="flex flex-col-reverse gap-3 sm:flex-row">
+                {% csrf_token %}
+                <a href="{% url 'academic:subject_list' %}"
+                   class="flex-1 rounded-xl border border-surface-border px-4 py-3 text-center text-sm font-semibold text-ink-600 transition hover:bg-surface-muted">
+                    انصراف
+                </a>
+                <button type="submit"
+                        class="flex-1 rounded-xl bg-danger px-4 py-3 text-sm font-semibold text-white transition hover:bg-danger/90 focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2">
+                    بله، حذف شود
+                </button>
+            </form>
+        </div>
 
-        <button type="submit"
-                class="w-full bg-red-600 text-white py-2 rounded-lg text-sm">
-            حذف درس
-        </button>
-    </form>
-
+    </div>
 </div>
-
 {% endblock %}

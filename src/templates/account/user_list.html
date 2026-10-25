@@ -1,68 +1,222 @@
 {% extends "base/base_dashboard.html" %}
+{% load static %}
+
 {% block title %}لیست کاربران{% endblock %}
+{% block dashboard_role %}مدیریت کاربران سامانه{% endblock %}
 
 {% block content %}
-<section class="container max-w-screen py-10">
+<div class="space-y-8">
 
-    <h2 class="text-xl font-bold mb-6">لیست کاربران</h2>
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-info"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            لیست کاربران سامانه
+        </h1>
+    </div>
 
-    <!-- Search & Filter -->
-    <form method="get" class="mb-6 flex flex-col md:flex-row gap-4">
+    <!-- فرم جستجو و فیلتر -->
+    <form method="get"
+          class="rounded-2xl bg-white p-6 shadow-card space-y-4 sm:space-y-0 sm:flex sm:items-center sm:gap-4">
 
-        <input type="text"
-               name="search"
-               value="{{ search_value }}"
-               placeholder="جستجو بر اساس نام، نام خانوادگی یا شماره تماس"
-               class="w-full md:w-1/2 p-2 border rounded-lg">
+        <div class="flex-1">
+            <input type="text"
+                   name="search"
+                   value="{{ search_value }}"
+                   placeholder="جستجو بر اساس نام، نام خانوادگی یا شماره تماس"
+                   class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-info focus:ring-2 focus:ring-info">
+        </div>
 
-        <select name="role"
-                class="w-full md:w-1/4 p-2 border rounded-lg">
-            <option value="">همه نقش‌ها</option>
+        <div class="w-full sm:w-48">
+            <select name="role"
+                    class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-info focus:ring-2 focus:ring-info">
+                <option value="">همه نقش‌ها</option>
+                {% for value, label in roles %}
+                    <option value="{{ value }}"
+                            {% if selected_role == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-            {% for value, label in roles %}
-                <option value="{{ value }}"
-                        {% if selected_role == value %}selected{% endif %}>
-                    {{ label }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+        <button class="rounded-xl bg-info px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-info-hover">
             جستجو
         </button>
     </form>
 
-    <!-- Users Table -->
-    <table class="w-full bg-white shadow rounded overflow-hidden">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-3 text-right">نام</th>
-                <th class="p-3 text-right">نقش</th>
-                <th class="p-3 text-right">شماره تماس</th>
-            </tr>
-        </thead>
+    <!-- جدول دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-2xl bg-white shadow-card">
+        <table class="w-full text-sm">
+            <thead class="bg-surface-muted text-ink-600">
+                <tr>
+                    <th class="p-4 text-right font-bold">نام</th>
+                    <th class="p-4 text-right font-bold">نقش</th>
+                    <th class="p-4 text-right font-bold">شماره تماس</th>
+                    <th class="p-4 text-right font-bold">جزئیات</th>
+                    <th class="p-4 text-right font-bold">دسترسی</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            {% for user in users %}
-            <tr class="border-b">
-                <td class="p-3">{{ user.full_name }}</td>
-                <td class="p-3">{{ user.get_role_display }}</td>
-                <td class="p-3">
+            <tbody class="divide-y divide-surface-border">
+                {% for user in users %}
+                    <tr class="hover:bg-surface-muted/50 transition">
+
+                        <td class="p-4 font-bold text-brand">{{ user.full_name }}</td>
+                        <td class="p-4 text-ink-600">{{ user.get_role_display }}</td>
+                        <td class="p-4 text-ink-600">{{ user.phone_number }}</td>
+
+                        <td class="p-4">
+                            <a href="{% url 'account:user_detail' user.id %}"
+                               class="inline-flex items-center gap-1 rounded-xl bg-brand px-3 py-1.5 text-xs font-bold text-white shadow-card transition hover:bg-brand-hover">
+                                مشاهده
+                                <span aria-hidden="true">←</span>
+                            </a>
+                        </td>
+
+                        <!-- دکمه دسترسی -->
+                        <td class="p-4">
+                            <button
+                                onclick="openAccessModal('{{ user.id }}', '{{ user.full_name }}', {{ user.is_active|yesno:'true,false' }})"
+                                class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-card transition
+                                       {% if user.is_active %}
+                                           bg-success text-white hover:bg-success-hover hover:shadow-lift
+                                       {% else %}
+                                           bg-danger text-white hover:bg-danger-hover hover:shadow-lift
+                                       {% endif %}">
+                                {% if user.is_active %}
+                                    🔓 فعال
+                                {% else %}
+                                    🔒 غیرفعال
+                                {% endif %}
+                            </button>
+                        </td>
+
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-6 text-center text-ink-400">
+                            هیچ کاربری یافت نشد.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- کارت موبایل -->
+    <div class="md:hidden space-y-4">
+        {% for user in users %}
+            <div class="rounded-2xl bg-white p-4 shadow-card space-y-3">
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">نام</span>
+                    <span class="font-extrabold text-brand">{{ user.full_name }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">نقش</span>
+                    <span class="text-ink-600">{{ user.get_role_display }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">شماره تماس</span>
+                    <span class="text-ink-600">{{ user.phone_number }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">جزئیات</span>
                     <a href="{% url 'account:user_detail' user.id %}"
-                       class="text-primary hover:underline">
-                        {{ user.phone_number }}
+                       class="inline-flex items-center gap-1 rounded-xl bg-brand px-3 py-1.5 text-xs font-bold text-white shadow-card transition hover:bg-brand-hover">
+                        مشاهده
+                        <span aria-hidden="true">←</span>
                     </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="p-4 text-center text-gray-500">
-                    کاربری یافت نشد.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </div>
 
-</section>
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">دسترسی</span>
+
+                    <button
+                        onclick="openAccessModal('{{ user.id }}', '{{ user.full_name }}', {{ user.is_active|yesno:'true,false' }})"
+                        class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-card transition
+                               {% if user.is_active %}
+                                   bg-success text-white hover:bg-success-hover hover:shadow-lift
+                               {% else %}
+                                   bg-danger text-white hover:bg-danger-hover hover:shadow-lift
+                               {% endif %}">
+                        {% if user.is_active %}
+                            🔓 فعال
+                        {% else %}
+                            🔒 غیرفعال
+                        {% endif %}
+                    </button>
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-center text-ink-400">هیچ کاربری یافت نشد.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- مودال تأیید -->
+<div id="accessModal"
+     class="fixed inset-0 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 z-50">
+
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-lift space-y-6">
+
+        <h3 class="text-lg font-extrabold text-brand">
+            تغییر وضعیت دسترسی کاربر
+        </h3>
+
+        <p id="accessModalText" class="text-sm text-ink-600 leading-7"></p>
+
+        <div class="rounded-xl bg-warning-soft p-4 text-sm text-warning leading-6">
+            توجه: با غیرفعال کردن دسترسی، کاربر دیگر نمی‌تواند وارد سامانه شود.
+            اگر کاربر هم‌اکنون وارد سیستم باشد، پس از تغییر وضعیت، دسترسی او قطع خواهد شد.
+        </div>
+
+        <form id="accessModalForm" method="post" class="flex justify-end gap-3">
+            {% csrf_token %}
+            <button type="button"
+                    onclick="closeAccessModal()"
+                    class="rounded-xl bg-surface-muted px-4 py-2 text-sm font-bold text-ink-600 hover:bg-surface-muted/70">
+                لغو
+            </button>
+
+            <button type="submit"
+                    class="rounded-xl bg-danger px-4 py-2 text-sm font-bold text-white shadow-card hover:bg-danger-hover hover:shadow-lift">
+                تأیید تغییر
+            </button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function openAccessModal(userId, fullName, isActive) {
+        const modal = document.getElementById("accessModal");
+        const text = document.getElementById("accessModalText");
+        const form = document.getElementById("accessModalForm");
+
+        text.innerHTML = isActive
+            ? `شما در حال <strong class="text-danger">غیرفعال کردن</strong> دسترسی کاربر <strong>${fullName}</strong> هستید.<br>پس از این عملیات، کاربر امکان ورود به سامانه را نخواهد داشت.`
+            : `شما در حال <strong class="text-success">فعال کردن</strong> دسترسی کاربر <strong>${fullName}</strong> هستید.<br>پس از این عملیات، کاربر می‌تواند وارد سامانه شود.`;
+
+        form.action = `/accounts/users/${userId}/toggle-access/`;
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
+
+    function closeAccessModal() {
+        const modal = document.getElementById("accessModal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+</script>
 {% endblock %}

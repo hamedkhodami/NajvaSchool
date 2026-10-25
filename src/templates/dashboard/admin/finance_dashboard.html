@@ -1,0 +1,97 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}امور مالی مدرسه{% endblock %}
+{% block dashboard_role %}بخش مدیریت مالی{% endblock %}
+
+{% block content %}
+<div class="space-y-10">
+
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-success"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            امور مالی مدرسه
+        </h1>
+    </div>
+
+    <!-- کارت تراز مالی -->
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        {% if has_finance_data %}
+            <p class="text-sm text-ink-600">تراز مالی مدرسه</p>
+            <p class="mt-2 text-xl font-extrabold text-brand">(در حال توسعه)</p>
+        {% else %}
+            <p class="text-sm text-ink-600">تراز مالی مدرسه</p>
+            <p class="mt-2 text-xl font-extrabold text-danger">بخش مالی خالی است</p>
+        {% endif %}
+    </section>
+
+    <!-- دکمه‌های عملیاتی -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- ثبت شهریه جدید -->
+        <a href="{% url 'finance:tuition_create' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-danger/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger-soft text-danger group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">ثبت شهریه جدید</span>
+                <span class="mt-2 block text-sm text-ink-500">تعریف شهریه برای سال تحصیلی</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-danger group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست شهریه‌ها -->
+        <a href="{% url 'finance:tuition_list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست شهریه‌ها</span>
+                <span class="mt-2 block text-sm text-ink-500">مشاهده و مدیریت شهریه‌ها</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-primary group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست حقوق معلمان -->
+        <a href="{% url 'finance:salary_list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-indigo-400 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-200 text-indigo-600 group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست حقوق معلمان</span>
+                <span class="mt-2 block text-sm text-ink-500">پرداخت‌ها و مدیریت حقوق</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-indigo-600 group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست هزینه‌های مدرسه -->
+        <a href="{% url 'finance:expense_list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-success/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-soft text-success group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18m-13 5h4"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست هزینه‌های مدرسه</span>
+                <span class="mt-2 block text-sm text-ink-500">مدیریت هزینه‌های مدرسه</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-success group-hover:-translate-x-1">←</span>
+        </a>
+
+    </section>
+
+</div>
+{% endblock %}

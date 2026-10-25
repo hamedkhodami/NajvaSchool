@@ -1,20 +1,58 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-{% block title %}ورود{% endblock %}
+{% block title %}ورود به سامانه{% endblock %}
 
 {% block content %}
-<div class="container max-w-md mx-auto py-10">
-    <h1 class="text-xl font-bold mb-6">ورود به مدرسه</h1>
+<section class="py-16">
+    <div class="container max-w-md mx-auto">
 
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <!-- عنوان صفحه -->
+        <h1 class="text-center text-2xl font-extrabold text-brand mb-8">
+            ورود به سامانه مدرسه نجوا
+        </h1>
 
-        <button type="submit"
-                class="w-full py-2 bg-primary text-white rounded-lg">
-            ورود
-        </button>
-    </form>
-</div>
+        <!-- کارت فرم -->
+        <div class="rounded-2xl bg-white shadow-card p-8">
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- فیلدها -->
+                <div class="space-y-4">
+                    {% for field in form %}
+                        <div>
+                            <label class="block mb-1 text-sm font-bold text-brand">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <p class="mt-1 text-sm text-danger">
+                                    {{ field.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- دکمه ورود -->
+                <button type="submit"
+                        class="w-full rounded-xl bg-brand px-5 py-3 text-white font-bold shadow-card transition hover:bg-brand-hover">
+                    ورود به سامانه
+                </button>
+
+                <!-- لینک ثبت‌نام یا فراموشی رمز -->
+                <div class="mt-4 text-center">
+                    <a href="#"
+                       class="text-sm font-bold text-accent hover:text-accent-hover transition">
+                        فراموشی رمز عبور
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</section>
 {% endblock %}

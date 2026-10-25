@@ -20,26 +20,59 @@ from apps.core.templatetags.jalali import (
 class TeacherAttendanceOverviewView(LoginRequiredMixin, View):
     template_name = "attendance/teacher/overview.html"
 
-    def get(self, request):
+    WEEKDAYS = [
+        ("saturday", "شنبه"),
+        ("sunday", "یکشنبه"),
+        ("monday", "دوشنبه"),
+        ("tuesday", "سه‌شنبه"),
+        ("wednesday", "چهارشنبه"),
+        ("thursday", "پنجشنبه"),
+        ("friday", "جمعه"),
+    ]
+
+    def get(self, request, *args, **kwargs):
         teacher = request.user.teacher
         active_year = get_active_year(request)
 
-        schedule_qs = (
+        schedules = list(
             ScheduleSessionModel.objects.filter(
-                teacher=teacher, classroom__academic_year=active_year
+                teacher=teacher,
+                classroom__academic_year=active_year,
             )
-            .select_related("classroom", "subject")
-            .order_by("classroom__name", "weekday", "session_number")
+            .select_related(
+                "classroom",
+                "classroom__academic_year",
+                "subject",
+            )
+            .order_by("session_number")
         )
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "schedules": schedule_qs,
-                "active_year": active_year,
-            },
-        )
+        schedule_days = []
+
+        for value, label in self.WEEKDAYS:
+            day_sessions = [
+                session for session in schedules if session.weekday == value
+            ]
+
+            schedule_days.append(
+                {
+                    "value": value,
+                    "label": label,
+                    "sessions": day_sessions,
+                    "session_count": len(day_sessions),
+                }
+            )
+
+        context = {
+            "schedules": schedules,
+            "schedule_days": schedule_days,
+            "active_year": active_year,
+            "total_sessions": len(schedules),
+            "has_sessions": bool(schedules),
+            "active_days_count": sum(1 for day in schedule_days if day["sessions"]),
+        }
+
+        return render(request, self.template_name, context)
 
 
 class TeacherAttendanceSessionView(LoginRequiredMixin, View):

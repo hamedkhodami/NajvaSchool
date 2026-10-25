@@ -8,7 +8,7 @@ class HomeView(View):
     def get(self, request):
         about = AboutUsModel.objects.order_by("-updated_at").first()
         contact = ContactInfoModel.objects.order_by("-updated_at").first()
-        news = NewsModel.objects.filter(is_published=True).order_by("-published_at")[:2]
+        news = NewsModel.objects.filter(is_published=True).order_by("-published_at")[:3]
 
         context = {
             "about": about,

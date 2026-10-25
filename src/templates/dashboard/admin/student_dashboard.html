@@ -1,0 +1,105 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}مدیریت دانش‌آموزان{% endblock %}
+{% block dashboard_role %}بخش مدیریت دانش‌آموزان{% endblock %}
+
+{% block content %}
+<div class="space-y-10">
+
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-primary"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            مدیریت دانش‌آموزان مدرسه
+        </h1>
+    </div>
+
+    <!-- کارت آمار -->
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-ink-600">تعداد کل دانش‌آموزان</p>
+                <p class="mt-2 text-3xl font-extrabold text-brand">{{ total_students }}</p>
+            </div>
+
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-soft text-primary shadow-card">
+                <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 3 2.5 8 12 13l9.5-5L12 3Z"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- دکمه‌های عملیاتی -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+        <!-- ساخت دانش‌آموز -->
+        <a href="{% url 'student:create_student' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">ساخت دانش‌آموز جدید</span>
+                <span class="mt-2 block text-sm text-ink-500">افزودن دانش‌آموز به سامانه</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-primary group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست دانش‌آموزان -->
+        <a href="{% url 'student:list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-info/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-info-soft text-info group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست دانش‌آموزان</span>
+                <span class="mt-2 block text-sm text-ink-500">مشاهده و مدیریت دانش‌آموزان</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-info group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست غیبت‌ها -->
+        <a href="{% url 'attendance:admin_absence_list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-red-600/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-600/10 text-red-600 group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست غیبت‌ها</span>
+                <span class="mt-2 block text-sm text-ink-500">بررسی وضعیت حضور و غیاب دانش‌آموزان</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-red-600 group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست تشویقی‌ها -->
+        <a href="{% url 'discipline:admin_reward_list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست تشویقی‌ها</span>
+                <span class="mt-2 block text-sm text-ink-500">مدیریت تشویق‌های دانش‌آموزان</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-primary group-hover:-translate-x-1">←</span>
+        </a>
+
+    </section>
+
+</div>
+{% endblock %}
+

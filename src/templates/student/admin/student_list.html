@@ -1,69 +1,142 @@
 {% extends "base/base_dashboard.html" %}
 {% block title %}لیست دانش‌آموزان{% endblock %}
+{% block dashboard_role %}لیست دانش‌آموزان{% endblock %}
 
 {% block content %}
-<section class="container max-w-screen py-10">
+<section class="max-w-5xl mx-auto py-10 space-y-8">
 
-    <h1 class="text-xl font-bold mb-6">لیست دانش‌آموزان</h1>
+    <!-- عنوان -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-info"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            لیست دانش‌آموزان
+        </h1>
+    </div>
 
-    <form method="get" class="mb-6 flex gap-3">
-        <input type="text"
-               name="search"
-               placeholder="جستجو بر اساس نام یا شماره موبایل"
-               class="flex-1 px-4 py-2 border rounded-lg"
-               value="{{ request.GET.search }}">
-        <button type="submit"
-                class="px-4 py-2 bg-primary text-white rounded-lg">
+    <!-- فرم جستجو -->
+    <form method="get"
+          class="rounded-2xl bg-white p-6 shadow-card space-y-4 sm:space-y-0 sm:flex sm:items-center sm:gap-4">
+
+        <div class="flex-1">
+            <input type="text"
+                   name="search"
+                   value="{{ request.GET.search }}"
+                   placeholder="جستجو بر اساس نام یا شماره موبایل"
+                   class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm
+                          focus:border-info focus:ring-2 focus:ring-info">
+        </div>
+
+        <button class="rounded-xl bg-info px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-info-hover">
             جستجو
         </button>
     </form>
 
-    <div class="bg-white p-6 rounded-xl shadow-card">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b">
-                    <th class="py-3 text-left">نام</th>
-                    <th class="py-3 text-left">شماره موبایل</th>
-                    <th class="py-3 text-left">کد ملی</th>
-                    <th class="py-3 text-left">جزییات</th>
+    <!-- جدول دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-2xl bg-white shadow-card border border-surface-border">
+        <table class="w-full table-auto text-sm whitespace-nowrap">
+            <thead class="bg-surface-muted text-ink-600">
+                <tr>
+                    <th class="p-4 text-right font-bold min-w-[180px]">نام</th>
+                    <th class="p-4 text-right font-bold min-w-[150px]">شماره موبایل</th>
+                    <th class="p-4 text-right font-bold min-w-[140px]">کد ملی</th>
+                    <th class="p-4 text-right font-bold min-w-[100px]">جزئیات</th>
+                    <th class="p-4 text-right font-bold min-w-[120px]">ارسال اعلان</th>
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody class="divide-y divide-surface-border">
                 {% for student in students %}
-                    <tr class="border-b">
-                        <td class="py-3">
-                            <a href="{% url 'student:detail' student.pk %}"
-                               class="text-primary font-semibold">
-                                {{ student.user.full_name }}
-                            </a>
-                        </td>
+                <tr class="hover:bg-surface-muted/50 transition">
 
-                        <td class="py-3">
-                            <a href="{% url 'student:detail' student.pk %}"
-                               class="text-primary">
-                                {{ student.user.phone_number }}
-                            </a>
-                        </td>
+                    <td class="p-4 font-bold text-brand">
+                        {{ student.user.full_name }}
+                    </td>
 
-                        <td class="py-3">{{ student.national_id }}</td>
+                    <td class="p-4 text-ink-600">
+                        {{ student.user.phone_number }}
+                    </td>
 
-                        <td class="py-3">
-                            <a href="{% url 'student:detail' student.pk %}"
-                               class="text-primary underline">
-                                مشاهده
-                            </a>
-                        </td>
-                    </tr>
+                    <td class="p-4 text-ink-600">
+                        {{ student.national_id }}
+                    </td>
+
+                    <!-- جزئیات -->
+                    <td class="p-4">
+                        <a href="{% url 'student:detail' student.pk %}"
+                           class="inline-flex items-center gap-1 rounded-xl bg-brand px-3 py-1.5 text-xs font-bold text-white shadow-card
+                                  transition hover:bg-brand-hover">
+                            مشاهده
+                            <span aria-hidden="true">←</span>
+                        </a>
+                    </td>
+
+                    <!-- دکمه ارسال اعلان -->
+                    <td class="p-4">
+                        <a href="#"
+                           class="inline-flex items-center gap-2 rounded-xl bg-info px-4 py-2 text-xs font-bold text-white shadow-card
+                                  transition hover:bg-info-hover">
+                            ارسال اعلان
+                            🔔
+                        </a>
+                    </td>
+
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="4" class="py-4 text-center text-gray-500">
-                            هیچ دانش‌آموزی یافت نشد.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="6" class="p-6 text-center text-ink-400">
+                        هیچ دانش‌آموزی یافت نشد.
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- نسخه موبایل -->
+    <div class="md:hidden space-y-4">
+        {% for student in students %}
+        <div class="rounded-2xl bg-white p-4 shadow-card space-y-3">
+
+            <div class="flex justify-between">
+                <span class="text-sm font-bold text-ink-600">نام</span>
+                <span class="font-extrabold text-brand">{{ student.user.full_name }}</span>
+            </div>
+
+            <div class="flex justify-between">
+                <span class="text-sm font-bold text-ink-600">شماره موبایل</span>
+                <span class="text-ink-600">{{ student.user.phone_number }}</span>
+            </div>
+
+            <div class="flex justify-between">
+                <span class="text-sm font-bold text-ink-600">کد ملی</span>
+                <span class="text-ink-600">{{ student.national_id }}</span>
+            </div>
+
+            <div class="flex justify-between">
+                <span class="text-sm font-bold text-ink-600">جزئیات</span>
+                <a href="{% url 'student:detail' student.pk %}"
+                   class="inline-flex items-center gap-1 rounded-xl bg-brand px-3 py-1.5 text-xs font-bold text-white shadow-card
+                          transition hover:bg-brand-hover">
+                    مشاهده
+                    <span aria-hidden="true">←</span>
+                </a>
+            </div>
+
+            <!-- دکمه‌های موبایل -->
+            <div class="flex justify-between pt-2">
+
+                <a href="#"
+                   class="inline-flex items-center gap-2 rounded-xl bg-info px-4 py-2 text-xs font-bold text-white shadow-card
+                          transition hover:bg-info-hover">
+                    اعلان 🔔
+                </a>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-ink-400">هیچ دانش‌آموزی یافت نشد.</p>
+        {% endfor %}
     </div>
 
 </section>

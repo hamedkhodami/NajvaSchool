@@ -1,90 +1,107 @@
 {% extends "base/base_dashboard.html" %}
-
 {% block title %}ثبت شهریه جدید{% endblock %}
 
+{% block extra_style %}
+<style>
+#tuitionForm input:not([type=search]):not([type=checkbox]):not([type=radio]),
+#tuitionForm select,
+#tuitionForm textarea,
+#studentSearch {
+  width: 100%;
+  border: 1px solid #E2E8F0;
+  border-radius: .75rem;
+  padding: .7rem .85rem;
+  background: #fff;
+  color: #101F33;
+  outline: none;
+}
+#tuitionForm input:focus,
+#tuitionForm select:focus,
+#tuitionForm textarea:focus,
+#studentSearch:focus {
+  border-color: #9A6B1F;
+  box-shadow: 0 0 0 3px rgb(154 107 31 / 12%);
+}
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="mx-auto max-w-3xl space-y-6">
+  <div class="flex items-center gap-3">
+    <span class="h-8 w-1 rounded-full bg-accent"></span>
+    <div>
+      <h1 class="text-xl font-bold text-brand sm:text-2xl">ثبت شهریه جدید</h1>
+      <p class="mt-1 text-sm text-ink-400">تعریف شهریه دانش‌آموز برای سال تحصیلی</p>
+    </div>
+  </div>
 
+  <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card sm:p-7">
+    <form id="tuitionForm" method="post" class="fc space-y-5">
+      {% csrf_token %}
 
-<div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
+      {% if form.non_field_errors %}
+      <div class="rounded-xl bg-danger-soft p-4 text-sm text-danger">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
 
-    <h1 class="text-lg font-bold mb-4">ثبت شهریه جدید</h1>
+      <div>
+        <label for="studentSearch" class="mb-2 block text-sm font-semibold text-ink-700">
+          جستجوی دانش‌آموز
+        </label>
+        <input id="studentSearch" type="search" class="finance-control"
+               placeholder="نام، نام خانوادگی، کد ملی یا شماره تماس">
+      </div>
 
-    <form method="post">
-        {% csrf_token %}
-
-        {% if form.non_field_errors %}
-        <div class="mb-4 bg-red-100 text-red-700 p-3 rounded">
-            {% for error in form.non_field_errors %}
-                <div>{{ error }}</div>
-            {% endfor %}
-        </div>
+      {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}" class="mb-2 block text-sm font-semibold text-ink-700">
+          {{ field.label }}
+          {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+        <div class="mt-1 text-sm text-danger">{{ field.errors }}</div>
         {% endif %}
+      </div>
+      {% endfor %}
 
-        <div class="mb-4">
-            <label class="block mb-1 font-bold">جستجو دانش‌آموز</label>
-            <input type="text" id="studentSearch" placeholder="نام، نام خانوادگی، شماره ملی، شماره تماس"
-                   class="border p-2 rounded w-full">
-        </div>
-
-        <div class="mb-4">
-            <label class="block mb-1 font-bold">دانش‌آموز</label>
-            {{ form.student }}
-            {% for error in form.student.errors %}
-                <p class="text-red-600 text-sm">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div class="mb-4">
-            <label class="block mb-1 font-bold">سال تحصیلی</label>
-            {{ form.academic_year }}
-            {% for error in form.academic_year.errors %}
-                <p class="text-red-600 text-sm">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div class="mb-4">
-            <label class="block mb-1 font-bold">مبلغ شهریه</label>
-            {{ form.amount }}
-            {% for error in form.amount.errors %}
-                <p class="text-red-600 text-sm">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div class="mb-4">
-            <label class="block mb-1 font-bold">درصد تخفیف</label>
-            {{ form.discount_percent }}
-            {% for error in form.discount_percent.errors %}
-                <p class="text-red-600 text-sm">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div class="mb-4">
-            <label class="block mb-1 font-bold">توضیحات</label>
-            {{ form.description }}
-            {% for error in form.description.errors %}
-                <p class="text-red-600 text-sm">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <button class="bg-blue-600 text-white px-4 py-2 rounded">
-            ثبت شهریه
+      <div class="flex flex-col-reverse gap-3 border-t border-surface-border pt-5 sm:flex-row">
+        <a href="{% url 'finance:tuition_list' %}"
+           class="rounded-xl border border-surface-border px-5 py-3 text-center text-sm font-semibold text-ink-600 hover:bg-surface-muted">
+          انصراف
+        </a>
+        <button type="submit"
+                class="flex-1 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-hover">
+          ثبت شهریه
         </button>
+      </div>
     </form>
-
+  </div>
 </div>
+{% endblock %}
 
+{% block extra_script %}
 <script>
-    const searchInput = document.getElementById("studentSearch");
-    const selectBox = document.getElementById("id_student");
+document.addEventListener('DOMContentLoaded', () => {
+  const search = document.getElementById('studentSearch');
+  const select = document.getElementById('id_student');
+  if (!search || !select) return;
 
-    searchInput.addEventListener("keyup", function () {
-        const filter = searchInput.value.toLowerCase();
+  const options = Array.from(select.options).map(option => ({
+    option,
+    text: option.textContent.toLocaleLowerCase('fa')
+  }));
 
-        for (let option of selectBox.options) {
-            const text = option.text.toLowerCase();
-            option.hidden = !text.includes(filter);
-        }
+  search.addEventListener('input', () => {
+    const query = search.value.trim().toLocaleLowerCase('fa');
+
+    options.forEach(({option, text}) => {
+      option.hidden = Boolean(
+        query && option.value !== '' && !option.selected && !text.includes(query)
+      );
     });
+  });
+});
 </script>
-
 {% endblock %}

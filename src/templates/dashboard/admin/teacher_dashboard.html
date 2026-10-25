@@ -1,0 +1,106 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}مدیریت معلمان{% endblock %}
+{% block dashboard_role %}بخش مدیریت معلمان{% endblock %}
+
+{% block content %}
+<div class="space-y-10">
+
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-success"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            مدیریت معلمان مدرسه
+        </h1>
+    </div>
+
+    <!-- کارت آمار -->
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-ink-600">تعداد کل معلمان</p>
+                <p class="mt-2 text-3xl font-extrabold text-brand">{{ total_teachers }}</p>
+            </div>
+
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-success-soft text-success shadow-card">
+                <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 3 2.5 8 12 13l9.5-5L12 3Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.5 10.1V15c3.5 2.8 7.5 2.8 11 0v-4.9"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- دکمه‌های عملیاتی -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- ساخت معلم -->
+        <a href="{% url 'teacher:create_teacher' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-success/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-soft text-success group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">ساخت معلم جدید</span>
+                <span class="mt-2 block text-sm text-ink-500">افزودن معلم به سامانه</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-success group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست معلمان -->
+        <a href="{% url 'teacher:list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-info/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-info-soft text-info group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست معلمان</span>
+                <span class="mt-2 block text-sm text-ink-500">مشاهده و مدیریت معلمان</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-info group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- لیست غیبت‌های معلمان -->
+        <a href="{% url 'attendance:admin_teacher_absence_list' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-danger/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger-soft text-danger group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">لیست غیبت‌های معلمان</span>
+                <span class="mt-2 block text-sm text-ink-500">بررسی وضعیت حضور و غیاب</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-danger group-hover:-translate-x-1">←</span>
+        </a>
+
+        <!-- بانک سوالات -->
+        <a href="{% url 'education:question_bank' %}"
+           class="group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition hover:-translate-y-1 hover:border-accent/40 hover:shadow-lift">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-soft text-accent group-hover:scale-105">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </span>
+            <span class="flex-1">
+                <span class="block font-extrabold text-brand">بانک سوالات</span>
+                <span class="mt-2 block text-sm text-ink-500">مدیریت سوالات آموزشی</span>
+            </span>
+            <span class="text-lg text-ink-400 group-hover:text-accent group-hover:-translate-x-1">←</span>
+        </a>
+
+    </section>
+
+</div>
+{% endblock %}

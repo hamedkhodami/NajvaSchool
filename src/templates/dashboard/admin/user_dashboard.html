@@ -1,0 +1,51 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}مدیریت کاربران{% endblock %}
+{% block dashboard_role %}مدیریت کاربران سامانه{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-info"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            مدیریت کاربران سامانه
+        </h1>
+    </div>
+
+    <!-- کارت آمار کاربران -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <article class="group rounded-2xl border border-surface-border bg-white p-6 shadow-card transition hover:-translate-y-1 hover:shadow-lift">
+            <div class="flex items-start justify-between">
+                <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-info-soft text-info">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m6-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-5a4 4 0 0 1 0 8m3 7v-2a4 4 0 0 0-3-3.87"/>
+                    </svg>
+                </div>
+
+                <span class="rounded-lg bg-info-soft px-3 py-1 text-xs font-bold text-info">
+                    کاربران
+                </span>
+            </div>
+
+            <p class="mt-5 text-sm text-ink-400">تعداد کل کاربران</p>
+
+            <p class="mt-2 text-3xl font-extrabold text-brand">
+                {{ total_users }}
+            </p>
+
+            <a href="{% url user_list_url %}"
+               class="mt-6 flex items-center justify-between border-t border-surface-border pt-4 text-sm font-bold text-brand transition group-hover:text-info">
+                لیست کاربران
+                <span aria-hidden="true">←</span>
+            </a>
+        </article>
+
+    </section>
+
+</div>
+{% endblock %}

@@ -1,42 +1,117 @@
+
 {% extends "base/base_dashboard.html" %}
+
 {% block title %}برنامه هفتگی کلاس {{ classroom.name }}{% endblock %}
+
 {% block content %}
-<div class="w-full max-w-5xl mx-auto bg-white shadow rounded-lg p-6">
-    <h1 class="text-xl font-bold mb-6">برنامه هفتگی کلاس {{ classroom.name }}</h1>
-    <a href="{% url 'academic:schedule_session_create' classroom.id %}"
-       class="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm mb-4 inline-block">
-       افزودن جلسه جدید
-    </a>
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">روز</th>
-                <th class="p-2 border">شماره جلسه</th>
-                <th class="p-2 border">درس</th>
-                <th class="p-2 border">معلم</th>
-                <th class="p-2 border">زمان</th>
-                <th class="p-2 border">عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for s in sessions %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ s.get_weekday_display }}</td>
-                <td class="p-2 border">{{ s.session_number }}</td>
-                <td class="p-2 border">{{ s.subject }}</td>
-                <td class="p-2 border">{{ s.teacher }}</td>
-                <td class="p-2 border">{{ s.start_time }} - {{ s.end_time }}</td>
-                <td class="p-2 border text-center space-x-2">
-                    <a href="{% url 'academic:schedule_session_update' s.id %}"
-                       class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg">ویرایش</a>
-                    <a href="{% url 'academic:schedule_session_delete' s.id %}"
-                       class="px-3 py-1 text-xs bg-red-600 text-white rounded-lg">حذف</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="6" class="p-2 text-center">هیچ جلسه‌ای ثبت نشده است.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="space-y-6">
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <div class="mb-2 flex items-center gap-2 text-sm text-ink-400">
+                <span>مدیریت کلاس‌ها</span>
+                <span>/</span>
+                <span>برنامه هفتگی</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="h-8 w-1 rounded-full bg-accent"></span>
+                <div>
+                    <h1 class="text-xl font-bold text-brand sm:text-2xl">
+                        برنامه هفتگی کلاس {{ classroom.name }}
+                    </h1>
+                    <p class="mt-1 text-sm text-ink-400">
+                        مشاهده و مدیریت جلسات آموزشی کلاس
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'academic:schedule_session_create' classroom.id %}"
+           class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+            <span class="text-lg">+</span>
+            افزودن جلسه جدید
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+            <p class="text-sm text-ink-400">نام کلاس</p>
+            <p class="mt-2 text-lg font-bold text-brand">{{ classroom.name }}</p>
+        </div>
+
+        <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+            <p class="text-sm text-ink-400">تعداد جلسات ثبت‌شده</p>
+            <p class="mt-2 text-2xl font-bold text-brand">{{ sessions|length }}</p>
+        </div>
+    </div>
+
+    <div class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+        <div class="border-b border-surface-border px-5 py-4">
+            <h2 class="font-bold text-brand">جلسات هفتگی</h2>
+            <p class="mt-1 text-sm text-ink-400">
+                فهرست درس‌ها، معلمان و زمان برگزاری جلسات
+            </p>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[760px] text-right text-sm">
+                <thead class="bg-surface-muted text-ink-600">
+                    <tr>
+                        <th class="px-5 py-4 font-semibold">روز هفته</th>
+                        <th class="px-5 py-4 font-semibold">شماره جلسه</th>
+                        <th class="px-5 py-4 font-semibold">درس</th>
+                        <th class="px-5 py-4 font-semibold">معلم</th>
+                        <th class="px-5 py-4 text-center font-semibold">عملیات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-surface-border">
+                    {% for s in sessions %}
+                    <tr class="transition hover:bg-surface-muted">
+                        <td class="whitespace-nowrap px-5 py-4 font-medium text-brand">
+                            {{ s.get_weekday_display }}
+                        </td>
+                        <td class="px-5 py-4">
+                            <span class="inline-flex rounded-lg bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
+                                جلسه {{ s.session_number }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-4 text-ink-700">{{ s.subject }}</td>
+                        <td class="px-5 py-4 text-ink-600">{{ s.teacher }}</td>
+                        <td class="px-5 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'academic:schedule_session_update' s.id %}"
+                                   class="rounded-lg border border-surface-border px-3 py-2 text-xs font-semibold text-brand transition hover:bg-brand-soft">
+                                    ویرایش
+                                </a>
+                                <a href="{% url 'academic:schedule_session_delete' s.id %}"
+                                   class="rounded-lg border border-danger/20 px-3 py-2 text-xs font-semibold text-danger transition hover:bg-danger-soft">
+                                    حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-5 py-14 text-center">
+                            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-muted text-2xl text-ink-400">
+                                ≡
+                            </div>
+                            <p class="mt-4 font-semibold text-brand">هنوز جلسه‌ای ثبت نشده است</p>
+                            <p class="mt-2 text-sm text-ink-400">
+                                برای شروع، اولین جلسه برنامه هفتگی این کلاس را اضافه کنید.
+                            </p>
+                            <a href="{% url 'academic:schedule_session_create' classroom.id %}"
+                               class="mt-4 inline-flex rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover">
+                                افزودن اولین جلسه
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

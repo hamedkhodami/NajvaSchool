@@ -2,48 +2,130 @@
 
 {% block title %}ویرایش کلاس{% endblock %}
 
+{% block extra_style %}
+<style>
+    .class-form input,
+    .class-form select,
+    .class-form textarea {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: #fff;
+        color: #101F33;
+        font: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .class-form input:focus,
+    .class-form select:focus,
+    .class-form textarea:focus {
+        border-color: #9A6B1F;
+        box-shadow: 0 0 0 3px rgba(154, 107, 31, .12);
+    }
+
+    .class-form .errorlist {
+        margin-top: 6px;
+        list-style: none;
+        color: #C2413B;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="mx-auto max-w-2xl space-y-6">
 
-<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
-
-    <h1 class="text-lg font-bold mb-4">ویرایش کلاس {{ obj.name }}</h1>
-
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-
-        {{ form.non_field_errors }}
-
+    <div class="flex items-center gap-3">
+        <span class="h-9 w-1.5 rounded-full bg-accent"></span>
         <div>
-            <label class="text-sm">پایه تحصیلی</label>
-            {{ form.grade }}
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">ویرایش کلاس</h1>
+            <p class="mt-1 text-sm text-slate-500">
+                تغییر مشخصات کلاس {{ obj.name }}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3 rounded-2xl border border-surface-border bg-white p-4 shadow-card">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-info-soft text-info">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m16 4 4 4M4 20l4-.8L19.5 7.7a2.1 2.1 0 0 0-3-3L5 16.2 4 20Z"/>
+            </svg>
+        </span>
+        <div class="min-w-0">
+            <p class="text-xs text-slate-500">کلاس در حال ویرایش</p>
+            <p class="mt-1 break-words font-extrabold text-brand">{{ obj.name }}</p>
+            <p class="mt-1 text-xs text-slate-500">{{ obj.academic_year.name }}</p>
+        </div>
+    </div>
+
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+        <div class="border-b border-surface-border bg-surface-muted/60 p-5 sm:p-6">
+            <h2 class="font-extrabold text-brand">مشخصات کلاس</h2>
+            <p class="mt-1 text-xs text-slate-500">پس از بررسی، تغییرات را ذخیره کنید.</p>
         </div>
 
-        <div>
-            <label class="text-sm">نام کلاس</label>
-            {{ form.name }}
-        </div>
+        <form method="post" class="class-form space-y-5 p-5 sm:p-6">
+            {% csrf_token %}
 
-        <div>
-            <label class="text-sm">کد کلاس</label>
-            {{ form.code }}
-        </div>
+            {% if form.non_field_errors %}
+            <div class="rounded-xl border border-danger/20 bg-danger-soft p-3 text-sm text-danger">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
 
-        <div>
-            <label class="text-sm">ظرفیت</label>
-            {{ form.capacity }}
-        </div>
+            <div>
+                <label for="{{ form.name.id_for_label }}" class="mb-2 block text-sm font-bold text-brand">
+                    نام کلاس
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}<div class="mt-1 text-xs text-danger">{{ form.name.errors }}</div>{% endif %}
+            </div>
 
-        <div>
-            <label class="text-sm">وضعیت</label>
-            {{ form.status }}
-        </div>
+            <div>
+                <label for="{{ form.grade.id_for_label }}" class="mb-2 block text-sm font-bold text-brand">
+                    پایه تحصیلی
+                </label>
+                {{ form.grade }}
+                {% if form.grade.errors %}<div class="mt-1 text-xs text-danger">{{ form.grade.errors }}</div>{% endif %}
+            </div>
 
-        <button type="submit"
-                class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm">
-            ذخیره تغییرات
-        </button>
-    </form>
+            <div>
+                <label for="{{ form.capacity.id_for_label }}" class="mb-2 block text-sm font-bold text-brand">
+                    ظرفیت کلاس
+                </label>
+                {{ form.capacity }}
+                {% if form.capacity.errors %}<div class="mt-1 text-xs text-danger">{{ form.capacity.errors }}</div>{% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.status.id_for_label }}" class="mb-2 block text-sm font-bold text-brand">
+                    وضعیت کلاس
+                </label>
+                {{ form.status }}
+                {% if form.status.errors %}<div class="mt-1 text-xs text-danger">{{ form.status.errors }}</div>{% endif %}
+            </div>
+
+            <div class="flex flex-col-reverse gap-3 border-t border-surface-border pt-5 sm:flex-row sm:justify-between">
+                <a href="{% url 'academic:classroom_detail' obj.id %}"
+                   class="inline-flex items-center justify-center rounded-xl border border-surface-border px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-surface-muted">
+                    انصراف
+                </a>
+
+                <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white shadow-card transition hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6"/>
+                    </svg>
+                    ذخیره تغییرات
+                </button>
+            </div>
+        </form>
+    </section>
 
 </div>
-
 {% endblock %}

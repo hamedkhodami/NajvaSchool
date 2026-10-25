@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import DetailView, ListView
@@ -55,6 +56,25 @@ class TeacherListView(AdminRequiredMixin, ListView):
     model = TeacherModel
     template_name = "teacher/admin/teacher_list.html"
     context_object_name = "teachers"
+
+    def get_queryset(self):
+        qs = super().get_queryset().select_related("user")
+        search = self.request.GET.get("search")
+
+        if search:
+            qs = qs.filter(
+                Q(user__phone_number__icontains=search)
+                | Q(user__first_name__icontains=search)
+                | Q(user__last_name__icontains=search)
+            )
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_value"] = self.request.GET.get("search", "")
+        context["total_teachers"] = self.get_queryset().count()
+        return context
 
 
 class TeacherDetailView(AdminRequiredMixin, DetailView):

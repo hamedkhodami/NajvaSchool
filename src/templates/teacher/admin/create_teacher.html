@@ -2,125 +2,130 @@
 {% load static %}
 
 {% block title %}ایجاد معلم جدید{% endblock %}
+{% block dashboard_role %}ایجاد معلم جدید{% endblock %}
 
 {% block content %}
+<section class="max-w-3xl mx-auto py-10">
 
-<div class="w-full max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
+    <!-- عنوان -->
+    <h1 class="text-2xl font-extrabold text-brand text-center mb-8">
+        ایجاد معلم جدید
+    </h1>
 
-    <h1 class="text-xl font-bold text-center mb-6">ایجاد معلم جدید</h1>
+    <div class="bg-white rounded-2xl shadow-card border border-surface-border p-6 space-y-8">
 
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
 
-        <!-- User Section -->
-        <h2 class="text-lg font-semibold mb-2">اطلاعات کاربر</h2>
+            <!-- اطلاعات کاربر -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-extrabold text-brand border-b pb-2">
+                    اطلاعات کاربر
+                </h2>
 
-        <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-            <div>
-                <label class="text-sm">شماره موبایل</label>
-                <input name="phone_number" type="text" class="input">
-                {{ user_form.phone_number.errors }}
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">شماره موبایل</label>
+                        <input name="phone_number" type="text"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ user_form.phone_number.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">نام</label>
+                        <input name="first_name" type="text"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ user_form.first_name.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">نام خانوادگی</label>
+                        <input name="last_name" type="text"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ user_form.last_name.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">رمز عبور</label>
+                        <input name="password1" type="password"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ user_form.password1.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">تکرار رمز عبور</label>
+                        <input name="password2" type="password"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ user_form.password2.errors }}
+                    </div>
+
+                </div>
             </div>
 
-            <div>
-                <label class="text-sm">نام</label>
-                <input name="first_name" type="text" class="input">
-                {{ user_form.first_name.errors }}
+            <!-- اطلاعات معلم -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-extrabold text-brand border-b pb-2">
+                    اطلاعات معلم
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">کد ملی</label>
+                        <input name="national_id" type="text"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ teacher_form.national_id.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">وضعیت همکاری</label>
+                        <select name="status"
+                                class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                            {% for value, label in teacher_form.fields.status.choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ teacher_form.status.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">نوع همکاری</label>
+                        <select name="employment_type"
+                                class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                            {% for value, label in teacher_form.fields.employment_type.choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ teacher_form.employment_type.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">مدرک تحصیلی</label>
+                        <input name="education" type="text"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ teacher_form.education.errors }}
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-ink-700">تخصص</label>
+                        <input name="specialization" type="text"
+                               class="w-full mt-1 rounded-xl border border-gray-300 p-3 text-sm bg-white focus:ring-2 focus:ring-brand">
+                        {{ teacher_form.specialization.errors }}
+                    </div>
+
+                </div>
             </div>
 
-            <div>
-                <label class="text-sm">نام خانوادگی</label>
-                <input name="last_name" type="text" class="input">
-                {{ user_form.last_name.errors }}
-            </div>
+            <!-- دکمه -->
+            <button
+                class="w-full rounded-xl bg-brand text-white py-3 font-extrabold text-sm shadow-card hover:bg-brand-hover transition">
+                ذخیره
+            </button>
 
-            <div>
-                <label class="text-sm">رمز عبور</label>
-                <input name="password1" type="password" class="input">
-                {{ user_form.password1.errors }}
-            </div>
+        </form>
 
-            <div>
-                <label class="text-sm">تکرار رمز عبور</label>
-                <input name="password2" type="password" class="input">
-                {{ user_form.password2.errors }}
-            </div>
+    </div>
 
-        </div>
-
-        <!-- Teacher Section -->
-        <h2 class="text-lg font-semibold mb-2 pt-4 border-t">اطلاعات معلم</h2>
-
-        <div class="grid grid-cols-2 gap-4">
-
-            <div>
-                <label class="text-sm">کد ملی</label>
-                <input name="national_id" type="text" class="input">
-                {{ teacher_form.national_id.errors }}
-            </div>
-
-            <div>
-                <label class="text-sm">وضعیت همکاری</label>
-                <select name="status" class="input">
-                    {% for value, label in teacher_form.fields.status.choices %}
-                        <option value="{{ value }}">{{ label }}</option>
-                    {% endfor %}
-                </select>
-                {{ teacher_form.status.errors }}
-            </div>
-
-            <div>
-                <label class="text-sm">نوع همکاری</label>
-                <select name="employment_type" class="input">
-                    {% for value, label in teacher_form.fields.employment_type.choices %}
-                        <option value="{{ value }}">{{ label }}</option>
-                    {% endfor %}
-                </select>
-                {{ teacher_form.employment_type.errors }}
-            </div>
-
-            <div>
-                <label class="text-sm">مدرک تحصیلی</label>
-                <input name="education" type="text" class="input">
-                {{ teacher_form.education.errors }}
-            </div>
-
-            <div>
-                <label class="text-sm">تخصص</label>
-                <input name="specialization" type="text" class="input">
-                {{ teacher_form.specialization.errors }}
-            </div>
-
-        </div>
-
-        <button class="btn">ذخیره</button>
-    </form>
-
-</div>
-
-<style>
-    .input {
-        width: 100%;
-        padding: 8px 10px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-    .input:focus {
-        outline: none;
-        border-color: #f0b400;
-        box-shadow: 0 0 0 1px #f0b400;
-    }
-    .btn {
-        width: 100%;
-        background: #f0b400;
-        color: white;
-        padding: 10px;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 15px;
-    }
-</style>
-
+</section>
 {% endblock %}

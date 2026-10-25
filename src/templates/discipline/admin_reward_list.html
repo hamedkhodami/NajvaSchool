@@ -1,56 +1,140 @@
 {% extends "base/base_dashboard.html" %}
-
 {% block title %}لیست تشویقی‌ها{% endblock %}
+{% block dashboard_role %}لیست تشویقی‌ها{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<section class="max-w-5xl mx-auto py-10 space-y-8">
 
-    <h1 class="text-xl font-bold mb-6">لیست تشویقی‌ها — سال {{ active_year.name }}</h1>
+    <!-- عنوان + دکمه افزودن -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <h1 class="text-2xl font-extrabold text-brand">
+            لیست تشویقی‌ها — سال {{ active_year.name }}
+        </h1>
 
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">دانش‌آموز</th>
-                <th class="p-2 border">کلاس</th>
-                <th class="p-2 border">عنوان</th>
-                <th class="p-2 border">تاریخ</th>
-                <th class="p-2 border">ثبت‌کننده</th>
-                <th class="p-2 border">جزئیات</th>
-                <th class="p-2 border">حذف</th>
-            </tr>
-        </thead>
+        <a href="{% url 'academic:classroom_list' %}"
+           class="px-5 py-2.5 bg-brand text-white rounded-xl font-bold hover:bg-brand-hover transition">
+            افزودن تشویقی
+        </a>
+    </div>
 
-        <tbody>
-            {% for record in records %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ record.student.user.full_name }}</td>
-                <td class="p-2 border">{{ record.classroom.get_grade_display }} {{ record.classroom.name }}</td>
-                <td class="p-2 border">{{ record.title }}</td>
-                <td class="p-2 border">{{ record.date }}</td>
-                <td class="p-2 border">{{ record.recorder.get_full_name }}</td>
+    <!-- نسخه دسکتاپ -->
+    <div class="hidden md:block bg-white p-6 rounded-2xl shadow-card border border-surface-border overflow-x-auto">
 
-                <td class="p-2 border">
-                    <a href="{% url 'discipline:admin_reward_detail' record.id %}"
-                       class="text-blue-600">مشاهده</a>
-                </td>
+        <table class="w-full table-auto text-sm whitespace-nowrap">
+            <thead class="bg-surface-muted text-ink-700">
+                <tr>
+                    <th class="p-3 border font-bold min-w-[160px]">دانش‌آموز</th>
+                    <th class="p-3 border font-bold min-w-[140px]">کلاس</th>
+                    <th class="p-3 border font-bold min-w-[160px]">عنوان</th>
+                    <th class="p-3 border font-bold min-w-[120px]">تاریخ ثبت</th>
+                    <th class="p-3 border font-bold min-w-[140px]">ثبت‌کننده</th>
+                    <th class="p-3 border font-bold min-w-[100px]">جزئیات</th>
+                    <th class="p-3 border font-bold min-w-[80px]">حذف</th>
+                </tr>
+            </thead>
 
-                <td class="p-2 border">
-                    <form method="post" action="{% url 'discipline:admin_reward_delete' record.id %}">
-                        {% csrf_token %}
-                        <button class="text-red-600"
-                                onclick="return confirm('حذف شود؟');">
-                            حذف
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="p-2 text-center">هیچ تشویقی ثبت نشده است.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <tbody class="divide-y divide-surface-border">
+                {% for record in records %}
+                <tr class="hover:bg-surface-muted/50 transition">
 
-</div>
+                    <td class="p-3 border">{{ record.student.user.full_name }}</td>
+
+                    <td class="p-3 border">
+                        {{ record.classroom.get_grade_display }} {{ record.classroom.name }}
+                    </td>
+
+                    <td class="p-3 border">{{ record.title }}</td>
+
+                    <td class="p-3 border">
+                        {{ record.created_at|date:"Y-m-d" }}
+                    </td>
+
+                    <td class="p-3 border">{{ record.recorder.get_full_name }}</td>
+
+                    <!-- دکمه جزئیات -->
+                    <td class="p-3 border">
+                        <a href="{% url 'discipline:admin_reward_detail' record.id %}"
+                           class="px-3 py-1.5 bg-info text-white rounded-lg font-bold hover:bg-info-hover transition">
+                            مشاهده
+                        </a>
+                    </td>
+
+                    <!-- دکمه حذف -->
+                    <td class="p-3 border">
+                        <form method="post" action="{% url 'discipline:admin_reward_delete' record.id %}">
+                            {% csrf_token %}
+                            <button class="px-3 py-1.5 bg-danger text-white rounded-lg font-bold hover:bg-danger-hover transition"
+                                    onclick="return confirm('حذف شود؟');">
+                                حذف
+                            </button>
+                        </form>
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="p-4 text-center text-gray-500">
+                        هیچ تشویقی ثبت نشده است.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- نسخه موبایل -->
+    <div class="md:hidden space-y-4">
+
+        {% for record in records %}
+        <div class="rounded-2xl border border-surface-border bg-white shadow-card p-4 space-y-3 text-sm text-ink-700">
+
+            <div class="flex justify-between">
+                <span class="font-extrabold text-brand">{{ record.student.user.full_name }}</span>
+                <span>{{ record.created_at|date:"Y-m-d" }}</span>
+            </div>
+
+            <div>
+                <span class="font-bold">کلاس:</span>
+                {{ record.classroom.get_grade_display }} {{ record.classroom.name }}
+            </div>
+
+            <div>
+                <span class="font-bold">عنوان:</span>
+                {{ record.title }}
+            </div>
+
+            <div>
+                <span class="font-bold">ثبت‌کننده:</span>
+                {{ record.recorder.get_full_name }}
+            </div>
+
+            <div class="flex justify-between pt-2">
+
+                <a href="{% url 'discipline:admin_reward_detail' record.id %}"
+                   class="px-3 py-1.5 bg-info text-white rounded-lg font-bold hover:bg-info-hover transition">
+                    مشاهده
+                </a>
+
+                <form method="post" action="{% url 'discipline:admin_reward_delete' record.id %}">
+                    {% csrf_token %}
+                    <button class="px-3 py-1.5 bg-danger text-white rounded-lg font-bold hover:bg-danger-hover transition"
+                            onclick="return confirm('حذف شود؟');">
+                        حذف
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-500 py-10">
+            هیچ تشویقی ثبت نشده است.
+        </p>
+        {% endfor %}
+
+    </div>
+
+</section>
 {% endblock %}

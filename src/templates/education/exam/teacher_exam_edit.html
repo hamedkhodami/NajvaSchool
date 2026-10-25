@@ -2,70 +2,129 @@
 {% load static %}
 
 {% block title %}ویرایش امتحان{% endblock %}
+{% block dashboard_role %}ویرایش امتحان{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-10 py-6">
 
-    <h1 class="text-xl font-bold mb-6">ویرایش امتحان</h1>
-
-    <form method="post" enctype="multipart/form-data"
-          class="bg-white p-6 rounded-lg shadow space-y-6">
-        {% csrf_token %}
-
-        <!-- کلاس -->
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-[#101F33]"></span>
         <div>
-            <label class="block text-sm font-bold mb-1">کلاس</label>
-            {{ form.classroom }}
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                ویرایش امتحان
+            </h1>
+            <p class="mt-1 text-sm text-ink-500">
+                ویرایش اطلاعات امتحان، فایل سوال و وضعیت انتشار
+            </p>
         </div>
+    </div>
 
-        <!-- درس -->
-        <div>
-            <label class="block text-sm font-bold mb-1">درس</label>
-            {{ form.subject }}
-        </div>
-        <!-- توضیحات -->
-        <div>
-            <label class="block text-sm font-bold mb-1">توضیحات</label>
-            {{ form.description }}
-        </div>
+    <!-- فرم -->
+    <section class="rounded-2xl bg-white shadow-card border border-surface-border p-6">
 
-        <!-- نمره کل -->
-        <div>
-            <label class="block text-sm font-bold mb-1">نمره کل</label>
-            {{ form.max_score }}
-        </div>
+        <form method="post" enctype="multipart/form-data" class="space-y-10">
+            {% csrf_token %}
 
-        <!-- مدت امتحان -->
-        <div>
-            <label class="block text-sm font-bold mb-1">مدت امتحان (دقیقه)</label>
-            {{ form.duration }}
-        </div>
+            <!-- بخش اطلاعات پایه -->
+            <div class="space-y-6">
+                <h2 class="font-extrabold text-brand text-lg pb-2 border-b">
+                    اطلاعات پایه
+                </h2>
 
-        <!-- فایل سوال -->
-        <div>
-            <label class="block text-sm font-bold mb-1">فایل سوال</label>
-            {{ form.file }}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {% if exam.file %}
-                <p class="text-xs text-gray-600 mt-1">
-                    فایل فعلی:
-                    <a href="{{ exam.file.url }}" class="text-blue-600 underline">
-                        دانلود فایل فعلی
-                    </a>
-                </p>
-            {% endif %}
-        </div>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-ink-700">کلاس</label>
+                        <div class="bg-white border border-surface-border rounded-xl p-2">
+                            {{ form.classroom }}
+                        </div>
+                    </div>
 
-        <!-- اعلام نتایج -->
-        <div>
-            <label class="block text-sm font-bold mb-1">اعلام نتایج</label>
-            {{ form.is_published }}
-        </div>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-ink-700">درس</label>
+                        <div class="bg-white border border-surface-border rounded-xl p-2">
+                            {{ form.subject }}
+                        </div>
+                    </div>
 
-        <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">
-            ذخیره تغییرات
-        </button>
-    </form>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-ink-700">نمره کل</label>
+                        <div class="bg-white border border-surface-border rounded-xl p-2">
+                            {{ form.max_score }}
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-ink-700">مدت امتحان (دقیقه)</label>
+                        <div class="bg-white border border-surface-border rounded-xl p-2">
+                            {{ form.duration }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- بخش توضیحات -->
+            <div class="space-y-4">
+                <h2 class="font-extrabold text-brand text-lg pb-2 border-b">
+                    توضیحات امتحان
+                </h2>
+
+                <div class="space-y-1">
+                    <label class="block text-sm font-bold text-ink-700">توضیحات</label>
+                    <div class="bg-white border border-surface-border rounded-xl p-2">
+                        {{ form.description }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش فایل سوال -->
+            <div class="space-y-4">
+                <h2 class="font-extrabold text-brand text-lg pb-2 border-b">
+                    فایل سوال
+                </h2>
+
+                <div class="space-y-1">
+                    <label class="block text-sm font-bold text-ink-700">فایل سوال</label>
+                    <div class="bg-white border border-surface-border rounded-xl p-2">
+                        {{ form.file }}
+                    </div>
+
+                    {% if exam.file %}
+                        <p class="text-xs text-ink-500 mt-1">
+                            فایل فعلی:
+                            <a href="{{ exam.file.url }}" class="text-[#2563A6] font-bold hover:underline">
+                                دانلود فایل فعلی
+                            </a>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- بخش وضعیت انتشار -->
+            <div class="space-y-4">
+                <h2 class="font-extrabold text-[#C2413B] text-lg pb-2 border-b">
+                    وضعیت انتشار (اعلام نتایج)
+                </h2>
+
+                <div class="space-y-1">
+                    <label class="block text-sm font-bold text-ink-700">اعلام نتایج</label>
+                    <div class="bg-white border border-surface-border rounded-xl p-2">
+                        {{ form.is_published }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- دکمه ذخیره -->
+            <button
+                class="w-full md:w-auto rounded-xl bg-[#101F33] px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-[#17293F] transition">
+                ذخیره تغییرات
+            </button>
+
+        </form>
+
+    </section>
 
 </div>
 {% endblock %}

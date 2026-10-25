@@ -1,89 +1,124 @@
 {% extends "base/base_dashboard.html" %}
+{% block title %}هزینه‌های مدرسه{% endblock %}
 
-{% block title %}لیست هزینه‌های مدرسه{% endblock %}
+{% block extra_style %}
+<style>
+.finance-control {
+  width: 100%;
+  border: 1px solid #E2E8F0;
+  border-radius: .75rem;
+  padding: .7rem .85rem;
+  background: #fff;
+  color: #101F33;
+  outline: none;
+}
+.finance-control:focus {
+  border-color: #9A6B1F;
+  box-shadow: 0 0 0 3px rgb(154 107 31 / 12%);
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="bg-white p-6 rounded-lg shadow">
+<div class="space-y-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <span class="h-8 w-1 rounded-full bg-accent"></span>
+      <div>
+        <h1 class="text-xl font-bold text-brand sm:text-2xl">هزینه‌های مدرسه</h1>
+        <p class="mt-1 text-sm text-ink-400">مدیریت هزینه‌ها بر اساس سال تحصیلی</p>
+      </div>
+    </div>
+    <a href="{% url 'finance:expense_create' %}"
+       class="rounded-xl bg-brand px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-hover">
+      ایجاد هزینه جدید
+    </a>
+  </div>
 
-    <h1 class="text-lg font-bold mb-4">لیست هزینه‌های مدرسه</h1>
+  <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+    <form method="get" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <label class="mb-2 block text-sm font-semibold">سال تحصیلی</label>
+        <select name="year" class="finance-control">
+          <option value="">همه</option>
+          {% for y in years %}
+          <option value="{{ y.id }}" {% if request.GET.year == y.id|stringformat:"s" %}selected{% endif %}>
+            {{ y.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
 
-    <div class="flex gap-3 mb-6">
-        <a href="{% url 'finance:expense_create' %}"
-           class="px-4 py-2 bg-green-600 text-white rounded">
-            ایجاد هزینه جدید
+      <div>
+        <label class="mb-2 block text-sm font-semibold">جستجو</label>
+        <input name="search" value="{{ request.GET.search }}"
+               class="finance-control" placeholder="عنوان یا توضیحات">
+      </div>
+
+      <div class="flex items-end gap-2">
+        <button class="flex-1 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white">
+          اعمال فیلتر
+        </button>
+        <a href="{% url 'finance:expense_list' %}"
+           class="rounded-xl border border-surface-border px-4 py-3 text-sm">
+          پاک‌کردن
         </a>
+      </div>
+    </form>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+    <div class="border-b border-surface-border px-5 py-4">
+      <h2 class="font-bold text-brand">فهرست هزینه‌ها</h2>
     </div>
 
-    <form method="get" class="grid grid-cols-4 gap-4 mb-6">
-        <div>
-            <label class="block mb-1 font-bold">سال تحصیلی</label>
-            <select name="year" class="border p-2 rounded w-full">
-                <option value="">همه</option>
-                {% for y in years %}
-                <option value="{{ y.id }}" {% if request.GET.year == y.id|stringformat:"s" %}selected{% endif %}>
-                    {{ y.name }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label class="block mb-1 font-bold">جستجو</label>
-            <input type="text" name="search" value="{{ request.GET.search }}"
-                   class="border p-2 rounded w-full" placeholder="عنوان یا توضیحات">
-        </div>
-
-        <div class="col-span-4">
-            <button class="bg-blue-600 text-white px-4 py-2 rounded">
-                اعمال فیلتر
-            </button>
-        </div>
-    </form>
-
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">عنوان</th>
-                <th class="p-2 border">دسته‌بندی</th>
-                <th class="p-2 border">سال تحصیلی</th>
-                <th class="p-2 border">مبلغ</th>
-                <th class="p-2 border">عملیات</th>
-            </tr>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[750px] text-right text-sm">
+        <thead class="bg-surface-muted text-ink-600">
+          <tr>
+            <th class="px-5 py-4">عنوان</th>
+            <th class="px-5 py-4">دسته‌بندی</th>
+            <th class="px-5 py-4">سال تحصیلی</th>
+            <th class="px-5 py-4">مبلغ</th>
+            <th class="px-5 py-4 text-center">عملیات</th>
+          </tr>
         </thead>
 
-        <tbody>
-            {% for e in expenses %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ e.title }}</td>
-                <td class="p-2 border">{{ e.get_category_display }}</td>
-                <td class="p-2 border">{{ e.academic_year.name }}</td>
-                <td class="p-2 border font-bold">{{ e.amount|floatformat:0 }}</td>
-
-                <td class="p-2 border flex gap-2">
-                    <a href="{% url 'finance:expense_update' e.id %}"
-                       class="px-3 py-1 bg-yellow-500 text-white rounded">
-                        ویرایش
-                    </a>
-
-                    <form method="post" action="{% url 'finance:expense_delete' e.id %}">
-                        {% csrf_token %}
-                        <button class="px-3 py-1 bg-red-600 text-white rounded"
-                                onclick="return confirm('حذف شود؟')">
-                            حذف
-                        </button>
-                    </form>
-
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="p-4 text-center text-gray-500">
-                    هیچ هزینه‌ای ثبت نشده است.
-                </td>
-            </tr>
-            {% endfor %}
+        <tbody class="divide-y divide-surface-border">
+          {% for e in expenses %}
+          <tr class="hover:bg-surface-muted">
+            <td class="px-5 py-4 font-semibold text-brand">{{ e.title }}</td>
+            <td class="px-5 py-4">{{ e.get_category_display }}</td>
+            <td class="px-5 py-4">{{ e.academic_year.name }}</td>
+            <td class="px-5 py-4 font-bold">{{ e.amount|floatformat:0 }} تومان</td>
+            <td class="px-5 py-4">
+              <div class="flex justify-center gap-2">
+                <a href="{% url 'finance:expense_update' e.id %}"
+                   class="rounded-lg border border-surface-border px-3 py-2 text-xs font-semibold">
+                  ویرایش
+                </a>
+                <form method="post" action="{% url 'finance:expense_delete' e.id %}"
+                      onsubmit="return confirm('از حذف این هزینه مطمئن هستید؟');">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="rounded-lg border border-danger/20 px-3 py-2 text-xs font-semibold text-danger hover:bg-danger-soft">
+                    حذف
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-5 py-14 text-center text-ink-400">
+              هزینه‌ای ثبت نشده است.
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
-
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}
+

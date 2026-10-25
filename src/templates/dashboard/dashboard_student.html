@@ -1,105 +1,412 @@
+
 {% extends "base/base_dashboard.html" %}
 {% load jalali %}
 {% load static %}
 
 {% block title %}داشبورد دانش‌آموز{% endblock %}
+{% block dashboard_role %}پنل دانش‌آموز{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-8">
 
-    <h1 class="text-xl font-bold mb-6">داشبورد دانش‌آموز</h1>
+    <!-- عنوان و اعلان‌ها -->
+    <section class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div>
+            <h1 class="text-2xl font-extrabold text-brand">داشبورد دانش‌آموز</h1>
 
-    <a href="{% url 'student:profile' %}"
-       class="block px-4 py-3 bg-primary text-white rounded-lg mb-4">
-        پروفایل دانش‌آموز
-    </a>
+            {% if active_year %}
+                <p class="mt-2 text-sm text-slate-500">
+                    سال تحصیلی فعال: {{ active_year.name }}
+                </p>
+            {% endif %}
+        </div>
 
-    <a href="{% url 'education:student_exam_results' %}"
-       class="block p-3 border rounded hover:bg-gray-50">
-        نتایج امتحانات من
-    </a>
-    <a href="{% url 'education:student_daily_grade_list' %}"
-       class="block p-3 border rounded hover:bg-gray-50">
-        نمرات روزانه من
-    </a>
+        <a href="#"
+           class="inline-flex w-fit items-center gap-2 rounded-full border px-3 py-2.5 text-xs font-bold transition
+           {% if unread_notifications_count > 0 %}
+               border-warning/30 bg-warning-soft text-warning
+           {% else %}
+               border-success/20 bg-success-soft text-success
+           {% endif %}"
+           aria-label="اعلان‌ها{% if unread_notifications_count > 0 %}، {{ unread_notifications_count }} اعلان خوانده‌نشده{% endif %}">
 
-    <a href="{% url 'finance:student_tuition_status' %}"
-       class="block p-3 border rounded hover:bg-gray-50">
-        وضعیت شهریه من
-    </a>
+            <span class="relative flex h-5 w-5 shrink-0 items-center justify-center">
+                <svg class="h-5 w-5" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                    <path d="M10 21h4"/>
+                </svg>
+
+                {% if unread_notifications_count > 0 %}
+                    <span class="absolute -right-2 -top-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger px-1 text-[10px] font-extrabold text-white ring-2 ring-white">
+                        {{ unread_notifications_count }}
+                    </span>
+                {% endif %}
+            </span>
+
+            <span>اعلان‌ها</span>
+
+            {% if unread_notifications_count > 0 %}
+                <span class="rounded-full bg-danger/10 px-2 py-1 text-[11px] font-extrabold">
+                    {{ unread_notifications_count }} جدید
+                </span>
+            {% endif %}
+        </a>
+    </section>
+
+    <!-- کارت‌های اصلی -->
+    <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
+        <a href="{% url 'student:profile' %}"
+           class="dashboard-card group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:shadow-lift focus:outline-none focus:ring-2 focus:ring-accent">
+
+            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent-soft text-accent transition group-hover:scale-105">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+                </svg>
+            </span>
+
+            <span class="min-w-0 flex-1">
+                <span class="block font-extrabold text-brand">پروفایل من</span>
+                <span class="mt-1 block text-sm text-slate-500">مشاهده اطلاعات شخصی</span>
+            </span>
+
+            <span class="text-lg text-slate-400 transition group-hover:-translate-x-1 group-hover:text-accent">←</span>
+        </a>
+
+        <a href="{% url 'education:student_exam_results' %}"
+           class="dashboard-card group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition duration-200 hover:-translate-y-1 hover:border-info/40 hover:shadow-lift focus:outline-none focus:ring-2 focus:ring-info">
+
+            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-info-soft text-info transition group-hover:scale-105">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v16h18V5a2 2 0 0 0-2-2h-3"/>
+                    <rect x="8" y="2" width="8" height="4" rx="1"/>
+                    <path d="M7 11h10M7 15h10M7 19h6"/>
+                </svg>
+            </span>
+
+            <span class="min-w-0 flex-1">
+                <span class="block font-extrabold text-brand">نتایج امتحانات</span>
+                <span class="mt-1 block text-sm text-slate-500">مشاهده نتایج امتحانات من</span>
+            </span>
+
+            <span class="text-lg text-slate-400 transition group-hover:-translate-x-1 group-hover:text-info">←</span>
+        </a>
+
+        <a href="{% url 'education:student_daily_grade_list' %}"
+           class="dashboard-card group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition duration-200 hover:-translate-y-1 hover:border-success/40 hover:shadow-lift focus:outline-none focus:ring-2 focus:ring-success">
+
+            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-success-soft text-success transition group-hover:scale-105">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H21"/>
+                    <path d="M6.5 2H21v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                    <path d="m9 10 2 2 4-4"/>
+                </svg>
+            </span>
+
+            <span class="min-w-0 flex-1">
+                <span class="block font-extrabold text-brand">نمرات روزانه</span>
+                <span class="mt-1 block text-sm text-slate-500">مشاهده نمرات ثبت‌شده</span>
+            </span>
+
+            <span class="text-lg text-slate-400 transition group-hover:-translate-x-1 group-hover:text-success">←</span>
+        </a>
+
+        <a href="{% url 'finance:student_tuition_status' %}"
+           class="dashboard-card group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:shadow-lift focus:outline-none focus:ring-2 focus:ring-accent">
+
+            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent-soft text-accent transition group-hover:scale-105">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                    <path d="M3 10h18M8 15h4"/>
+                </svg>
+            </span>
+
+            <span class="min-w-0 flex-1">
+                <span class="block font-extrabold text-brand">وضعیت شهریه</span>
+                <span class="mt-1 block text-sm text-slate-500">مشاهده وضعیت شهریه من</span>
+            </span>
+
+            <span class="text-lg text-slate-400 transition group-hover:-translate-x-1 group-hover:text-accent">←</span>
+        </a>
+
+        <a href="{% url 'discipline:student_reward_list' %}"
+           class="dashboard-card group flex items-center gap-4 rounded-2xl border border-surface-border bg-white p-5 shadow-card transition duration-200 hover:-translate-y-1 hover:border-warning/40 hover:shadow-lift focus:outline-none focus:ring-2 focus:ring-warning">
+
+            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-warning-soft text-warning transition group-hover:scale-105">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 2 2 7l10 5 10-5-10-5Z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+            </span>
+
+            <span class="min-w-0 flex-1">
+                <span class="block font-extrabold text-brand">تشویقی‌های من</span>
+                <span class="mt-1 block text-sm text-slate-500">مشاهده تشویقی‌های ثبت‌شده</span>
+            </span>
+
+            <span class="text-lg text-slate-400 transition group-hover:-translate-x-1 group-hover:text-warning">←</span>
+        </a>
 
 
+    </section>
 
+    <!-- کلاس‌های دانش‌آموز -->
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
 
-    {% if active_year %}
-        <p class="text-sm mb-4">سال تحصیلی فعال: {{ active_year.name }}</p>
-    {% endif %}
+        <div class="border-b border-surface-border p-5">
+            <h2 class="text-lg font-extrabold text-brand">کلاس‌های من</h2>
+            <p class="mt-1 text-sm text-slate-500">کلاس‌های ثبت‌شده در سال تحصیلی فعال</p>
+        </div>
 
-    <h2 class="text-lg font-bold mb-4">کلاس‌های من</h2>
-    <ul class="list-disc pl-6 text-sm mb-6">
-        {% for cls in classrooms %}
-            <li>{{ cls.name }} ({{ cls.get_grade_display }})</li>
-        {% empty %}
-            <li>هیچ کلاسی ثبت نشده است.</li>
-        {% endfor %}
-    </ul>
+        <div class="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
+            {% for cls in classrooms %}
+                <div class="flex items-center gap-3 rounded-xl border border-surface-border p-4 transition hover:border-accent/40 hover:bg-accent-soft/20">
 
-    <h2 class="text-lg font-bold mb-4">برنامهٔ هفتگی</h2>
-    <table class="w-full text-sm border mb-10">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">روز</th>
-                <th class="p-2 border">زنگ</th>
-                <th class="p-2 border">درس</th>
-                <th class="p-2 border">معلم</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for s in sessions %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ s.get_weekday_display }}</td>
-                <td class="p-2 border">{{ s.session_number }}</td>
-                <td class="p-2 border">{{ s.subject.name }}</td>
-                <td class="p-2 border">{{ s.teacher.user.full_name }}</td>
-            </tr>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-info-soft text-info">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/>
+                            <path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>
+                        </svg>
+                    </span>
+
+                    <div class="min-w-0">
+                        <p class="break-words font-extrabold text-brand">
+                            {{ cls.get_grade_display }} {{ cls.name }}
+                        </p>
+                        <p class="mt-1 text-xs text-slate-500">
+                            {{ cls.academic_year.name }}
+                        </p>
+                    </div>
+
+                </div>
             {% empty %}
-            <tr><td colspan="4" class="p-2 text-center">هیچ جلسه‌ای ثبت نشده است.</td></tr>
+                <div class="col-span-full px-4 py-8 text-center text-sm text-slate-500">
+                    هیچ کلاسی برای شما ثبت نشده است.
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
 
-    <!-- 🔥 غیبت‌های دانش‌آموز -->
-    <h2 class="text-lg font-bold mb-4">غیبت‌های من</h2>
+    </section>
 
-    <div class="bg-white p-4 rounded-lg shadow mb-6">
-        <p class="text-sm mb-2">
-            تعداد کل غیبت‌ها:
-            <strong>{{ total_absents }}</strong>
-        </p>
+    <!-- برنامه هفتگی -->
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
 
-        <h3 class="font-bold text-sm mb-2">غیبت‌ها بر اساس درس:</h3>
-        <ul class="list-disc pl-6 text-sm">
-            {% for subject, count in absents_by_subject.items %}
-                <li>{{ subject }} — {{ count }} غیبت</li>
-            {% empty %}
-                <li>هیچ غیبتی ثبت نشده است.</li>
+        <div class="flex flex-col justify-between gap-3 border-b border-surface-border p-4 sm:flex-row sm:items-center sm:p-5">
+            <div>
+                <h2 class="text-lg font-extrabold text-brand">برنامه هفتگی من</h2>
+                <p class="mt-1 text-sm text-slate-500">برنامه کلاس‌ها از شنبه تا جمعه، به ترتیب زنگ</p>
+            </div>
+
+            <span class="w-fit rounded-xl bg-accent-soft px-3 py-2 text-xs font-bold text-accent">
+                برنامه آموزشی
+            </span>
+        </div>
+
+        <!-- دسکتاپ -->
+        <div class="hidden md:block">
+            <div class="overflow-x-auto">
+                <div class="grid min-w-[980px] grid-cols-7 divide-x divide-x-reverse divide-surface-border">
+
+                    {% for day in schedule_days %}
+                        <div class="min-w-0">
+
+                            <div class="border-b border-surface-border bg-surface-muted px-2 py-4 text-center">
+                                <h3 class="text-sm font-extrabold text-brand">{{ day.label }}</h3>
+                            </div>
+
+                            <div class="space-y-3 p-2">
+                                {% for session in day.sessions %}
+                                    <div class="rounded-xl border border-surface-border bg-white p-3 transition hover:border-accent/50 hover:bg-accent-soft/30">
+
+                                        <div class="mb-2">
+                                            <span class="inline-block rounded-lg bg-brand px-2 py-1 text-xs font-bold text-white">
+                                                زنگ {{ session.session_number }}
+                                            </span>
+                                        </div>
+
+                                        <p class="break-words text-sm font-extrabold leading-6 text-brand">
+                                            {{ session.subject.name }}
+                                        </p>
+
+                                        <p class="mt-2 break-words text-xs leading-5 text-slate-500">
+                                            {{ session.classroom.get_grade_display }} {{ session.classroom.name }}
+                                        </p>
+
+                                        <p class="mt-1 break-words text-xs leading-5 text-slate-500">
+                                            معلم: {{ session.teacher.user.full_name }}
+                                        </p>
+
+                                    </div>
+                                {% empty %}
+                                    <div class="rounded-xl border border-dashed border-surface-border px-2 py-5 text-center">
+                                        <span class="text-xs leading-6 text-slate-400">بدون کلاس</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- موبایل -->
+        <div class="space-y-4 bg-surface-muted/40 p-3 sm:p-4 md:hidden">
+
+            {% for day in schedule_days %}
+                <article class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-sm">
+
+                    <div class="flex items-center justify-between gap-3 border-b border-surface-border bg-surface-muted px-4 py-3">
+                        <h3 class="font-extrabold text-brand">{{ day.label }}</h3>
+
+                        {% if day.sessions %}
+                            <span class="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent">
+                                {{ day.sessions|length }} زنگ
+                            </span>
+                        {% else %}
+                            <span class="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-400">
+                                بدون کلاس
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="space-y-3 p-3">
+                        {% for session in day.sessions %}
+                            <div class="flex min-w-0 items-start gap-3 rounded-xl border border-surface-border p-3 transition hover:border-accent/40">
+
+                                <div class="flex h-11 min-w-[44px] shrink-0 flex-col items-center justify-center rounded-xl bg-brand px-2 text-white">
+                                    <span class="text-[10px] opacity-80">زنگ</span>
+                                    <span class="text-sm font-extrabold">{{ session.session_number }}</span>
+                                </div>
+
+                                <div class="min-w-0 flex-1 py-0.5">
+                                    <p class="break-words text-sm font-extrabold leading-6 text-brand">
+                                        {{ session.subject.name }}
+                                    </p>
+
+                                    <p class="mt-2 break-words text-xs leading-5 text-slate-500">
+                                        کلاس: {{ session.classroom.get_grade_display }} {{ session.classroom.name }}
+                                    </p>
+
+                                    <p class="mt-1 break-words text-xs leading-5 text-slate-500">
+                                        معلم: {{ session.teacher.user.full_name }}
+                                    </p>
+                                </div>
+
+                            </div>
+                        {% empty %}
+                            <div class="rounded-xl border border-dashed border-surface-border px-3 py-6 text-center">
+                                <p class="text-sm font-bold text-slate-500">
+                                    کلاسی برای این روز ثبت نشده است.
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </article>
             {% endfor %}
-        </ul>
 
-        <h3 class="font-bold text-sm mt-4 mb-2">تاریخ‌های غیبت:</h3>
-        <ul class="list-disc pl-6 text-sm">
-            {% for item in absent_dates %}
-                <li>{{ item.date|jalali }} — {{ item.subject }}</li>
-            {% empty %}
-                <li>هیچ غیبتی ثبت نشده است.</li>
-            {% endfor %}
-        </ul>
+        </div>
+
+    </section>
+
+    <!-- غیبت‌های دانش‌آموز -->
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+
+        <div class="border-b border-surface-border p-5">
+            <h2 class="text-lg font-extrabold text-brand">غیبت‌های من</h2>
+            <p class="mt-1 text-sm text-slate-500">گزارش غیبت‌های ثبت‌شده برای شما</p>
+        </div>
+
+        <div class="p-4 sm:p-5">
+
+            <div class="mb-5 rounded-xl border border-surface-border bg-surface-muted p-4">
+                <p class="text-sm text-slate-600">
+                    تعداد کل غیبت‌ها:
+                    <strong class="mr-1 text-lg text-brand">{{ total_absents }}</strong>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+
+                <!-- غیبت بر اساس درس -->
+                <div class="overflow-hidden rounded-xl border border-surface-border">
+                    <div class="border-b border-surface-border bg-surface-muted px-4 py-3">
+                        <h3 class="text-sm font-extrabold text-brand">غیبت‌ها بر اساس درس</h3>
+                    </div>
+
+                    <div class="divide-y divide-surface-border">
+                        {% for subject, count in absents_by_subject.items %}
+                            <div class="flex items-center justify-between gap-3 p-4">
+                                <span class="break-words text-sm font-medium text-slate-700">
+                                    {{ subject }}
+                                </span>
+
+                                <span class="shrink-0 rounded-lg bg-danger-soft px-2.5 py-1.5 text-xs font-bold text-danger">
+                                    {{ count }} غیبت
+                                </span>
+                            </div>
+                        {% empty %}
+                            <div class="px-4 py-8 text-center text-sm text-slate-500">
+                                هیچ غیبتی ثبت نشده است.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- تاریخ‌های غیبت -->
+                <div class="overflow-hidden rounded-xl border border-surface-border">
+                    <div class="border-b border-surface-border bg-surface-muted px-4 py-3">
+                        <h3 class="text-sm font-extrabold text-brand">تاریخ‌های غیبت</h3>
+                    </div>
+
+                    <div class="divide-y divide-surface-border">
+                        {% for item in absent_dates %}
+                            <div class="flex items-center gap-3 p-4">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9"/>
+                                        <path d="M12 7v5l3 2"/>
+                                    </svg>
+                                </span>
+
+                                <div class="min-w-0 flex-1">
+                                    <p class="break-words text-sm font-bold text-brand">
+                                        {{ item.subject }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        {{ item.date|jalali }}
+                                    </p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="px-4 py-8 text-center text-sm text-slate-500">
+                                هیچ غیبتی ثبت نشده است.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- خروج -->
+    <div class="flex justify-end">
+        <form method="post" action="{% url 'account:logout' %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="rounded-xl bg-danger px-5 py-3 text-sm font-bold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2">
+                خروج از حساب کاربری
+            </button>
+        </form>
     </div>
-
-    <form method="post" action="{% url 'account:logout' %}" class="mt-6">
-        {% csrf_token %}
-        <button class="px-4 py-2 bg-down text-white rounded-lg">خروج</button>
-    </form>
 
 </div>
 {% endblock %}

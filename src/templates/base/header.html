@@ -1,53 +1,114 @@
 {% load static %}
 
-<header class="bg-white shadow-sm">
-    <div class="container max-w-screen flex items-center justify-between py-4">
+<header class="sticky top-0 z-50 border-b border-paper-line/80 bg-white/95 shadow-header backdrop-blur-md">
+    <div class="container max-w-screen">
+        <div class="flex min-h-[76px] items-center justify-between gap-4">
 
-        <!-- Logo / Title -->
-        <div class="text-ink-900 font-bold text-lg">
-            مدرسه
+            <!-- لوگو و نام مدرسه -->
+            <a href="{% url 'public:index' %}"
+               class="group flex min-w-0 items-center gap-3"
+               aria-label="صفحه اصلی مدرسه">
+
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand text-xl text-brass-300 shadow-card transition duration-300 group-hover:rotate-3">
+                    ✦
+                </span>
+
+                <span class="min-w-0">
+                    <span class="block truncate text-base font-extrabold text-brand sm:text-lg">
+                        مدرسه نجوا
+                    </span>
+                    <span class="mt-1 block text-[11px] text-ink-400 sm:text-xs">
+                        آموزش، آینده، افتخار
+                    </span>
+                </span>
+            </a>
+
+            <!-- مسیرهای دسکتاپ -->
+            <nav class="hidden items-center gap-2 md:flex">
+
+                <a href="{% url 'public:index' %}"
+                   class="rounded-xl px-4 py-2.5 text-sm font-bold text-brand transition hover:bg-brass-100 hover:text-brass-700">
+                    خانه
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'dashboard:dashboard' %}"
+                       class="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-bold text-white shadow-card transition hover:bg-brand-hover">
+                        <span>داشبورد مدرسه</span>
+                        <span aria-hidden="true">←</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'account:login' %}"
+                       class="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white shadow-card transition hover:-translate-y-0.5 hover:bg-accent-hover">
+                        <span>ورود به سامانه</span>
+                        <span aria-hidden="true">←</span>
+                    </a>
+                {% endif %}
+
+            </nav>
+
+            <!-- دکمه موبایل -->
+            <button id="mobileMenuBtn"
+                    type="button"
+                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-paper-line bg-white text-brand transition hover:border-brass-400 hover:bg-brass-100 md:hidden"
+                    aria-label="باز کردن منو"
+                    aria-controls="mobileMenu"
+                    aria-expanded="false">
+
+                <svg id="mobileMenuOpenIcon"
+                     xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.8"
+                          d="M4 7h16M4 12h16M4 17h16"/>
+                </svg>
+
+                <svg id="mobileMenuCloseIcon"
+                     xmlns="http://www.w3.org/2000/svg"
+                     class="hidden h-6 w-6"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.8"
+                          d="m6 6 12 12M18 6 6 18"/>
+                </svg>
+            </button>
+
         </div>
 
-        <!-- Desktop Nav -->
-        <nav class="hidden md:flex items-center gap-8 text-ink-800 text-[15px]">
-            <a href="{% url 'public:index' %}" class="hover:text-primary transition">خانه</a>
+        <!-- منوی موبایل -->
+        <nav id="mobileMenu"
+             class="hidden border-t border-paper-line py-4 md:hidden">
 
-            {% if request.user.is_authenticated %}
-                <a href="{% url 'dashboard:dashboard' %}" class="hover:text-primary transition">
-                    داشبورد
+            <div class="flex flex-col gap-2">
+
+                <a href="{% url 'public:index' %}"
+                   class="rounded-xl px-4 py-3 text-sm font-bold text-brand transition hover:bg-brass-100">
+                    خانه
                 </a>
-            {% else %}
-                <a href="{% url 'account:login' %}" class="hover:text-primary transition">
-                    ورود به بخش مدرسه
-                </a>
-            {% endif %}
+
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'dashboard:dashboard' %}"
+                       class="flex items-center justify-between rounded-xl bg-brand px-4 py-3 text-sm font-bold text-white transition hover:bg-brand-hover">
+                        داشبورد مدرسه
+                        <span aria-hidden="true">←</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'account:login' %}"
+                       class="flex items-center justify-between rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white transition hover:bg-accent-hover">
+                        ورود به سامانه
+                        <span aria-hidden="true">←</span>
+                    </a>
+                {% endif %}
+
+            </div>
         </nav>
 
-        <!-- Mobile Menu Button -->
-        <button id="mobileMenuBtn"
-                class="md:hidden text-ink-800 focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
     </div>
-
-    <!-- Mobile Nav -->
-    <nav id="mobileMenu"
-         class="md:hidden hidden flex flex-col gap-4 px-6 pb-4 text-ink-800 text-[15px]">
-
-        <a href="{% url 'public:index' %}" class="py-2 border-b border-paper-line">خانه</a>
-
-        {% if request.user.is_authenticated %}
-            <a href="{% url 'dashboard:dashboard' %}" class="py-2 border-b border-paper-line">
-                داشبورد
-            </a>
-        {% else %}
-            <a href="{% url 'account:login' %}" class="py-2 border-b border-paper-line">
-                ورود به بخش مدرسه
-            </a>
-        {% endif %}
-    </nav>
 </header>

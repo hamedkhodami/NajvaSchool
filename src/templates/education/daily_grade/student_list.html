@@ -1,48 +1,97 @@
 {% extends "base/base_dashboard.html" %}
 
 {% block title %}نمرات روزانه من{% endblock %}
+{% block dashboard_role %}نمرات روزانه{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow space-y-6">
 
-    <h1 class="text-lg font-bold mb-4">
+    <!-- عنوان -->
+    <h1 class="text-xl font-extrabold text-brand mb-4">
         نمرات روزانه — سال تحصیلی {{ active_year.name }}
     </h1>
 
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">درس</th>
-                <th class="p-2 border">عنوان</th>
-                <th class="p-2 border">نمره</th>
-                <th class="p-2 border">تاریخ</th>
-                <th class="p-2 border">معلم</th>
-            </tr>
-        </thead>
+    <!-- نسخه دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-xl border border-gray-200">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-100 text-ink-700">
+                <tr>
+                    <th class="p-3 border border-gray-200 text-right font-bold">درس</th>
+                    <th class="p-3 border border-gray-200 text-right font-bold">عنوان</th>
+                    <th class="p-3 border border-gray-200 text-center font-bold">نمره</th>
+                    <th class="p-3 border border-gray-200 text-center font-bold">تاریخ</th>
+                    <th class="p-3 border border-gray-200 text-right font-bold">معلم</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            {% for g in grades %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ g.subject.name }}</td>
-                <td class="p-2 border">{{ g.title }}</td>
-                <td class="p-2 border font-bold">{{ g.score }}</td>
-                <td class="p-2 border">{{ g.created_at|date:"Y/m/d" }}</td>
-                <td class="p-2 border">{{ g.teacher.user.full_name }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="p-4 text-center text-gray-500">
-                    هنوز نمره‌ای ثبت نشده است.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <tbody class="divide-y divide-gray-200">
+                {% for g in grades %}
+                <tr class="hover:bg-gray-50 transition">
 
-    <div class="mt-4 text-md font-bold">
+                    <td class="p-3 border border-gray-200">{{ g.subject.name }}</td>
+                    <td class="p-3 border border-gray-200">{{ g.title }}</td>
+
+                    <td class="p-3 border border-gray-200 text-center font-bold text-[#2563A6]">
+                        {{ g.score }}
+                    </td>
+
+                    <td class="p-3 border border-gray-200 text-center">
+                        {{ g.created_at|date:"Y/m/d" }}
+                    </td>
+
+                    <td class="p-3 border border-gray-200">
+                        {{ g.teacher.user.full_name }}
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="p-4 text-center text-gray-500">
+                        هنوز نمره‌ای ثبت نشده است.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- نسخه موبایل -->
+    <div class="md:hidden space-y-4">
+
+        {% for g in grades %}
+        <div class="rounded-xl border border-gray-200 bg-white shadow p-4 space-y-3">
+
+            <div class="flex justify-between">
+                <span class="font-bold text-brand">{{ g.subject.name }}</span>
+                <span class="font-extrabold text-[#2563A6]">{{ g.score }}</span>
+            </div>
+
+            <div class="text-sm text-ink-700">
+                <span class="font-bold">عنوان:</span> {{ g.title }}
+            </div>
+
+            <div class="text-sm text-ink-700">
+                <span class="font-bold">تاریخ:</span> {{ g.created_at|date:"Y/m/d" }}
+            </div>
+
+            <div class="text-sm text-ink-700">
+                <span class="font-bold">معلم:</span> {{ g.teacher.user.full_name }}
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-500 py-10">
+            هنوز نمره‌ای ثبت نشده است.
+        </p>
+        {% endfor %}
+
+    </div>
+
+    <!-- میانگین -->
+    <div class="mt-4 text-md font-extrabold">
         میانگین کل:
         {% if avg_score %}
-            {{ avg_score|floatformat:2 }}
+            <span class="text-[#101F33]">{{ avg_score|floatformat:2 }}</span>
         {% else %}
             <span class="text-gray-400">—</span>
         {% endif %}

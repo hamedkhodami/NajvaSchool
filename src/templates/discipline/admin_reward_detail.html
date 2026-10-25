@@ -1,41 +1,173 @@
 {% extends "base/base_dashboard.html" %}
-
 {% block title %}جزئیات تشویقی{% endblock %}
+{% block dashboard_role %}جزئیات تشویقی{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<section class="max-w-4xl mx-auto py-10 space-y-10">
 
-    <h1 class="text-xl font-bold mb-6">جزئیات تشویقی</h1>
-
-    <div class="bg-white p-6 rounded-lg shadow mb-6">
-        <p><strong>دانش‌آموز:</strong> {{ record.student.user.full_name }}</p>
-        <p><strong>کلاس:</strong> {{ record.classroom.get_grade_display }} {{ record.classroom.name }}</p>
-        <p><strong>ثبت‌کننده:</strong> {{ record.recorder.get_full_name }}</p>
-        <p><strong>تاریخ ثبت:</strong> {{ record.created_at }}</p>
+    <!-- هدر -->
+    <div class="flex items-center justify-between flex-wrap gap-3">
+        <h1 class="text-2xl font-extrabold text-brand">جزئیات تشویقی</h1>
+        <span class="text-sm text-ink-500">
+            ثبت‌شده در {{ record.created_at|date:"Y-m-d" }}
+        </span>
     </div>
 
-    <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
+    <!-- کارت اطلاعات -->
+    <div class="rounded-2xl bg-white p-6 shadow-card border border-surface-border space-y-6">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">دانش‌آموز</span>
+                <span class="font-extrabold text-brand">{{ record.student.user.full_name }}</span>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">کلاس</span>
+                <span>{{ record.classroom.get_grade_display }} {{ record.classroom.name }}</span>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">ثبت‌کننده</span>
+                <span>{{ record.recorder.get_full_name }}</span>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">دسته</span>
+                <span>{{ record.get_category_display }}</span>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">اثر</span>
+                <span>{{ record.get_effect_display }}</span>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">سطح رفتاری</span>
+                <span>{{ record.get_level_display|default:"—" }}</span>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-ink-500">نوع تربیتی</span>
+                <span>{{ record.get_educational_type_display|default:"—" }}</span>
+            </div>
+
+        </div>
+
+        <!-- عنوان و توضیحات -->
+        <div class="space-y-4 pt-2">
+            <div>
+                <span class="text-xs text-ink-500">عنوان</span>
+                <p class="font-bold text-ink-700">{{ record.title }}</p>
+            </div>
+
+            <div>
+                <span class="text-xs text-ink-500">توضیحات</span>
+                <p class="text-ink-700">{{ record.description|default:"—" }}</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- فرم ویرایش -->
+    <form method="post"
+          class="rounded-2xl bg-white p-6 shadow-card border border-surface-border space-y-8">
         {% csrf_token %}
 
-        <div>
-            <label class="block font-bold mb-2">عنوان:</label>
-            <input type="text" name="title" value="{{ record.title }}" class="border p-2 rounded w-full">
+        <h2 class="text-lg font-extrabold text-brand mb-2">ویرایش تشویقی</h2>
+
+        <!-- فیلدها کنار هم -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            <!-- دسته -->
+            <div>
+                <label class="block text-xs font-bold text-ink-700 mb-2">دسته:</label>
+                <select name="category"
+                        class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-2 text-sm">
+                    {% for value, label in record_categories %}
+                        <option value="{{ value }}" {% if record.category == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- اثر -->
+            <div>
+                <label class="block text-xs font-bold text-ink-700 mb-2">اثر:</label>
+                <select name="effect"
+                        class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-2 text-sm">
+                    {% for value, label in discipline_effects %}
+                        <option value="{{ value }}" {% if record.effect == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- سطح رفتاری -->
+            <div>
+                <label class="block text-xs font-bold text-ink-700 mb-2">سطح رفتاری:</label>
+                <select name="level"
+                        class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-2 text-sm">
+                    {% for value, label in behavioral_levels %}
+                        <option value="{{ value }}" {% if record.level == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- نوع تربیتی -->
+            <div>
+                <label class="block text-xs font-bold text-ink-700 mb-2">نوع تربیتی:</label>
+                <select name="educational_type"
+                        class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-2 text-sm">
+                    {% for value, label in educational_types %}
+                        <option value="{{ value }}" {% if record.educational_type == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
         </div>
 
-        <div>
-            <label class="block font-bold mb-2">توضیحات:</label>
-            <textarea name="description" class="border p-2 rounded w-full" rows="3">{{ record.description }}</textarea>
+        <!-- عنوان و توضیحات -->
+        <div class="space-y-6">
+
+            <div>
+                <label class="block text-xs font-bold text-ink-700 mb-2">عنوان:</label>
+                <input type="text" name="title"
+                       value="{{ record.title }}"
+                       class="w-full rounded-xl border border-surface-border bg-white px-4 py-2 text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-ink-700 mb-2">توضیحات:</label>
+                <textarea name="description"
+                          class="w-full rounded-xl border border-surface-border bg-white px-4 py-2 text-sm"
+                          rows="3">{{ record.description }}</textarea>
+            </div>
+
         </div>
 
-        <div>
-            <label class="block font-bold mb-2">تاریخ:</label>
-            <input type="date" name="date" value="{{ record.date }}" class="border p-2 rounded w-64">
+        <!-- دکمه‌ها -->
+        <div class="flex flex-wrap gap-3 pt-2">
+
+            <button class="rounded-xl bg-success px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-success-hover transition">
+                ذخیره تغییرات
+            </button>
+
+            <a href="{% url 'discipline:admin_reward_list' %}"
+               class="rounded-xl bg-surface-muted px-6 py-3 text-sm font-bold text-ink-700 hover:bg-surface-muted/70 transition">
+                بازگشت به لیست
+            </a>
+
         </div>
 
-        <button class="px-4 py-2 bg-primary text-white rounded-lg">
-            ذخیره تغییرات
-        </button>
     </form>
 
-</div>
+</section>
 {% endblock %}

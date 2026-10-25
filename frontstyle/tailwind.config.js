@@ -2,12 +2,39 @@
 module.exports = {
   content: [
     "../src/templates/**/*.{html,htm,txt,jinja}",
+    "../src/apps/**/*.{html,htm,txt,jinja}",
     "../src/static/**/*.{js,html}",
-    "./*.html",
-    "./*.js"
+    "../src/apps/**/static/**/*.{js,html}",
   ],
 
   safelist: [
+    // اندازه‌ها
+    "px-4", "px-5",
+    "py-2", "py-2.5", "py-3",
+
+    // رنگ‌ها
+    "bg-primary",
+    "hover:bg-primary-hover",
+    "focus:ring-primary",
+    "text-white",
+
+    // دکمه‌ها
+    "rounded-xl",
+    "rounded-2xl",
+    "inline-flex",
+    "items-center",
+    "justify-center",
+    "font-bold",
+    "shadow-card",
+    "shadow-lift",
+
+    // نمایش
+    "md:block",
+    "md:hidden",
+    "sm:block",
+    "sm:hidden",
+
+    // قبلی‌ها
     "text-[13.5px]",
     "text-[14px]",
     "text-[14.5px]",
@@ -23,34 +50,45 @@ module.exports = {
     "tracking-tight",
     "aspect-[16/9]",
     "aspect-[4/3]",
-
     "lg:grid-cols-[1.3fr_1fr]",
     "lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]",
-
-    "shadow-card",
-    "shadow-lift",
-
-    "rounded-2xl",
-    "rounded-xl",
-
     "sm:grid-cols-2",
     "md:grid-cols-3",
     "lg:grid-cols-4",
     "lg:grid-cols-3",
     "lg:grid-cols-2",
     "sm:block",
-    "sm:hidden"
+    "sm:hidden",
   ],
 
   theme: {
-    container: { center: true, padding: "1rem" },
+    container: {
+      center: true,
+      padding: "1rem",
+    },
 
     extend: {
       colors: {
-        primary: "#00095C",
+        brand: {
+          DEFAULT: "#101F33",
+          hover: "#17293F",
+          active: "#0B1524",
+          soft: "#E8EDF3",
+        },
 
-        auth: {
-          navy: "#00095C",
+        accent: {
+          DEFAULT: "#9A6B1F",
+          hover: "#7A5115",
+          soft: "#F7EDD6",
+          light: "#D0A241",
+        },
+
+        surface: {
+          page: "#F1F5F9",
+          public: "#FAF8F3",
+          card: "#FFFFFF",
+          muted: "#F8FAFC",
+          border: "#E2E8F0",
         },
 
         dashboard: {
@@ -58,22 +96,21 @@ module.exports = {
         },
 
         public: {
-          bg: "#FAF9F6",
-
+          bg: "#FAF8F3",
         },
 
         ink: {
           900: "#0B1524",
           800: "#101F33",
           700: "#17293F",
-          600: "#22364F",
-          400: "#5A6B80",
-          300: "#8494A6",
+          600: "#33465D",
+          400: "#64748B",
+          300: "#94A3B8",
         },
 
         brass: {
-          700: "#7A5B18",
-          600: "#9A7423",
+          700: "#7A5115",
+          600: "#9A6B1F",
           500: "#B98A2E",
           400: "#D0A241",
           300: "#E1BE69",
@@ -89,6 +126,26 @@ module.exports = {
 
         up: "#1F7A5C",
         down: "#C2413B",
+
+        success: {
+          DEFAULT: "#1F7A5C",
+          soft: "#E7F4ED",
+        },
+
+        warning: {
+          DEFAULT: "#A16207",
+          soft: "#FEF3C7",
+        },
+
+        danger: {
+          DEFAULT: "#C2413B",
+          soft: "#FDECEC",
+        },
+
+        info: {
+          DEFAULT: "#2563A6",
+          soft: "#EAF2FC",
+        },
       },
 
       fontFamily: {
@@ -96,8 +153,9 @@ module.exports = {
       },
 
       boxShadow: {
-        card: "0 1px 1px rgba(11,21,36,.04), 0 10px 30px -22px rgba(11,21,36,.5)",
-        lift: "0 2px 4px rgba(11,21,36,.05), 0 18px 40px -24px rgba(11,21,36,.55)",
+        card: "0 2px 8px rgba(11,21,36,.04), 0 12px 32px -24px rgba(11,21,36,.24)",
+        lift: "0 8px 24px -12px rgba(11,21,36,.18), 0 2px 6px rgba(11,21,36,.04)",
+        header: "0 4px 24px rgba(11,21,36,.045)",
       },
 
       maxWidth: {
@@ -105,7 +163,13 @@ module.exports = {
       },
 
       backgroundImage: {
-        "gold-gradient": "linear-gradient(to right, #D4AF37, #B8860B)",
+        "gold-gradient": "linear-gradient(135deg, #D0A241, #9A6B1F)",
+        "hero-gradient": "linear-gradient(135deg, #FAF8F3 0%, #F2EBDD 55%, #FFFFFF 100%)",
+        "navy-gradient": "linear-gradient(135deg, #101F33 0%, #203956 100%)",
+      },
+
+      transitionDuration: {
+        400: "400ms",
       },
     },
   },

@@ -68,10 +68,6 @@ class StudentDevelopmentRecordModel(BaseModel):
         verbose_name="عنوان",
     )
 
-    date = models.DateField(
-        verbose_name="تاریخ",
-    )
-
     description = models.TextField(
         blank=True,
         verbose_name="توضیحات",
@@ -80,7 +76,7 @@ class StudentDevelopmentRecordModel(BaseModel):
     class Meta:
         verbose_name = "سابقه پرورشی"
         verbose_name_plural = "سوابق پرورشی"
-        ordering = ("-date", "-created_at")
+        ordering = ("-created_at",)
 
     def __str__(self):
         return f"{self.student} - {self.title}"

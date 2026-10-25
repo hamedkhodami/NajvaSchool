@@ -1,0 +1,135 @@
+{% extends "base/base_dashboard.html" %}
+{% block title %}تشویقی‌های من{% endblock %}
+{% block dashboard_role %}تشویقی‌های من{% endblock %}
+
+{% block content %}
+<section class="max-w-5xl mx-auto py-10 space-y-8">
+
+    <!-- عنوان -->
+    <h1 class="text-2xl font-extrabold text-brand">
+        تشویقی‌های من
+    </h1>
+
+    <!-- نسخه دسکتاپ -->
+    <div class="hidden md:block space-y-4">
+
+        {% for record in records %}
+        <div class="rounded-2xl bg-white p-6 shadow-card border border-surface-border space-y-4">
+
+            <!-- عنوان + تاریخ -->
+            <div class="flex justify-between items-center">
+                <span class="text-xl font-extrabold text-brand">{{ record.title }}</span>
+                <span class="text-sm text-ink-500">{{ record.created_at|date:"Y-m-d" }}</span>
+            </div>
+
+            <!-- اطلاعات اصلی -->
+            <div class="grid grid-cols-2 gap-4 text-sm text-ink-700">
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-ink-500">کلاس</span>
+                    <span>{{ record.classroom.get_grade_display }} {{ record.classroom.name }}</span>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-ink-500">دسته</span>
+                    <span>{{ record.get_category_display }}</span>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-ink-500">اثر</span>
+                    <span>{{ record.get_effect_display }}</span>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-ink-500">ثبت‌کننده</span>
+                    <span>{{ record.recorder.get_full_name }}</span>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-ink-500">سطح رفتاری</span>
+                    <span>{{ record.get_level_display|default:"—" }}</span>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-ink-500">نوع تربیتی</span>
+                    <span>{{ record.get_educational_type_display|default:"—" }}</span>
+                </div>
+
+            </div>
+
+            <!-- توضیحات -->
+            <div>
+                <span class="text-xs text-ink-500">توضیحات</span>
+                <p class="text-ink-700 mt-1">{{ record.description|default:"—" }}</p>
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-ink-400 py-10">
+            هیچ تشویقی برای شما ثبت نشده است.
+        </p>
+        {% endfor %}
+
+    </div>
+
+    <!-- نسخه موبایل -->
+    <div class="md:hidden space-y-4">
+
+        {% for record in records %}
+        <div class="rounded-2xl bg-white p-4 shadow-card border border-surface-border space-y-3 text-sm text-ink-700">
+
+            <div class="flex justify-between">
+                <span class="font-extrabold text-brand">{{ record.title }}</span>
+                <span>{{ record.created_at|date:"Y-m-d" }}</span>
+            </div>
+
+            <div class="grid grid-cols-1 gap-2">
+
+                <div>
+                    <span class="font-bold">کلاس:</span>
+                    {{ record.classroom.get_grade_display }} {{ record.classroom.name }}
+                </div>
+
+                <div>
+                    <span class="font-bold">دسته:</span>
+                    {{ record.get_category_display }}
+                </div>
+
+                <div>
+                    <span class="font-bold">اثر:</span>
+                    {{ record.get_effect_display }}
+                </div>
+
+                <div>
+                    <span class="font-bold">سطح رفتاری:</span>
+                    {{ record.get_level_display|default:"—" }}
+                </div>
+
+                <div>
+                    <span class="font-bold">نوع تربیتی:</span>
+                    {{ record.get_educational_type_display|default:"—" }}
+                </div>
+
+                <div>
+                    <span class="font-bold">ثبت‌کننده:</span>
+                    {{ record.recorder.get_full_name }}
+                </div>
+
+            </div>
+
+            <div>
+                <span class="font-bold">توضیحات:</span>
+                <p>{{ record.description|default:"—" }}</p>
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-ink-400 py-10">
+            هیچ تشویقی برای شما ثبت نشده است.
+        </p>
+        {% endfor %}
+
+    </div>
+
+</section>
+{% endblock %}

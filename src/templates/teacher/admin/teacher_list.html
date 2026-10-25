@@ -1,41 +1,135 @@
 {% extends "base/base_dashboard.html" %}
+{% load static %}
 
 {% block title %}لیست معلمان{% endblock %}
+{% block dashboard_role %}مدیریت معلمان{% endblock %}
 
 {% block content %}
+<div class="space-y-8">
 
-<div class="w-full max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-success"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            لیست معلمان مدرسه
+        </h1>
+    </div>
 
-    <h1 class="text-xl font-bold mb-6 text-center">لیست معلمان</h1>
+    <!-- آمار -->
+    <section class="rounded-2xl bg-white p-6 shadow-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-ink-600">تعداد کل معلمان</p>
+                <p class="mt-2 text-3xl font-extrabold text-brand">{{ total_teachers }}</p>
+            </div>
 
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">شماره موبایل</th>
-                <th class="p-2 border">نام و نام خانوادگی</th>
-                <th class="p-2 border">وضعیت همکاری</th>
-                <th class="p-2 border">نوع همکاری</th>
-                <th class="p-2 border">تخصص</th>
-            </tr>
-        </thead>
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-success-soft text-success shadow-card">
+                <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 3 2.5 8 12 13l9.5-5L12 3Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.5 10.1V15c3.5 2.8 7.5 2.8 11 0v-4.9"/>
+                </svg>
+            </div>
+        </div>
+    </section>
 
-        <tbody>
-            {% for teacher in teachers %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">
-                    <a href="{% url 'teacher:detail' teacher.pk %}" class="text-blue-600">
+    <!-- فرم جستجو -->
+    <form method="get"
+          class="rounded-2xl bg-white p-6 shadow-card space-y-4 sm:flex sm:items-center sm:gap-4 sm:space-y-0">
+
+        <div class="flex-1">
+            <input type="text"
+                   name="search"
+                   value="{{ search_value }}"
+                   placeholder="جستجو بر اساس نام یا شماره تماس"
+                   class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-success focus:ring-2 focus:ring-success">
+        </div>
+
+        <button class="rounded-xl bg-success px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-success-hover">
+            جستجو
+        </button>
+    </form>
+
+    <!-- جدول دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-2xl bg-white shadow-card">
+        <table class="w-full text-sm">
+            <thead class="bg-surface-muted text-ink-600">
+                <tr>
+                    <th class="p-4 text-right font-bold">شماره تماس</th>
+                    <th class="p-4 text-right font-bold">نام و نام خانوادگی</th>
+                    <th class="p-4 text-right font-bold">وضعیت همکاری</th>
+                    <th class="p-4 text-right font-bold">نوع همکاری</th>
+                    <th class="p-4 text-right font-bold">تخصص</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-surface-border">
+                {% for teacher in teachers %}
+                    <tr class="hover:bg-surface-muted/50 transition">
+
+                        <td class="p-4">
+                            <a href="{% url 'teacher:detail' teacher.pk %}"
+                               class="text-success font-bold hover:underline">
+                                {{ teacher.user.phone_number }}
+                            </a>
+                        </td>
+
+                        <td class="p-4 text-brand font-bold">{{ teacher.user.full_name }}</td>
+                        <td class="p-4 text-ink-600">{{ teacher.get_status_display }}</td>
+                        <td class="p-4 text-ink-600">{{ teacher.get_employment_type_display }}</td>
+                        <td class="p-4 text-ink-600">{{ teacher.specialization }}</td>
+
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-6 text-center text-ink-400">
+                            هیچ معلمی یافت نشد.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- کارت موبایل -->
+    <div class="md:hidden space-y-4">
+        {% for teacher in teachers %}
+            <div class="rounded-2xl bg-white p-4 shadow-card space-y-3">
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">شماره تماس</span>
+                    <a href="{% url 'teacher:detail' teacher.pk %}"
+                       class="text-success font-bold hover:underline">
                         {{ teacher.user.phone_number }}
                     </a>
-                </td>
-                <td class="p-2 border">{{ teacher.user.full_name }}</td>
-                <td class="p-2 border">{{ teacher.get_status_display }}</td>
-                <td class="p-2 border">{{ teacher.get_employment_type_display }}</td>
-                <td class="p-2 border">{{ teacher.specialization }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">نام و نام خانوادگی</span>
+                    <span class="text-brand font-extrabold">{{ teacher.user.full_name }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">وضعیت همکاری</span>
+                    <span class="text-ink-600">{{ teacher.get_status_display }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">نوع همکاری</span>
+                    <span class="text-ink-600">{{ teacher.get_employment_type_display }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">تخصص</span>
+                    <span class="text-ink-600">{{ teacher.specialization }}</span>
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-center text-ink-400">هیچ معلمی یافت نشد.</p>
+        {% endfor %}
+    </div>
 
 </div>
-
 {% endblock %}

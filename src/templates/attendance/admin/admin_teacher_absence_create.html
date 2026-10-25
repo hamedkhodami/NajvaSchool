@@ -1,32 +1,55 @@
 {% extends "base/base_dashboard.html" %}
+{% load static %}
 {% block title %}ثبت غیبت معلم{% endblock %}
+{% block dashboard_role %}مدیریت غیبت معلمان{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-8">
 
-    <h1 class="text-xl font-bold mb-6">ثبت غیبت معلم</h1>
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-danger"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            ثبت غیبت معلم
+        </h1>
+    </div>
 
-    <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
+    <!-- فرم -->
+    <form method="post"
+          class="rounded-2xl bg-white p-6 shadow-card space-y-6">
         {% csrf_token %}
 
-        <div>
-            <label class="block font-bold mb-2">معلم:</label>
-            {{ form.teacher }}
+        <!-- معلم -->
+        <div class="space-y-2">
+            <label class="text-sm font-bold text-ink-600">معلم:</label>
+            <div class="rounded-xl border border-surface-border bg-surface-muted px-4 py-3">
+                {{ form.teacher }}
+            </div>
         </div>
 
-        <div>
-            <label class="block font-bold mb-2">وضعیت:</label>
-            {{ form.status }}
+        <!-- وضعیت -->
+        <div class="space-y-2">
+            <label class="text-sm font-bold text-ink-600">وضعیت:</label>
+            <div class="rounded-xl border border-surface-border bg-surface-muted px-4 py-3">
+                {{ form.status }}
+            </div>
         </div>
 
-        <div>
-            <label class="block font-bold mb-2">توضیحات:</label>
-            {{ form.description }}
+        <!-- توضیحات -->
+        <div class="space-y-2">
+            <label class="text-sm font-bold text-ink-600">توضیحات:</label>
+            <div class="rounded-xl border border-surface-border bg-surface-muted px-4 py-3">
+                {{ form.description }}
+            </div>
         </div>
 
-        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+        <!-- دکمه -->
+        <button
+            class="inline-flex items-center gap-2 rounded-xl bg-danger px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-danger-hover hover:shadow-lift">
             ثبت غیبت
+            <span aria-hidden="true">←</span>
         </button>
+
     </form>
 
 </div>

@@ -98,7 +98,6 @@ class StaffAttendanceModel(BaseModel):
 
     date = models.DateField(
         verbose_name="تاریخ",
-        editable=False,
     )
 
     status = models.CharField(
@@ -123,12 +122,6 @@ class StaffAttendanceModel(BaseModel):
                 name="unique_teacher_attendance_per_day",
             )
         ]
-
-    def save(self, *args, **kwargs):
-        # اگر تاریخ هنوز ست نشده باشد، از created_at گرفته می‌شود
-        if not self.date:
-            self.date = self.created_at.date()
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.teacher} - {self.status} - {self.date}"

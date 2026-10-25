@@ -1,53 +1,89 @@
+
 {% extends "base/base_dashboard.html" %}
 
-{% block title %}لیست دروس{% endblock %}
+{% block title %}مدیریت دروس{% endblock %}
 
 {% block content %}
+<div class="space-y-6">
 
-<div class="w-full max-w-5xl mx-auto bg-white shadow rounded-lg p-6">
-
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-xl font-bold">لیست دروس</h1>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3">
+            <span class="h-8 w-1 rounded-full bg-accent"></span>
+            <div>
+                <h1 class="text-xl font-bold text-brand sm:text-2xl">مدیریت دروس</h1>
+                <p class="mt-1 text-sm text-ink-400">
+                    مشاهده، ثبت و ویرایش دروس مدرسه
+                </p>
+            </div>
+        </div>
 
         <a href="{% url 'academic:subject_create' %}"
-           class="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm">
+           class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+            <span class="text-lg">+</span>
             افزودن درس جدید
         </a>
     </div>
 
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">نام درس</th>
-                <th class="p-2 border">کد</th>
-                <th class="p-2 border">عملیات</th>
-            </tr>
-        </thead>
+    <div class="rounded-2xl border border-surface-border bg-white shadow-card">
+        <div class="flex items-center justify-between border-b border-surface-border px-5 py-4">
+            <div>
+                <h2 class="font-bold text-brand">فهرست دروس</h2>
+                <p class="mt-1 text-sm text-ink-400">درس‌های تعریف‌شده در سامانه</p>
+            </div>
+            <span class="rounded-lg bg-brand-soft px-3 py-1.5 text-sm font-bold text-brand">
+                {{ subjects|length }} درس
+            </span>
+        </div>
 
-        <tbody>
-            {% for subject in subjects %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ subject.name }}</td>
-                <td class="p-2 border">{{ subject.get_code_display }}</td>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[520px] text-right text-sm">
+                <thead class="bg-surface-muted text-ink-600">
+                    <tr>
+                        <th class="px-5 py-4 font-semibold">نام درس</th>
+                        <th class="px-5 py-4 font-semibold">پایه درس</th>
+                        <th class="px-5 py-4 text-center font-semibold">عملیات</th>
+                    </tr>
+                </thead>
 
-                <td class="p-2 border text-center space-x-2">
-
-                    <a href="{% url 'academic:subject_update' subject.id %}"
-                       class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg">
-                        ویرایش
-                    </a>
-
-                    <a href="{% url 'academic:subject_delete' subject.id %}"
-                       class="px-3 py-1 text-xs bg-red-600 text-white rounded-lg">
-                        حذف
-                    </a>
-
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                <tbody class="divide-y divide-surface-border">
+                    {% for subject in subjects %}
+                    <tr class="transition hover:bg-surface-muted">
+                        <td class="px-5 py-4 font-semibold text-brand">{{ subject.name }}</td>
+                        <td class="px-5 py-4 text-ink-600">{{ subject.get_code_display }}</td>
+                        <td class="px-5 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'academic:subject_update' subject.id %}"
+                                   class="rounded-lg border border-surface-border px-3 py-2 text-xs font-semibold text-brand transition hover:bg-brand-soft">
+                                    ویرایش
+                                </a>
+                                <a href="{% url 'academic:subject_delete' subject.id %}"
+                                   class="rounded-lg border border-danger/20 px-3 py-2 text-xs font-semibold text-danger transition hover:bg-danger-soft">
+                                    حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-5 py-14 text-center">
+                            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-muted text-2xl text-ink-400">
+                                ≡
+                            </div>
+                            <p class="mt-4 font-semibold text-brand">هنوز درسی ثبت نشده است</p>
+                            <p class="mt-2 text-sm text-ink-400">
+                                برای شروع، اولین درس مدرسه را ثبت کنید.
+                            </p>
+                            <a href="{% url 'academic:subject_create' %}"
+                               class="mt-4 inline-flex rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover">
+                                افزودن اولین درس
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </div>
-
 {% endblock %}

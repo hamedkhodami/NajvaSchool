@@ -5,6 +5,7 @@ from apps.discipline.views import (
     AdminRewardDeleteView,
     AdminRewardDetailView,
     AdminRewardListView,
+    StudentRewardListView,
 )
 
 
@@ -30,5 +31,8 @@ urlpatterns = [
         "rewards/<uuid:record_id>/delete/",
         AdminRewardDeleteView.as_view(),
         name="admin_reward_delete",
+    ),
+    path(
+        "students/rewards/", StudentRewardListView.as_view(), name="student_reward_list"
     ),
 ]

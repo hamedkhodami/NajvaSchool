@@ -1,61 +1,149 @@
 {% extends "base/base_dashboard.html" %}
 {% load jalali %}
+{% load static %}
 
 {% block title %}بانک سوالات{% endblock %}
+{% block dashboard_role %}بانک سوالات امتحانات{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-8">
 
-    <h1 class="text-xl font-bold mb-6">بانک سوالات</h1>
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-brand"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            بانک سوالات امتحانات
+        </h1>
+    </div>
 
     <!-- فیلتر درس -->
-    <form method="get" class="mb-6">
-        <label class="block text-sm font-bold mb-2">فیلتر بر اساس درس:</label>
-        <select name="subject" class="border p-2 rounded w-64">
-            <option value="">همهٔ درس‌ها</option>
-            {% for s in subjects %}
-                <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>
-                    {{ s.name }}
-                </option>
-            {% endfor %}
-        </select>
+    <form method="get"
+          class="rounded-2xl bg-white p-6 shadow-card space-y-4 sm:flex sm:items-end sm:gap-4 sm:space-y-0">
 
-        <button class="px-4 py-2 bg-primary text-white rounded-lg ml-2">
+        <div class="flex-1">
+            <label class="block text-sm font-bold text-ink-600 mb-2">فیلتر بر اساس درس:</label>
+
+            <select name="subject"
+                    class="w-full rounded-xl border border-surface-border bg-surface-muted px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand">
+                <option value="">همهٔ درس‌ها</option>
+
+                {% for s in subjects %}
+                    <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>
+                        {{ s.name }} — {{ s.get_code_display }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-brand-hover">
             اعمال فیلتر
         </button>
     </form>
 
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">درس</th>
-                <th class="p-2 border">معلم</th>
-                <th class="p-2 border">کلاس</th>
-                <th class="p-2 border">توضیحات</th>
-                <th class="p-2 border">فایل</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for exam in exams %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border">{{ exam.subject.name }}</td>
-                <td class="p-2 border">{{ exam.teacher.user.full_name }}</td>
-                <td class="p-2 border">
-                    {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
-                    ({{ exam.classroom.academic_year.name }})
-                </td>
-                <td class="p-2 border">{{ exam.description|default:"—" }}</td>
-                <td class="p-2 border">
-                    <a href="{{ exam.file.url }}" class="text-blue-600">دانلود</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="p-2 text-center">هیچ سوالی در بانک سوالات وجود ندارد.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- جدول دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-2xl bg-white shadow-card">
+        <table class="w-full text-sm">
+            <thead class="bg-surface-muted text-ink-600">
+                <tr>
+                    <th class="p-4 text-right font-bold">درس</th>
+                    <th class="p-4 text-right font-bold">معلم</th>
+                    <th class="p-4 text-right font-bold">کلاس</th>
+                    <th class="p-4 text-right font-bold">توضیحات</th>
+                    <th class="p-4 text-right font-bold">فایل سوالات</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-surface-border">
+                {% for exam in exams %}
+                    <tr class="hover:bg-surface-muted/50 transition">
+
+                        <td class="p-4 text-ink-600">
+                            {{ exam.subject.name }} — {{ exam.subject.get_code_display }}
+                        </td>
+
+                        <td class="p-4 text-brand font-bold">
+                            {{ exam.teacher.user.full_name }}
+                        </td>
+
+                        <td class="p-4 text-ink-600">
+                            {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
+                            ({{ exam.classroom.academic_year.name }})
+                        </td>
+
+                        <td class="p-4 text-ink-600">
+                            {{ exam.description|default:"—" }}
+                        </td>
+
+                        <td class="p-4">
+                            {% if exam.file %}
+                                <a href="{{ exam.file.url }}"
+                                   class="inline-flex items-center gap-1 rounded-lg bg-success px-4 py-2 text-xs font-bold text-white shadow-card hover:bg-success-hover">
+                                    دانلود فایل
+                                </a>
+                            {% else %}
+                                <span class="text-ink-400 text-xs">فایلی ثبت نشده</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-6 text-center text-ink-400">
+                            هیچ امتحانی با فایل سوال در بانک سوالات ثبت نشده است.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- کارت موبایل -->
+    <div class="md:hidden space-y-4">
+        {% for exam in exams %}
+            <div class="rounded-2xl bg-white p-4 shadow-card space-y-3">
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">درس</span>
+                    <span class="text-ink-600">
+                        {{ exam.subject.name }} — {{ exam.subject.get_code_display }}
+                    </span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">معلم</span>
+                    <span class="text-brand font-extrabold">{{ exam.teacher.user.full_name }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">کلاس</span>
+                    <span class="text-ink-600">
+                        {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
+                        ({{ exam.classroom.academic_year.name }})
+                    </span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-sm font-bold text-ink-600">توضیحات</span>
+                    <span class="text-ink-600">{{ exam.description|default:"—" }}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-bold text-ink-600">فایل سوالات</span>
+                    {% if exam.file %}
+                        <a href="{{ exam.file.url }}"
+                           class="inline-flex items-center gap-1 rounded-lg bg-success px-4 py-2 text-xs font-bold text-white shadow-card hover:bg-success-hover">
+                            دانلود
+                        </a>
+                    {% else %}
+                        <span class="text-ink-400 text-xs">فایلی ثبت نشده</span>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-center text-ink-400">هیچ امتحانی با فایل سوال ثبت نشده است.</p>
+        {% endfor %}
+    </div>
 
 </div>
 {% endblock %}

@@ -38,4 +38,9 @@ urlpatterns = [
     ),
     path("users/", user.UserListView.as_view(), name="user_list"),
     path("users/<uuid:pk>/", user.UserDetailView.as_view(), name="user_detail"),
+    path(
+        "users/<uuid:user_id>/toggle-access/",
+        user.UserAccessToggleView.as_view(),
+        name="user_toggle_access",
+    ),
 ]

@@ -2,54 +2,159 @@
 {% load jalali %}
 
 {% block title %}حضور و غیاب — لیست جلسات{% endblock %}
+{% block dashboard_role %}حضور و غیاب کلاس‌ها{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-6 py-6">
 
-    <h1 class="text-xl font-bold mb-6">جلسات برنامه هفتگی شما</h1>
-
-    <div class="bg-white p-4 rounded-lg shadow">
-
-        <table class="w-full text-sm border">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2 border">کلاس</th>
-                    <th class="p-2 border">درس</th>
-                    <th class="p-2 border">روز هفته</th>
-                    <th class="p-2 border">زنگ</th>
-                    <th class="p-2 border">عملیات</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for s in schedules %}
-                <tr class="hover:bg-gray-50">
-
-                    <td class="p-2 border">{{ s.classroom.name }}</td>
-                    <td class="p-2 border">{{ s.subject.name }}</td>
-                    <td class="p-2 border">{{ s.get_weekday_display }}</td>
-                    <td class="p-2 border">{{ s.session_number }}</td>
-
-                    <td class="p-2 border text-center">
-                        <a href="{% url 'attendance:teacher_session' s.id %}"
-                           class="px-3 py-1 bg-primary text-white rounded-lg text-xs">
-                            ورود به جلسه
-                        </a>
-                    </td>
-
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="p-4 text-center text-gray-500">
-                        هیچ جلسه‌ای یافت نشد.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-
+    <!-- عنوان -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-primary"></span>
+        <div>
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                جلسات برنامه هفتگی شما
+            </h1>
+            <p class="mt-1 text-sm text-ink-500">
+                مشاهده برنامه و ورود به جلسه حضور و غیاب
+            </p>
+        </div>
     </div>
+
+    <!-- خلاصه -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="rounded-2xl border border-surface-border bg-white p-4 shadow-card">
+            <p class="text-sm text-ink-500">تعداد جلسات</p>
+            <p class="mt-2 text-2xl font-extrabold text-brand">
+                {{ total_sessions }}
+            </p>
+        </div>
+
+        <div class="rounded-2xl border border-surface-border bg-white p-4 shadow-card">
+            <p class="text-sm text-ink-500">روزهای دارای کلاس</p>
+            <p class="mt-2 text-2xl font-extrabold text-brand">
+                {{ active_days_count }}
+            </p>
+        </div>
+    </div>
+
+    <!-- کارت جدول -->
+    <section class="rounded-2xl border border-surface-border bg-white shadow-card">
+
+        <div class="border-b border-surface-border p-5">
+            <h2 class="font-extrabold text-brand">لیست جلسات</h2>
+            {% if active_year %}
+                <p class="mt-1 text-sm text-ink-500">
+                    سال تحصیلی: {{ active_year }}
+                </p>
+            {% endif %}
+        </div>
+
+        {% if has_sessions %}
+
+            <!-- جدول دسکتاپ فقط در md و بالاتر -->
+            <div class="overflow-x-auto hidden md:block">
+                <table class="w-full min-w-[650px] text-sm">
+                    <thead class="bg-surface-muted text-ink-600">
+                        <tr>
+                            <th class="p-4 text-right font-bold">کلاس</th>
+                            <th class="p-4 text-right font-bold">درس</th>
+                            <th class="p-4 text-right font-bold">روز هفته</th>
+                            <th class="p-4 text-right font-bold">زنگ</th>
+                            <th class="p-4 text-center font-bold">عملیات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-surface-border">
+                        {% for s in schedules %}
+                            <tr class="transition hover:bg-surface-muted/40">
+                                <td class="p-4 font-semibold text-ink-700">
+                                    {{ s.classroom.get_grade_display }} {{ s.classroom.name }}
+                                </td>
+
+                                <td class="p-4 text-ink-600">{{ s.subject.name }}</td>
+                                <td class="p-4 text-ink-600">{{ s.get_weekday_display }}</td>
+                                <td class="p-4 text-ink-600">زنگ {{ s.session_number }}</td>
+
+                                <td class="p-4 text-center">
+                                    <a href="{% url 'attendance:teacher_session' s.id %}"
+                                       class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-500 px-4 py-2.5 text-xs font-bold text-white shadow-card transition hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-4 w-4" fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                        ورود به جلسه
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- کارت‌های موبایل فقط در sm و پایین‌تر -->
+            <div class="space-y-4 p-4 md:hidden">
+                {% for day in schedule_days %}
+                    {% if day.sessions %}
+                        <section class="space-y-3">
+
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-extrabold text-brand">{{ day.label }}</h3>
+                                <span class="rounded-full bg-surface-muted px-3 py-1 text-xs font-bold text-ink-500">
+                                    {{ day.session_count }} جلسه
+                                </span>
+                            </div>
+
+                            {% for s in day.sessions %}
+                                <article class="rounded-2xl border border-surface-border bg-white p-4">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div>
+                                            <h4 class="font-extrabold text-brand">{{ s.subject.name }}</h4>
+                                            <p class="mt-1 text-sm text-ink-500">
+                                                {{ s.classroom.get_grade_display }} {{ s.classroom.name }}
+                                            </p>
+                                        </div>
+
+                                        <span class="shrink-0 rounded-lg bg-surface-muted px-3 py-1.5 text-xs font-bold text-ink-600">
+                                            زنگ {{ s.session_number }}
+                                        </span>
+                                    </div>
+
+                                    <div class="mt-3 text-sm text-ink-500">
+                                        روز: {{ day.label }}
+                                    </div>
+
+                                    <a href="{% url 'attendance:teacher_session' s.id %}"
+                                       class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-4 w-4" fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                        ورود به جلسه
+                                    </a>
+                                </article>
+                            {% endfor %}
+                        </section>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <div class="px-5 py-12 text-center">
+                <p class="font-bold text-brand">هیچ جلسه‌ای یافت نشد.</p>
+                <p class="mt-2 text-sm text-ink-500">
+                    برای سال تحصیلی فعال، جلسه‌ای در برنامه شما ثبت نشده است.
+                </p>
+            </div>
+        {% endif %}
+    </section>
 
 </div>
 {% endblock %}

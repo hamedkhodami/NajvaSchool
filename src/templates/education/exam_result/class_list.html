@@ -1,18 +1,33 @@
 {% extends "base/base_dashboard.html" %}
 
 {% block title %}کلاس‌های من{% endblock %}
+{% block dashboard_role %}کلاس‌های من{% endblock %}
 
 {% block content %}
-<div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
+<div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow space-y-6">
 
-    <h1 class="text-lg font-bold mb-4">کلاس‌های من</h1>
+    <!-- عنوان -->
+    <h1 class="text-xl font-extrabold text-brand mb-4">
+        کلاس‌های من
+    </h1>
 
+    <!-- لیست کلاس‌ها -->
     <ul class="space-y-3">
         {% for class in classrooms %}
         <li>
             <a href="{% url 'education:teacher_class_exam_results' class.id %}"
-               class="block p-3 border rounded hover:bg-gray-50">
-                {{ class.get_grade_display }} — {{ class.name }}
+               class="block p-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">
+
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-ink-700">
+                        {{ class.get_grade_display }} — {{ class.name }}
+                    </span>
+
+                    <span class="text-sm text-[#2563A6] font-bold">
+                        مشاهده نتایج
+                    </span>
+                </div>
+
             </a>
         </li>
         {% endfor %}

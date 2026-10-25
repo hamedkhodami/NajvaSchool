@@ -1,19 +1,64 @@
+
 {% extends "base/base_dashboard.html" %}
+
 {% block title %}حذف جلسه{% endblock %}
+
 {% block content %}
-<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
-    <h1 class="text-lg font-bold mb-4 text-red-600">حذف جلسه</h1>
-    <p class="text-sm mb-4">
-        آیا مطمئن هستید که می‌خواهید جلسه
-        <span class="font-bold">{{ session.subject }}</span>
-        در کلاس <span class="font-bold">{{ session.classroom.name }}</span>
-        را حذف کنید؟
-    </p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg">
-            حذف جلسه
-        </button>
-    </form>
+<div class="mx-auto max-w-xl">
+    <div class="overflow-hidden rounded-2xl border border-danger/20 bg-white shadow-card">
+
+        <div class="border-b border-danger/10 bg-danger-soft px-6 py-5">
+            <div class="flex items-center gap-3">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-xl text-danger">
+                    !
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-danger">حذف جلسه</h1>
+                    <p class="mt-1 text-sm text-ink-600">تأیید حذف از برنامه هفتگی</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-5 p-6">
+            <p class="leading-7 text-ink-700">
+                آیا مطمئن هستید که می‌خواهید این جلسه را حذف کنید؟
+                این عملیات ممکن است قابل بازگشت نباشد.
+            </p>
+
+            <div class="space-y-3 rounded-xl border border-surface-border bg-surface-muted p-4">
+                <div class="flex justify-between gap-4 text-sm">
+                    <span class="text-ink-400">کلاس</span>
+                    <span class="font-semibold text-brand">{{ session.classroom.name }}</span>
+                </div>
+                <div class="flex justify-between gap-4 text-sm">
+                    <span class="text-ink-400">درس</span>
+                    <span class="font-semibold text-brand">{{ session.subject }}</span>
+                </div>
+                <div class="flex justify-between gap-4 text-sm">
+                    <span class="text-ink-400">معلم</span>
+                    <span class="font-semibold text-brand">{{ session.teacher }}</span>
+                </div>
+                <div class="flex justify-between gap-4 text-sm">
+                    <span class="text-ink-400">روز و شماره جلسه</span>
+                    <span class="font-semibold text-brand">
+                        {{ session.get_weekday_display }} ـ جلسه {{ session.session_number }}
+                    </span>
+                </div>
+            </div>
+
+            <form method="post" class="flex flex-col-reverse gap-3 sm:flex-row">
+                {% csrf_token %}
+                <a href="{% url 'academic:schedule_session_list' session.classroom.id %}"
+                   class="flex-1 rounded-xl border border-surface-border px-4 py-3 text-center text-sm font-semibold text-ink-600 transition hover:bg-surface-muted">
+                    انصراف
+                </a>
+                <button type="submit"
+                        class="flex-1 rounded-xl bg-danger px-4 py-3 text-sm font-semibold text-white transition hover:bg-danger/90 focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2">
+                    بله، حذف شود
+                </button>
+            </form>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

@@ -99,8 +99,16 @@ class QuestionBankListView(TeacherOrAdminRequiredMixin, View):
     template_name = "education/exam/question_bank_list.html"
 
     def get(self, request):
-        exams = ExamModel.objects.filter(file__isnull=False).select_related(
-            "teacher", "subject", "classroom", "classroom__academic_year"
+        exams = (
+            ExamModel.objects.filter(file__isnull=False)
+            .exclude(file="")
+            .select_related(
+                "teacher",
+                "teacher__user",
+                "subject",
+                "classroom",
+                "classroom__academic_year",
+            )
         )
 
         subject_id = request.GET.get("subject")

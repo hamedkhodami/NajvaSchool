@@ -1,28 +1,40 @@
 {% extends "base/base.html" %}
+{% load static %}
+
 {% block title %}{{ item.title }}{% endblock %}
 
 {% block content %}
+<section class="py-16">
+    <div class="container max-w-screen">
 
-<section class="container max-w-screen py-10">
+        <!-- عنوان خبر -->
+        <h1 class="text-3xl font-extrabold text-brand mb-6">
+            {{ item.title }}
+        </h1>
 
-    <h1 class="text-2xl font-bold mb-4">{{ item.title }}</h1>
+        <!-- تصویر خبر -->
+        {% if item.image %}
+            <div class="mb-8">
+                <img src="{{ item.image.url }}"
+                     alt="{{ item.title }}"
+                     class="w-full max-w-3xl mx-auto rounded-2xl shadow-card">
+            </div>
+        {% endif %}
 
-    {% if item.image %}
-        <img src="{{ item.image.url }}"
-             class="w-full max-w-xl rounded-lg mb-6">
-    {% endif %}
+        <!-- متن خبر -->
+        <div class="prose prose-sm prose-ink max-w-3xl mx-auto leading-8 text-ink-700 text-[15.5px]">
+            {{ item.content|linebreaks }}
+        </div>
 
-    <div class="text-ink-700 leading-7 text-[15px]">
-        {{ item.content|linebreaks }}
+        <!-- دکمه بازگشت -->
+        <div class="mt-10 text-center">
+            <a href="{% url 'public:news_list' %}"
+               class="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-brand-hover">
+                بازگشت به اخبار
+                <span aria-hidden="true">←</span>
+            </a>
+        </div>
+
     </div>
-
-    <div class="mt-8">
-        <a href="{% url 'public:news_list' %}"
-           class="inline-block px-4 py-2 bg-primary text-white rounded-lg">
-            بازگشت به اخبار
-        </a>
-    </div>
-
 </section>
-
 {% endblock %}

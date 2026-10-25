@@ -1,27 +1,68 @@
 {% extends "base/base_dashboard.html" %}
 {% block title %}پروفایل دانش‌آموز{% endblock %}
+{% block dashboard_role %}پروفایل دانش‌آموز{% endblock %}
 
 {% block content %}
 <section class="container max-w-screen py-10">
 
-    <h1 class="text-xl font-bold mb-6">پروفایل دانش‌آموز</h1>
+    <!-- عنوان -->
+    <h1 class="text-xl font-extrabold text-brand mb-6">
+        پروفایل دانش‌آموز
+    </h1>
 
-    <div class="bg-white shadow-card rounded-xl p-6 space-y-4">
+    <!-- کارت اطلاعات -->
+    <div class="bg-white shadow rounded-xl p-6 space-y-4 border border-gray-200">
 
-        <p><strong>نام و نام خانوادگی:</strong> {{ student.user.full_name }}</p>
-        <p><strong>کد ملی:</strong> {{ student.national_id }}</p>
-        <p><strong>نام پدر:</strong> {{ student.father_name }}</p>
-        <p><strong>تاریخ تولد:</strong> {{ student.birth_date }}</p>
-        <p><strong>شماره تماس ولی:</strong> {{ student.parent_phone_number }}</p>
-        <p><strong>آدرس:</strong> {{ student.address }}</p>
-        <p><strong>وضعیت دانش‌آموز:</strong> {{ student.get_status_display }}</p>
-        <p><strong>تاریخ ثبت‌نام:</strong> {{ student.enrollment_date }}</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div>
+                <span class="font-bold text-ink-700">نام و نام خانوادگی:</span>
+                <p class="mt-1">{{ student.user.full_name }}</p>
+            </div>
+
+            <div>
+                <span class="font-bold text-ink-700">کد ملی:</span>
+                <p class="mt-1">{{ student.national_id }}</p>
+            </div>
+
+            <div>
+                <span class="font-bold text-ink-700">نام پدر:</span>
+                <p class="mt-1">{{ student.father_name }}</p>
+            </div>
+
+            <div>
+                <span class="font-bold text-ink-700">تاریخ تولد:</span>
+                <p class="mt-1">{{ student.birth_date }}</p>
+            </div>
+
+            <div>
+                <span class="font-bold text-ink-700">شماره تماس ولی:</span>
+                <p class="mt-1">{{ student.parent_phone_number }}</p>
+            </div>
+
+            <div>
+                <span class="font-bold text-ink-700">وضعیت دانش‌آموز:</span>
+                <p class="mt-1">{{ student.get_status_display }}</p>
+            </div>
+
+            <div class="sm:col-span-2">
+                <span class="font-bold text-ink-700">آدرس:</span>
+                <p class="mt-1">{{ student.address }}</p>
+            </div>
+
+            <div class="sm:col-span-2">
+                <span class="font-bold text-ink-700">تاریخ ثبت‌نام:</span>
+                <p class="mt-1">{{ student.enrollment_date }}</p>
+            </div>
+
+        </div>
 
     </div>
 
+    <!-- دکمه بازگشت -->
     <div class="mt-6">
         <a href="{% url 'dashboard:dashboard' %}"
-           class="inline-block px-4 py-2 bg-primary text-white rounded-lg">
+           class="inline-block px-5 py-2.5 bg-primary text-white rounded-lg font-bold hover:bg-primary-dark transition">
             بازگشت به داشبورد
         </a>
     </div>

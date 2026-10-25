@@ -1,10 +1,17 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
 from apps.academic.models import ClassroomModel
 from apps.academic.services.active_year import get_active_year
 from apps.account.mixins import AdminRequiredMixin
+from apps.discipline.enums import (
+    BehavioralEvaluationLevelEnum,
+    DisciplineEffectEnum,
+    EducationalRecordTypeEnum,
+    StudentRecordCategoryEnum,
+)
 from apps.discipline.models import StudentDevelopmentRecordModel
 from apps.student.models import StudentModel
 
@@ -22,6 +29,10 @@ class AdminRewardCreateView(AdminRequiredMixin, View):
             {
                 "classroom": classroom,
                 "students": students,
+                "record_categories": StudentRecordCategoryEnum.choices,
+                "discipline_effects": DisciplineEffectEnum.choices,
+                "behavioral_levels": BehavioralEvaluationLevelEnum.choices,
+                "educational_types": EducationalRecordTypeEnum.choices,
             },
         )
 
@@ -31,7 +42,11 @@ class AdminRewardCreateView(AdminRequiredMixin, View):
 
         title = request.POST.get("title")
         description = request.POST.get("description")
-        date = request.POST.get("date")
+
+        category = request.POST.get("category")
+        effect = request.POST.get("effect")
+        level = request.POST.get("level")
+        educational_type = request.POST.get("educational_type")
 
         selected_ids = request.POST.getlist("students")
 
@@ -46,11 +61,12 @@ class AdminRewardCreateView(AdminRequiredMixin, View):
                 student=student,
                 recorder=request.user,
                 classroom=classroom,
-                category="discipline",
-                effect="positive",
+                category=category,
+                effect=effect,
+                level=level,
+                educational_type=educational_type,
                 title=title,
                 description=description,
-                date=date,
             )
 
         messages.success(request, "تشویقی‌ها با موفقیت ثبت شدند.")
@@ -64,7 +80,9 @@ class AdminRewardListView(AdminRequiredMixin, View):
         active_year = get_active_year(request)
 
         records = StudentDevelopmentRecordModel.objects.filter(
-            effect="positive", classroom__academic_year=active_year
+            effect="positive",
+            classroom__academic_year=active_year,
+            is_deleted=False,  # اگر فیلد حذف نرم داری
         ).select_related("student", "classroom", "recorder")
 
         return render(
@@ -82,14 +100,30 @@ class AdminRewardDetailView(AdminRequiredMixin, View):
 
     def get(self, request, record_id):
         record = get_object_or_404(StudentDevelopmentRecordModel, id=record_id)
-        return render(request, self.template_name, {"record": record})
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "record": record,
+                "record_categories": StudentRecordCategoryEnum.choices,
+                "discipline_effects": DisciplineEffectEnum.choices,
+                "behavioral_levels": BehavioralEvaluationLevelEnum.choices,
+                "educational_types": EducationalRecordTypeEnum.choices,
+            },
+        )
 
     def post(self, request, record_id):
         record = get_object_or_404(StudentDevelopmentRecordModel, id=record_id)
 
         record.title = request.POST.get("title")
         record.description = request.POST.get("description")
-        record.date = request.POST.get("date")
+
+        record.category = request.POST.get("category")
+        record.effect = request.POST.get("effect")
+        record.level = request.POST.get("level")
+        record.educational_type = request.POST.get("educational_type")
+
         record.save()
 
         messages.success(request, "تشویقی با موفقیت بروزرسانی شد.")
@@ -102,3 +136,23 @@ class AdminRewardDeleteView(AdminRequiredMixin, View):
         record.delete()
         messages.success(request, "تشویقی حذف شد.")
         return redirect("discipline:admin_reward_list")
+
+
+class StudentRewardListView(LoginRequiredMixin, View):
+    template_name = "student/reward_list.html"
+
+    def get(self, request):
+        student = request.user.student
+
+        records = StudentDevelopmentRecordModel.objects.filter(
+            student=student, effect="positive", is_deleted=False  # اگر سافت‌دلیت داری
+        ).select_related("classroom", "recorder")
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "records": records,
+                "student": student,
+            },
+        )

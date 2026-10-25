@@ -1,100 +1,160 @@
 {% extends "base/base_dashboard.html" %}
+{% block title %}تهیه لیست پرداخت حقوق{% endblock %}
 
-{% block title %}تهیه لیست پرداخت حقوق معلمان{% endblock %}
+{% block extra_style %}
+<style>
+.finance-control {
+  width: 100%;
+  border: 1px solid #E2E8F0;
+  border-radius: .75rem;
+  padding: .7rem .85rem;
+  background: #fff;
+  color: #101F33;
+  outline: none;
+}
+.finance-control:focus {
+  border-color: #9A6B1F;
+  box-shadow: 0 0 0 3px rgb(154 107 31 / 12%);
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="bg-white p-6 rounded-lg shadow">
+<div class="space-y-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <span class="h-8 w-1 rounded-full bg-accent"></span>
+      <div>
+        <h1 class="text-xl font-bold text-brand sm:text-2xl">تهیه لیست پرداخت حقوق</h1>
+        <p class="mt-1 text-sm text-ink-400">سال تحصیلی {{ active_year.name }}</p>
+      </div>
+    </div>
+    <a href="{% url 'finance:salary_list' %}"
+       class="rounded-xl border border-surface-border px-4 py-2.5 text-sm font-semibold text-ink-600">
+      بازگشت
+    </a>
+  </div>
 
-    <h1 class="text-lg font-bold mb-4">
-        تهیه لیست پرداخت حقوق معلمان – سال {{ active_year.name }}
-    </h1>
+  <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card sm:p-7">
+    <form method="post"
+          action="{% url 'finance:salary_monthly_export' %}"
+          id="salary-monthly-form"
+          class="space-y-5">
+      {% csrf_token %}
 
-    <!-- فرم اصلی -->
-    <form method="post" action="{% url 'finance:salary_monthly_export' %}" id="salary-form">
-        {% csrf_token %}
+      <div class="max-w-xs">
+        <label for="month" class="mb-2 block text-sm font-semibold">
+          ماه پرداخت (۱ تا ۱۲)
+        </label>
+        <input id="month" type="number" name="month" min="1" max="12"
+               required class="finance-control">
+      </div>
 
-        <!-- انتخاب ماه -->
-        <div class="mb-4 max-w-xs">
-            <label class="block mb-1 font-bold">ماه پرداخت</label>
-            <input type="number" name="month" min="1" max="12"
-                   class="border p-2 rounded w-full" required>
-        </div>
+      <p class="rounded-xl bg-surface-muted p-4 text-sm text-ink-600">
+        معلمان را انتخاب کنید و مبلغ پرداختی هر نفر را بررسی کنید.
+      </p>
 
-        <!-- جدول معلمان و حکم حقوق -->
-        <table class="w-full text-sm border mb-4">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2 border">انتخاب</th>
-                    <th class="p-2 border">معلم</th>
-                    <th class="p-2 border">حقوق حکم</th>
-                    <th class="p-2 border">مبلغ پرداختی (قابل تغییر)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in salaries %}
-                <tr class="hover:bg-gray-50">
-                    <td class="p-2 border text-center">
-                        <input type="checkbox"
-                               class="teacher-select"
-                               data-teacher-id="{{ s.teacher.id }}">
-                    </td>
-                    <td class="p-2 border">
-                        {{ s.teacher.user.full_name }}
-                    </td>
-                    <td class="p-2 border">
-                        {{ s.base_amount|floatformat:0 }} تومان
-                    </td>
-                    <td class="p-2 border">
-                        <input type="number"
-                               class="border p-1 rounded w-full teacher-amount"
-                               data-teacher-id="{{ s.teacher.id }}"
-                               value="{{ s.base_amount|floatformat:0 }}">
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="p-4 text-center text-gray-500">
-                        هیچ حکمی برای این سال تحصیلی ثبت نشده است.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+      <div class="overflow-x-auto rounded-xl border border-surface-border">
+        <table class="w-full min-w-[700px] text-right text-sm">
+          <thead class="bg-surface-muted">
+            <tr>
+              <th class="px-4 py-4">انتخاب</th>
+              <th class="px-4 py-4">معلم</th>
+              <th class="px-4 py-4">حقوق پایه</th>
+              <th class="px-4 py-4">مبلغ پرداختی</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-surface-border">
+            {% for s in salaries %}
+            <tr>
+              <td class="px-4 py-4 text-center">
+                <input type="checkbox"
+                       class="teacher-select"
+                       data-teacher-id="{{ s.teacher.id }}"
+                       aria-label="انتخاب {{ s.teacher.user.full_name }}">
+              </td>
+              <td class="px-4 py-4 font-semibold text-brand">
+                {{ s.teacher.user.full_name }}
+              </td>
+              <td class="px-4 py-4">
+                {{ s.base_amount|floatformat:0 }} تومان
+              </td>
+              <td class="px-4 py-4">
+                <input type="number" min="0" step="1"
+                       class="finance-control teacher-amount"
+                       data-teacher-id="{{ s.teacher.id }}"
+                       value="{{ s.base_amount|floatformat:0 }}">
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="px-4 py-12 text-center text-ink-400">
+                هیچ حکمی برای این سال تحصیلی ثبت نشده است.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
         </table>
+      </div>
 
-        <!-- input مخفی برای ارسال داده‌ها به سرور -->
-        <input type="hidden" name="payload" id="salary-payload">
+      <input type="hidden" name="payload" id="salary-payload">
 
-        <!-- دکمه ساخت اکسل -->
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p id="selected-count" class="text-sm text-ink-500">۰ معلم انتخاب شده</p>
         <button type="submit"
-                class="bg-green-600 text-white px-4 py-2 rounded">
-            ساخت فایل اکسل و دانلود
+                class="rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-hover">
+          ساخت فایل اکسل و دانلود
         </button>
+      </div>
     </form>
-
+  </div>
 </div>
+{% endblock %}
 
+
+{% block extra_script %}
 <script>
-    // جمع‌آوری داده‌ها قبل از ارسال فرم
-    document.getElementById('salary-form').addEventListener('submit', function (e) {
-        const selected = [];
-        const checkboxes = document.querySelectorAll('.teacher-select');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('salary-monthly-form');
+  if (!form) return;
 
-        checkboxes.forEach(cb => {
-            if (cb.checked) {
-                const teacherId = cb.dataset.teacherId;
-                const amountInput = document.querySelector(
-                    '.teacher-amount[data-teacher-id="' + teacherId + '"]'
-                );
-                const amount = amountInput.value || 0;
+  const checkboxes = Array.from(form.querySelectorAll('.teacher-select'));
+  const count = document.getElementById('selected-count');
 
-                selected.push({
-                    teacher_id: teacherId,
-                    amount: amount
-                });
-            }
-        });
+  const updateCount = () => {
+    const selectedCount = checkboxes.filter(box => box.checked).length;
+    count.textContent =
+      new Intl.NumberFormat('fa-IR').format(selectedCount) + ' معلم انتخاب شده';
+  };
 
-        document.getElementById('salary-payload').value = JSON.stringify(selected);
-    });
+  checkboxes.forEach(box => box.addEventListener('change', updateCount));
+
+  form.addEventListener('submit', event => {
+    const selected = checkboxes
+      .filter(box => box.checked)
+      .map(box => {
+        const teacherId = box.dataset.teacherId;
+        const amountInput = form.querySelector(
+          '.teacher-amount[data-teacher-id="' + teacherId + '"]'
+        );
+
+        return {
+          teacher_id: teacherId,
+          amount: amountInput ? amountInput.value : '0'
+        };
+      });
+
+    if (selected.length === 0) {
+      event.preventDefault();
+      alert('لطفاً دست‌کم یک معلم را انتخاب کنید.');
+      return;
+    }
+
+    document.getElementById('salary-payload').value = JSON.stringify(selected);
+  });
+
+  updateCount();
+});
 </script>
 {% endblock %}

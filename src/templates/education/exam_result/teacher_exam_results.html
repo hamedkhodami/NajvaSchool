@@ -1,6 +1,7 @@
 {% extends "base/base_dashboard.html" %}
 
 {% block title %}ثبت نمرات{% endblock %}
+{% block dashboard_role %}ثبت نمرات{% endblock %}
 
 {% block content %}
 <div class="container max-w-screen py-10">
@@ -12,30 +13,32 @@
     <form method="post" class="bg-white p-6 rounded-lg shadow space-y-6">
         {% csrf_token %}
 
-        <table class="w-full text-sm border">
+        <table class="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="p-2 border">دانش‌آموز</th>
-                    <th class="p-2 border">نمره</th>
-                    <th class="p-2 border">توضیحات</th>
+                    <th class="p-2 border border-gray-200 text-right font-bold">دانش‌آموز</th>
+                    <th class="p-2 border border-gray-200 text-right font-bold">نمره</th>
+                    <th class="p-2 border border-gray-200 text-right font-bold">توضیحات</th>
                 </tr>
             </thead>
             <tbody>
                 {% for student in students %}
                 <tr class="hover:bg-gray-50">
-                    <td class="p-2 border">{{ student.user.full_name }}</td>
+                    <td class="p-2 border border-gray-200">
+                        {{ student.user.full_name }}
+                    </td>
 
-                    <td class="p-2 border">
+                    <td class="p-2 border border-gray-200">
                         <input type="number"
                                step="0.01"
                                name="score_{{ student.id }}"
                                value="{% if student.exam_result %}{{ student.exam_result.score }}{% endif %}"
-                               class="border p-2 rounded w-24">
+                               class="border border-gray-300 p-2 rounded w-24 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </td>
 
-                    <td class="p-2 border">
+                    <td class="p-2 border border-gray-200">
                         <textarea name="desc_{{ student.id }}"
-                                  class="border p-2 rounded w-full"
+                                  class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                                   rows="1">{% if student.exam_result %}{{ student.exam_result.description }}{% endif %}</textarea>
                     </td>
                 </tr>
@@ -43,7 +46,8 @@
             </tbody>
         </table>
 
-        <button class="px-4 py-2 bg-primary text-white rounded-lg">
+        <button
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
             ذخیره نمرات
         </button>
     </form>

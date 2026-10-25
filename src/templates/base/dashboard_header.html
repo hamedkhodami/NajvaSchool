@@ -1,0 +1,68 @@
+{% load static %}
+
+
+
+<header class="sticky top-0 z-50 border-b border-surface-border bg-white/95 shadow-sm backdrop-blur">
+    <div class="mx-auto flex min-h-[76px] max-w-screen-xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+        <!-- لوگو و نام مدرسه -->
+        <a href="{% url 'public:index' %}"
+           class="flex shrink-0 items-center gap-3"
+           aria-label="صفحه اصلی مدرسه">
+            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand text-xl font-black text-white shadow-sm">
+                م
+            </span>
+
+            <span class="hidden sm:block">
+                <span class="block text-sm font-extrabold text-brand">مدرسه</span>
+                <span class="mt-1 block text-xs text-slate-500">سامانه یکپارچه آموزشی</span>
+            </span>
+        </a>
+
+
+        <!-- کلیدها -->
+        <nav class="flex shrink-0 items-center gap-2" aria-label="ناوبری اصلی">
+
+            <a href="{% url 'public:index' %}"
+               class="flex h-10 items-center gap-2 rounded-xl border border-surface-border px-3 text-sm font-bold text-brand transition hover:border-accent hover:bg-accent-soft"
+               title="صفحه اصلی">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z"/>
+                </svg>
+                <span class="hidden md:inline">صفحه اصلی</span>
+            </a>
+
+            <a href="{% url 'dashboard:dashboard' %}"
+               class="flex h-10 items-center gap-2 rounded-xl bg-brand px-3 text-sm font-bold text-white transition hover:bg-brand-hover"
+               title="بازگشت به داشبورد">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                <span class="hidden md:inline">داشبورد</span>
+            </a>
+
+            <form method="post" action="{% url 'account:logout' %}" class="flex">
+                {% csrf_token %}
+                <button type="submit"
+                        class="flex h-10 items-center gap-2 rounded-xl border border-danger/20 px-3 text-sm font-bold text-danger transition hover:bg-danger-soft"
+                        title="خروج از حساب">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M10 17l5-5-5-5m5 5H3"/>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>
+                    </svg>
+                    <span class="hidden sm:inline">خروج</span>
+                </button>
+            </form>
+
+        </nav>
+    </div>
+</header>

@@ -1,32 +1,211 @@
 {% extends "base/base_dashboard.html" %}
-
+{% load jalali %}
 {% block title %}فعال‌سازی سال تحصیلی{% endblock %}
 
 {% block content %}
+<div class="mx-auto max-w-3xl space-y-6">
 
-<div class="max-w-md mx-auto bg-white shadow rounded-lg p-6">
+    <div class="flex items-center gap-3">
+        <span class="h-9 w-1.5 rounded-full bg-accent"></span>
+        <div>
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                تغییر سال تحصیلی فعال
+            </h1>
+            <p class="mt-1 text-sm leading-6 text-slate-500">
+                پیش از اعمال تغییر، اطلاعات سال انتخاب‌شده را بررسی کنید.
+            </p>
+        </div>
+    </div>
 
-    <h1 class="text-lg font-bold mb-4">فعال‌سازی سال تحصیلی</h1>
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+        <div class="border-b border-surface-border bg-surface-muted/70 px-5 py-4 sm:px-6">
+            <p class="text-sm font-semibold text-slate-500">سال انتخاب‌شده برای فعال‌سازی</p>
+            <h2 class="mt-2 text-2xl font-extrabold text-brand">{{ year.name }}</h2>
+        </div>
 
-    <p class="text-sm text-gray-700 mb-4">
-        با فعال کردن این سال تحصیلی، تمام کلاس‌ها، پایه‌ها، حضور و غیاب‌ها،
-        نمرات و سایر فرآیندهای آموزشی بر اساس این سال تنظیم می‌شوند.
-    </p>
+        <div class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 sm:p-6">
+            <div class="rounded-xl border border-surface-border p-4">
+                <p class="text-xs font-medium text-slate-500">تاریخ شروع</p>
+                <p class="mt-2 font-bold text-brand">{{ year.start_date|jalali }}</p>
+            </div>
+            <div class="rounded-xl border border-surface-border p-4">
+                <p class="text-xs font-medium text-slate-500">تاریخ پایان</p>
+                <p class="mt-2 font-bold text-brand">{{ year.end_date|jalali  }}</p>
+            </div>
+        </div>
 
-    <p class="text-sm mb-4">
-        سال انتخاب‌شده:
-        <span class="font-bold">{{ year.name }}</span>
-    </p>
+        <div class="border-t border-surface-border p-5 sm:px-6">
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <a href="{% url 'academic:academic_year_list' %}"
+                   class="inline-flex items-center justify-center rounded-xl border border-surface-border px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-brand">
+                    بازگشت
+                </a>
 
-    <form method="post">
-        {% csrf_token %}
-
-        <button type="submit"
-                class="w-full bg-green-600 text-white py-2 rounded-lg text-sm">
-            فعال‌سازی سال تحصیلی
-        </button>
-    </form>
-
+                <button type="button"
+                        id="openFirstModal"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white shadow-card transition hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+                    بررسی و ادامه
+                    <svg class="h-4 w-4" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
 </div>
 
+<!-- مودال اول: تأیید تغییر -->
+<div id="confirmModal"
+     class="fixed inset-0 z-[110] hidden items-center justify-center bg-brand/50 p-4 backdrop-blur-sm"
+     role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+
+    <div class="w-full max-w-md rounded-2xl border border-surface-border bg-white p-6 shadow-lift">
+        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-warning-soft text-warning">
+            <svg class="h-7 w-7" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 9v4m0 4h.01M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+            </svg>
+        </div>
+
+        <h2 id="confirmModalTitle" class="mt-5 text-lg font-extrabold text-brand">
+            تغییر سال تحصیلی؟
+        </h2>
+
+        <p class="mt-3 text-sm leading-7 text-slate-600">
+            آیا مطمئن هستید که می‌خواهید سال تحصیلی
+            <strong class="text-brand">{{ year.name }}</strong>
+            را به‌عنوان سال فعال سامانه انتخاب کنید؟
+        </p>
+
+        <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button type="button" data-close-modal
+                    class="rounded-xl border border-surface-border px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-surface-muted">
+                انصراف
+            </button>
+            <button type="button" id="continueToSecondModal"
+                    class="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white transition hover:bg-accent-hover">
+                بله، ادامه می‌دهم
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- مودال دوم: هشدار نهایی -->
+<div id="finalConfirmModal"
+     class="fixed inset-0 z-[120] hidden items-center justify-center bg-brand/60 p-4 backdrop-blur-sm"
+     role="dialog" aria-modal="true" aria-labelledby="finalModalTitle">
+
+    <div class="w-full max-w-lg rounded-2xl border border-warning/30 bg-white p-6 shadow-lift sm:p-7">
+        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger/10 text-danger">
+            <svg class="h-7 w-7" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 9v4m0 4h.01M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+            </svg>
+        </div>
+
+        <h2 id="finalModalTitle" class="mt-5 text-lg font-extrabold text-brand">
+            تأیید نهایی تغییر سال تحصیلی
+        </h2>
+
+        <div class="mt-4 rounded-xl border border-warning/30 bg-warning-soft p-4">
+            <p class="text-sm font-extrabold leading-7 text-warning">
+                با فعال‌سازی این سال، مبنای سال تحصیلی در بخش‌های وابسته سامانه تغییر می‌کند.
+            </p>
+            <p class="mt-2 text-sm leading-7 text-slate-700">
+                اطلاعات و فهرست‌های وابسته به سال تحصیلی، مانند کلاس‌ها و برنامه‌های درسی،
+                بر اساس سال فعال جدید نمایش داده خواهند شد. این عملیات به معنی حذف خودکار
+                اطلاعات سال‌های قبلی نیست.
+            </p>
+        </div>
+
+        <p class="mt-4 text-sm leading-7 text-slate-600">
+            آیا با آگاهی از این موضوع، فعال‌سازی سال
+            <strong class="text-brand">{{ year.name }}</strong>
+            را تأیید می‌کنید؟
+        </p>
+
+        <form method="post" class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            {% csrf_token %}
+
+            <button type="button" id="backToFirstModal"
+                    class="rounded-xl border border-surface-border px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-surface-muted">
+                بازگشت
+            </button>
+
+            <button type="submit"
+                    class="rounded-xl bg-danger px-4 py-2.5 text-sm font-bold text-white transition hover:bg-danger/90 focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2">
+                تأیید و فعال‌سازی سال
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const firstModal = document.getElementById("confirmModal");
+    const secondModal = document.getElementById("finalConfirmModal");
+    const openButton = document.getElementById("openFirstModal");
+    const continueButton = document.getElementById("continueToSecondModal");
+    const backButton = document.getElementById("backToFirstModal");
+
+    function openModal(modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.classList.add("overflow-hidden");
+    }
+
+    function closeModal(modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+
+        if (firstModal.classList.contains("hidden") &&
+            secondModal.classList.contains("hidden")) {
+            document.body.classList.remove("overflow-hidden");
+        }
+    }
+
+    openButton.addEventListener("click", function () {
+        openModal(firstModal);
+    });
+
+    continueButton.addEventListener("click", function () {
+        closeModal(firstModal);
+        openModal(secondModal);
+    });
+
+    backButton.addEventListener("click", function () {
+        closeModal(secondModal);
+        openModal(firstModal);
+    });
+
+    document.querySelectorAll("[data-close-modal]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            closeModal(firstModal);
+        });
+    });
+
+    [firstModal, secondModal].forEach(function (modal) {
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal(modal);
+            }
+        });
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            if (!secondModal.classList.contains("hidden")) {
+                closeModal(secondModal);
+            } else if (!firstModal.classList.contains("hidden")) {
+                closeModal(firstModal);
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

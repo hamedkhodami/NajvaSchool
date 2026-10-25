@@ -1,86 +1,127 @@
 {% extends "base/base_dashboard.html" %}
 
 {% block title %}داشبورد حقوق من{% endblock %}
+{% block dashboard_role %}داشبورد حقوق{% endblock %}
 
 {% block content %}
-<div class="bg-white p-6 rounded-lg shadow max-w-4xl mx-auto">
+<div class="bg-white p-6 rounded-xl shadow max-w-4xl mx-auto space-y-6">
 
-    <h1 class="text-xl font-bold mb-6">
+    <!-- عنوان -->
+    <h1 class="text-xl font-extrabold text-brand mb-4">
         داشبورد حقوق – {{ teacher.user.full_name }}
     </h1>
 
-    <!-- فیلتر سال تحصیلی -->
-    <form method="get" class="mb-6 max-w-xs">
-        <label class="block mb-1 font-bold">سال تحصیلی</label>
-        <select name="year" class="border p-2 rounded w-full">
+    <!-- فیلتر سال -->
+    <form method="get" class="mb-6 max-w-xs space-y-3">
+        <label class="block font-bold text-ink-700">سال تحصیلی</label>
+
+        <select name="year"
+                class="border border-gray-300 p-3 rounded-lg w-full bg-white focus:ring-2 focus:ring-blue-500">
             {% for y in years %}
             <option value="{{ y.id }}"
-                {% if selected_year.id == y.id %}
-                    selected
-                {% endif %}
-            >
+                {% if selected_year.id == y.id %}selected{% endif %}>
                 {{ y.name }}
             </option>
             {% endfor %}
         </select>
 
-        <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition">
             اعمال فیلتر
         </button>
     </form>
 
     {% if salary %}
-    <!-- اطلاعات حکم -->
-    <div class="grid grid-cols-2 gap-4 mb-6">
 
-        <div class="p-4 border rounded">
+    <!-- اطلاعات حکم -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+        <div class="p-4 border border-gray-200 rounded-xl bg-gray-50">
             <span class="text-gray-600">سال تحصیلی:</span>
-            <span class="font-bold">{{ salary.academic_year.name }}</span>
+            <span class="font-bold text-ink-700">{{ salary.academic_year.name }}</span>
         </div>
 
-        <div class="p-4 border rounded">
+        <div class="p-4 border border-gray-200 rounded-xl bg-gray-50">
             <span class="text-gray-600">حقوق پایه:</span>
             <span class="font-bold text-green-700">{{ salary.base_amount|floatformat:0 }} تومان</span>
         </div>
 
-        <div class="p-4 border rounded">
+        <div class="p-4 border border-gray-200 rounded-xl bg-gray-50">
             <span class="text-gray-600">مجموع دریافتی:</span>
             <span class="font-bold text-blue-700">{{ total_paid|floatformat:0 }} تومان</span>
         </div>
 
     </div>
 
-    <!-- جدول پرداخت‌ها -->
-    <h2 class="text-lg font-bold mb-3">پرداخت‌های انجام‌شده</h2>
+    <!-- نسخه دسکتاپ -->
+    <div class="hidden md:block overflow-x-auto rounded-xl border border-gray-200">
+        <h2 class="text-lg font-bold mb-3">پرداخت‌های انجام‌شده</h2>
 
-    <table class="w-full text-sm border mb-6">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">مبلغ</th>
-                <th class="p-2 border">تاریخ پرداخت</th>
-                <th class="p-2 border">توضیحات</th>
-            </tr>
-        </thead>
+        <table class="w-full text-sm">
+            <thead class="bg-gray-100 text-ink-700">
+                <tr>
+                    <th class="p-3 border border-gray-200 text-right font-bold">مبلغ</th>
+                    <th class="p-3 border border-gray-200 text-right font-bold">تاریخ پرداخت</th>
+                    <th class="p-3 border border-gray-200 text-right font-bold">توضیحات</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            {% for p in payments %}
-            <tr class="hover:bg-gray-50">
-                <td class="p-2 border font-bold">{{ p.amount|floatformat:0 }}</td>
-                <td class="p-2 border">{{ p.payment_date|date:"Y/m/d H:i" }}</td>
-                <td class="p-2 border">{{ p.description|default:"—" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="p-4 text-center text-gray-500">
-                    هیچ پرداختی ثبت نشده است.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <tbody class="divide-y divide-gray-200">
+                {% for p in payments %}
+                <tr class="hover:bg-gray-50 transition">
+
+                    <td class="p-3 border border-gray-200 font-bold text-green-700">
+                        {{ p.amount|floatformat:0 }}
+                    </td>
+
+                    <td class="p-3 border border-gray-200">
+                        {{ p.payment_date|date:"Y/m/d H:i" }}
+                    </td>
+
+                    <td class="p-3 border border-gray-200">
+                        {{ p.description|default:"—" }}
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="p-4 text-center text-gray-500">
+                        هیچ پرداختی ثبت نشده است.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- نسخه موبایل -->
+    <div class="md:hidden space-y-4">
+
+        <h2 class="text-lg font-bold mb-3">پرداخت‌های انجام‌شده</h2>
+
+        {% for p in payments %}
+        <div class="rounded-xl border border-gray-200 bg-white shadow p-4 space-y-3">
+
+            <div class="flex justify-between">
+                <span class="font-bold text-green-700">{{ p.amount|floatformat:0 }} تومان</span>
+                <span class="text-sm text-ink-600">{{ p.payment_date|date:"Y/m/d H:i" }}</span>
+            </div>
+
+            <div class="text-sm text-ink-700">
+                <span class="font-bold">توضیحات:</span>
+                {{ p.description|default:"—" }}
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-500 py-10">
+            هیچ پرداختی ثبت نشده است.
+        </p>
+        {% endfor %}
+
+    </div>
 
     {% else %}
-    <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
+    <div class="p-4 bg-yellow-100 text-yellow-800 rounded-xl">
         برای این سال تحصیلی حکمی ثبت نشده است.
     </div>
     {% endif %}

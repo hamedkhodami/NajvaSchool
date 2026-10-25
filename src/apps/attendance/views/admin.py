@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.views import View
 
 from apps.academic.services.active_year import get_active_year
@@ -116,17 +117,19 @@ class AdminTeacherAbsenceListView(AdminRequiredMixin, View):
         start_year = j_start.year
         end_year = j_end.year
 
+        # 🔥 کوئری صحیح
         absences = StaffAttendanceModel.objects.filter(
-            status=StaffAttendanceStatusEnum.ABSENT,
-            teacher__schedule_sessions__classroom__academic_year=active_year,
-        ).select_related("teacher")
+            status=StaffAttendanceStatusEnum.ABSENT
+        ).select_related("teacher", "teacher__user")
 
+        # جستجو
         if q:
             absences = absences.filter(
                 Q(teacher__user__full_name__icontains=q)
                 | Q(teacher__user__phone_number__icontains=q)
             )
 
+        # فیلتر ماه + روز
         if month and day:
             month = int(month)
             day = int(day)
@@ -136,9 +139,11 @@ class AdminTeacherAbsenceListView(AdminRequiredMixin, View):
 
             absences = absences.filter(date=g_date)
 
+        # فیلتر امروز
         if today:
             absences = absences.filter(date=today)
 
+        # ساخت لیست روزهای ماه
         if month:
             month = int(month)
             j_year = start_year if month >= 7 else end_year
@@ -176,7 +181,9 @@ class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
 
         form = StaffAttendanceForm()
         return render(
-            request, self.template_name, {"form": form, "active_year": active_year}
+            request,
+            self.template_name,
+            {"form": form, "active_year": active_year},
         )
 
     def post(self, request):
@@ -189,15 +196,45 @@ class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
         form = StaffAttendanceForm(request.POST)
 
         if form.is_valid():
-            obj = form.save(commit=False)
+            # داده‌های فرم
+            teacher = form.cleaned_data["teacher"]
+            status = form.cleaned_data["status"]
+            description = form.cleaned_data["description"]
 
-            # جلوگیری از ثبت غیبت خارج از سال تحصیلی
-            if not (active_year.start_date <= obj.date <= active_year.end_date):
+            today = timezone.now().date()
+
+            # چک سال تحصیلی
+            if not (active_year.start_date <= today <= active_year.end_date):
                 form.add_error("date", "تاریخ انتخاب‌شده خارج از سال تحصیلی فعال است.")
-                return render(request, self.template_name, {"form": form})
+                return render(
+                    request,
+                    self.template_name,
+                    {"form": form, "active_year": active_year},
+                )
 
-            obj.save()
-            messages.success(request, "غیبت معلم با موفقیت ثبت شد.")
+            # اگر رکوردی برای این معلم و امروز هست → آپدیت
+            # اگر نیست → بساز
+            obj, created = StaffAttendanceModel.objects.update_or_create(
+                teacher=teacher,
+                date=today,
+                defaults={
+                    "status": status,
+                    "description": description,
+                },
+            )
+
+            messages.success(
+                request,
+                (
+                    "غیبت معلم با موفقیت ثبت شد."
+                    if created
+                    else "وضعیت حضور/غیبت معلم برای امروز به‌روزرسانی شد."
+                ),
+            )
             return redirect("attendance:admin_teacher_absence_list")
 
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request,
+            self.template_name,
+            {"form": form, "active_year": active_year},
+        )

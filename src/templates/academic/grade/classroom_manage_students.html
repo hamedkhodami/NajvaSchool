@@ -1,40 +1,162 @@
 {% extends "base/base_dashboard.html" %}
+
 {% block title %}مدیریت دانش‌آموزان کلاس{% endblock %}
+
+{% block extra_style %}
+<style>
+    .class-form select,
+    .class-form input {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: #fff;
+        color: #101F33;
+        font: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .class-form select:focus,
+    .class-form input:focus {
+        border-color: #9A6B1F;
+        box-shadow: 0 0 0 3px rgba(154, 107, 31, .12);
+    }
+
+    .class-form .errorlist {
+        margin-top: 6px;
+        list-style: none;
+        color: #C2413B;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
-    <h1 class="text-lg font-bold mb-4">مدیریت دانش‌آموزان کلاس {{ classroom.name }}</h1>
+<div class="mx-auto max-w-4xl space-y-6">
 
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
+    <div class="flex items-center gap-3">
+        <span class="h-9 w-1.5 rounded-full bg-accent"></span>
         <div>
-            <label class="text-sm">افزودن دانش‌آموز</label>
-            {{ form.student }}
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                مدیریت دانش‌آموزان
+            </h1>
+            <p class="mt-1 text-sm text-slate-500">
+                کلاس {{ classroom.name }} · {{ classroom.get_grade_display }}
+            </p>
         </div>
-        <button type="submit"
-                class="w-full bg-green-600 text-white py-2 rounded-lg text-sm">
-            افزودن دانش‌آموز
-        </button>
-    </form>
-
-    <div class="mt-6">
-        <h2 class="text-md font-bold mb-2">دانش‌آموزان ثبت‌شده:</h2>
-        <ul class="list-disc pl-6 text-sm">
-            {% for student in students %}
-                <li class="flex justify-between items-center">
-                    {{ student }}
-                    <form method="post" action="{% url 'academic:classroom_remove_student' classroom.id student.id %}">
-                        {% csrf_token %}
-                        <button type="submit"
-                                class="px-2 py-1 text-xs bg-red-600 text-white rounded-lg">
-                            حذف
-                        </button>
-                    </form>
-                </li>
-            {% empty %}
-                <li>هیچ دانش‌آموزی ثبت نشده است.</li>
-            {% endfor %}
-        </ul>
     </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card sm:col-span-2">
+            <p class="text-xs text-slate-500">نام کلاس</p>
+            <p class="mt-2 text-lg font-extrabold text-brand">{{ classroom.name }}</p>
+            <p class="mt-1 text-sm text-slate-500">{{ classroom.academic_year.name }}</p>
+        </div>
+        <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+            <p class="text-xs text-slate-500">تعداد ثبت‌شده</p>
+            <p class="mt-2 text-2xl font-extrabold text-brand">{{ students|length }}</p>
+            <p class="mt-1 text-xs text-slate-500">از ظرفیت {{ classroom.capacity }} نفر</p>
+        </div>
+    </div>
+
+    <!-- افزودن دانش‌آموز -->
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+        <div class="flex items-center gap-3 border-b border-surface-border bg-surface-muted/60 p-5">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                    <circle cx="12" cy="12" r="10"/>
+                </svg>
+            </span>
+            <div>
+                <h2 class="font-extrabold text-brand">افزودن دانش‌آموز</h2>
+                <p class="mt-1 text-xs text-slate-500">دانش‌آموز موردنظر را انتخاب کنید.</p>
+            </div>
+        </div>
+
+        <form method="post" class="class-form space-y-4 p-5 sm:p-6">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="rounded-xl border border-danger/20 bg-danger-soft p-3 text-sm text-danger">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div>
+                <label for="{{ form.student.id_for_label }}"
+                       class="mb-2 block text-sm font-bold text-brand">
+                    دانش‌آموز
+                </label>
+                {{ form.student }}
+                {% if form.student.errors %}
+                    <div class="mt-1 text-xs leading-6 text-danger">{{ form.student.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <a href="{% url 'academic:classroom_detail' classroom.id %}"
+                   class="inline-flex items-center justify-center rounded-xl border border-surface-border px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-surface-muted">
+                    بازگشت به کلاس
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white shadow-card transition hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                    </svg>
+                    افزودن به کلاس
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- فهرست دانش‌آموزان -->
+    <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+        <div class="flex items-center justify-between gap-3 border-b border-surface-border p-5">
+            <div>
+                <h2 class="font-extrabold text-brand">دانش‌آموزان کلاس</h2>
+                <p class="mt-1 text-xs text-slate-500">فهرست افراد ثبت‌شده در این کلاس</p>
+            </div>
+            <span class="rounded-xl bg-info-soft px-3 py-2 text-xs font-bold text-info">
+                {{ students|length }} نفر
+            </span>
+        </div>
+
+        <div class="divide-y divide-surface-border">
+            {% for student in students %}
+            <div class="flex items-center justify-between gap-3 p-4 transition hover:bg-surface-muted/50 sm:px-5">
+                <div class="flex min-w-0 items-center gap-3">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-info-soft text-sm font-extrabold text-info">
+                        {{ forloop.counter }}
+                    </span>
+                    <div class="min-w-0">
+                        <p class="break-words text-sm font-bold text-brand">{{ student }}</p>
+                        <p class="mt-1 text-xs text-slate-500">دانش‌آموز ثبت‌شده</p>
+                    </div>
+                </div>
+
+                <form method="post"
+                      action="{% url 'academic:classroom_remove_student' classroom.id student.id %}"
+                      onsubmit="return confirm('آیا از حذف این دانش‌آموز از کلاس مطمئن هستید؟');">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="shrink-0 rounded-lg bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15 focus:outline-none focus:ring-2 focus:ring-danger">
+                        حذف از کلاس
+                    </button>
+                </form>
+            </div>
+            {% empty %}
+            <div class="px-5 py-12 text-center">
+                <p class="font-bold text-brand">هنوز دانش‌آموزی در این کلاس ثبت نشده است.</p>
+                <p class="mt-2 text-sm text-slate-500">از فرم بالا برای افزودن دانش‌آموز استفاده کنید.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
 </div>
 {% endblock %}

@@ -2,82 +2,180 @@
 {% load static %}
 
 {% block title %}لیست امتحانات{% endblock %}
+{% block dashboard_role %}امتحانات من{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-10 py-6">
 
-    <h1 class="text-xl font-bold mb-6">لیست امتحانات من</h1>
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-[#101F33]"></span>
+        <div>
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                لیست امتحانات من
+            </h1>
+            <p class="mt-1 text-sm text-ink-500">
+                مشاهده، مدیریت و ثبت نمرات امتحانات
+            </p>
+        </div>
+    </div>
 
+    <!-- دکمه ایجاد امتحان -->
     <a href="{% url 'education:exam_create' %}"
-       class="px-4 py-2 bg-primary text-white rounded-lg mb-6 inline-block">
+       class="inline-flex items-center gap-2 rounded-xl bg-[#2563A6] px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-[#1E4F82] transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
         ایجاد امتحان جدید
     </a>
 
-    <table class="w-full text-sm border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">کلاس</th>
-                <th class="p-2 border">درس</th>
-                <th class="p-2 border">نتیجه</th>
-                <th class="p-2 border">فایل</th>
-                <th class="p-2 border">جزئیات</th>
-                <th class="p-2 border">نمرات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for exam in exams %}
-            <tr class="hover:bg-gray-50">
+    <!-- نسخه دسکتاپ -->
+    <section class="hidden md:block rounded-2xl bg-white shadow-card border border-surface-border overflow-hidden">
 
-                <!-- کلاس -->
-                <td class="p-2 border">
+        <div class="border-b border-surface-border p-5">
+            <h2 class="font-extrabold text-brand">لیست امتحانات</h2>
+        </div>
+
+        <table class="w-full text-sm">
+            <thead class="bg-surface-muted text-ink-700">
+                <tr>
+                    <th class="p-4 text-right font-bold">کلاس</th>
+                    <th class="p-4 text-right font-bold">درس</th>
+                    <th class="p-4 text-right font-bold">وضعیت</th>
+                    <th class="p-4 text-right font-bold">فایل</th>
+                    <th class="p-4 text-right font-bold">جزئیات</th>
+                    <th class="p-4 text-right font-bold">نمرات</th>
+                    <th class="p-4 text-right font-bold">ویرایش</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-surface-border">
+                {% for exam in exams %}
+                <tr class="hover:bg-surface-muted/50 transition">
+
+                    <td class="p-4 text-ink-700 font-semibold">
+                        {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
+                    </td>
+
+                    <td class="p-4 text-ink-600">{{ exam.subject.name }}</td>
+
+                    <td class="p-4">
+                        {% if exam.is_published %}
+                            <span class="text-[#1F7A5C] font-bold">اعلام شده</span>
+                        {% else %}
+                            <span class="text-[#C2413B] font-bold">اعلام نشده</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="p-4">
+                        {% if exam.file %}
+                            <a href="{{ exam.file.url }}" class="text-[#2563A6] font-bold hover:underline">
+                                دانلود
+                            </a>
+                        {% else %}
+                            <span class="text-ink-400">—</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="p-4">
+                        <a href="{% url 'education:exam_detail' exam.id %}"
+                           class="text-[#2563A6] font-bold hover:underline">
+                            مشاهده
+                        </a>
+                    </td>
+
+                    <td class="p-4">
+                        <a href="{% url 'education:exam_results' exam.id %}"
+                           class="inline-flex items-center gap-2 rounded-xl bg-[#101F33] px-4 py-2 text-xs font-bold text-white shadow-card hover:bg-[#17293F] transition">
+                            ثبت نمرات
+                        </a>
+                    </td>
+
+                    <td class="p-4">
+                        <a href="{% url 'education:exam_edit' exam.id %}"
+                           class="inline-flex items-center gap-2 rounded-xl bg-[#101F33] px-4 py-2 text-xs font-bold text-white shadow-card hover:bg-[#17293F] transition">
+                            ویرایش وضعیت امتحان
+                        </a>
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="p-6 text-center text-ink-500">
+                        هیچ امتحانی ثبت نشده است.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+    <!-- نسخه موبایل -->
+    <section class="md:hidden space-y-4">
+
+        {% for exam in exams %}
+        <article class="rounded-2xl bg-white shadow-card border border-surface-border p-5 space-y-4">
+
+            <!-- کلاس و درس -->
+            <div>
+                <h3 class="font-extrabold text-brand text-lg">
+                    {{ exam.subject.name }}
+                </h3>
+                <p class="text-sm text-ink-500 mt-1">
                     {{ exam.classroom.get_grade_display }} {{ exam.classroom.name }}
-                </td>
+                </p>
+            </div>
 
-                <!-- درس -->
-                <td class="p-2 border">{{ exam.subject.name }}</td>
+            <!-- وضعیت -->
+            <div class="text-sm">
+                {% if exam.is_published %}
+                    <span class="text-[#1F7A5C] font-bold">نتیجه: اعلام شده</span>
+                {% else %}
+                    <span class="text-[#C2413B] font-bold">نتیجه: اعلام نشده</span>
+                {% endif %}
+            </div>
 
-                <!-- نتیجه -->
-                <td class="p-2 border">
-                    {% if exam.is_published %}
-                        <span class="text-green-600 font-bold">اعلام شده</span>
-                    {% else %}
-                        <span class="text-red-600 font-bold">اعلام نشده</span>
-                    {% endif %}
-                </td>
-
-                <!-- فایل -->
-                <td class="p-2 border">
-                    {% if exam.file %}
-                        <a href="{{ exam.file.url }}" class="text-blue-600">دانلود</a>
-                    {% else %}
-                        —
-                    {% endif %}
-                </td>
-
-                <!-- جزئیات -->
-                <td class="p-2 border">
-                    <a href="{% url 'education:exam_detail' exam.id %}"
-                       class="text-primary">مشاهده</a>
-                </td>
-
-                <!-- ثبت نمرات -->
-                <td class="p-2 border">
-                    <a href="{% url 'education:exam_results' exam.id %}"
-                       class="px-3 py-1 bg-primary text-white rounded-lg">
-                        ثبت نمرات
+            <!-- فایل -->
+            <div class="text-sm">
+                {% if exam.file %}
+                    <a href="{{ exam.file.url }}" class="text-[#2563A6] font-bold hover:underline">
+                        دانلود فایل امتحان
                     </a>
-                </td>
+                {% else %}
+                    <span class="text-ink-400">فایلی ثبت نشده</span>
+                {% endif %}
+            </div>
 
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="p-2 text-center">
-                    هیچ امتحانی ثبت نشده است.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <!-- دکمه‌ها -->
+            <div class="grid grid-cols-1 gap-3">
+
+                <a href="{% url 'education:exam_detail' exam.id %}"
+                   class="w-full text-center rounded-xl bg-[#2563A6] px-4 py-3 text-sm font-bold text-white shadow-card hover:bg-[#1E4F82] transition">
+                    مشاهده جزئیات
+                </a>
+
+                <a href="{% url 'education:exam_results' exam.id %}"
+                   class="w-full text-center rounded-xl bg-[#101F33] px-4 py-3 text-sm font-bold text-white shadow-card hover:bg-[#17293F] transition">
+                    ثبت نمرات
+                </a>
+
+                <a href="{% url 'education:exam_edit' exam.id %}"
+                   class="w-full text-center rounded-xl bg-[#101F33] px-4 py-3 text-sm font-bold text-white shadow-card hover:bg-[#17293F] transition">
+                    ویرایش وضعیت امتحان
+                </a>
+
+            </div>
+
+        </article>
+        {% empty %}
+        <p class="text-center text-ink-500 py-10">
+            هیچ امتحانی ثبت نشده است.
+        </p>
+        {% endfor %}
+
+    </section>
 
 </div>
 {% endblock %}

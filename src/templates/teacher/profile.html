@@ -1,52 +1,73 @@
 {% extends "base/base_dashboard.html" %}
+{% load static %}
 
 {% block title %}پروفایل معلم{% endblock %}
+{% block dashboard_role %}پروفایل معلم{% endblock %}
 
 {% block content %}
+<div class="space-y-10">
 
-<div class="w-full max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
-
-    <h1 class="text-xl font-bold text-center mb-6">پروفایل معلم</h1>
-
-    <div class="grid grid-cols-2 gap-4 text-sm">
-
-        <div>
-            <strong>شماره موبایل:</strong>
-            <p>{{ teacher.user.phone_number }}</p>
-        </div>
-
-        <div>
-            <strong>نام و نام خانوادگی:</strong>
-            <p>{{ teacher.user.full_name }}</p>
-        </div>
-
-        <div>
-            <strong>کد ملی:</strong>
-            <p>{{ teacher.national_id }}</p>
-        </div>
-
-        <div>
-            <strong>وضعیت همکاری:</strong>
-            <p>{{ teacher.get_status_display }}</p>
-        </div>
-
-        <div>
-            <strong>نوع همکاری:</strong>
-            <p>{{ teacher.get_employment_type_display }}</p>
-        </div>
-
-        <div>
-            <strong>مدرک تحصیلی:</strong>
-            <p>{{ teacher.education }}</p>
-        </div>
-
-        <div>
-            <strong>تخصص:</strong>
-            <p>{{ teacher.specialization }}</p>
-        </div>
-
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-brand"></span>
+        <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+            پروفایل معلم
+        </h1>
     </div>
 
-</div>
+    <!-- کارت پروفایل -->
+    <section class="rounded-2xl bg-white p-6 shadow-card">
 
+        <!-- هدر کارت -->
+        <div class="flex items-center gap-4 mb-6">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-brand">
+                <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <circle cx="12" cy="12" r="9"/>
+                </svg>
+            </span>
+
+            <div>
+                <p class="text-sm text-ink-600">نام و نام خانوادگی</p>
+                <p class="text-lg font-extrabold text-brand">{{ teacher.user.full_name }}</p>
+            </div>
+        </div>
+
+        <!-- اطلاعات پروفایل -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+
+            <div class="space-y-1">
+                <p class="text-ink-500 font-bold">شماره موبایل</p>
+                <p class="text-ink-700">{{ teacher.user.phone_number }}</p>
+            </div>
+
+            <div class="space-y-1">
+                <p class="text-ink-500 font-bold">کد ملی</p>
+                <p class="text-ink-700">{{ teacher.national_id }}</p>
+            </div>
+
+            <div class="space-y-1">
+                <p class="text-ink-500 font-bold">وضعیت همکاری</p>
+                <p class="text-ink-700">{{ teacher.get_status_display }}</p>
+            </div>
+
+            <div class="space-y-1">
+                <p class="text-ink-500 font-bold">نوع همکاری</p>
+                <p class="text-ink-700">{{ teacher.get_employment_type_display }}</p>
+            </div>
+
+            <div class="space-y-1">
+                <p class="text-ink-500 font-bold">مدرک تحصیلی</p>
+                <p class="text-ink-700">{{ teacher.education }}</p>
+            </div>
+
+            <div class="space-y-1">
+                <p class="text-ink-500 font-bold">تخصص</p>
+                <p class="text-ink-700">{{ teacher.specialization }}</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
 {% endblock %}

@@ -2,55 +2,75 @@
 {% load static %}
 
 {% block title %}ایجاد امتحان جدید{% endblock %}
+{% block dashboard_role %}ایجاد امتحان{% endblock %}
 
 {% block content %}
-<div class="container max-w-screen py-10">
+<div class="space-y-10 py-6">
 
-    <h1 class="text-xl font-bold mb-6">ایجاد امتحان جدید</h1>
-
-    <form method="post" enctype="multipart/form-data"
-          class="bg-white p-6 rounded-lg shadow space-y-6">
-        {% csrf_token %}
-
-        <!-- کلاس -->
+    <!-- عنوان صفحه -->
+    <div class="flex items-center gap-3">
+        <span class="h-8 w-1.5 rounded-full bg-[#101F33]"></span>
         <div>
-            <label class="block text-sm font-bold mb-1">کلاس</label>
-            {{ form.classroom }}
+            <h1 class="text-xl font-extrabold text-brand sm:text-2xl">
+                ایجاد امتحان جدید
+            </h1>
+            <p class="mt-1 text-sm text-ink-500">
+                ثبت امتحان جدید همراه با فایل سوال و اطلاعات کامل
+            </p>
         </div>
+    </div>
 
-        <!-- درس -->
-        <div>
-            <label class="block text-sm font-bold mb-1">درس</label>
-            {{ form.subject }}
-        </div>
-        <!-- توضیحات -->
-        <div>
-            <label class="block text-sm font-bold mb-1">توضیحات</label>
-            {{ form.description }}
-        </div>
+    <!-- فرم ایجاد امتحان -->
+    <section class="rounded-2xl bg-white shadow-card border border-surface-border p-6 space-y-6">
 
-        <!-- نمره کل -->
-        <div>
-            <label class="block text-sm font-bold mb-1">نمره کل</label>
-            {{ form.max_score }}
-        </div>
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
 
-        <!-- مدت امتحان -->
-        <div>
-            <label class="block text-sm font-bold mb-1">مدت امتحان (دقیقه)</label>
-            {{ form.duration }}
-        </div>
+            <!-- کلاس -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-ink-700">کلاس</label>
+                {{ form.classroom }}
+            </div>
 
-        <!-- فایل سوال -->
-        <div>
-            <label class="block text-sm font-bold mb-1">فایل سوال (اختیاری)</label>
-            {{ form.file }}
-        </div>
+            <!-- درس -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-ink-700">درس</label>
+                {{ form.subject }}
+            </div>
 
-        <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">
-            ثبت امتحان
-        </button>
-    </form>
+            <!-- توضیحات -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-ink-700">توضیحات</label>
+                {{ form.description }}
+            </div>
+
+            <!-- نمره کل -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-ink-700">نمره کل</label>
+                {{ form.max_score }}
+            </div>
+
+            <!-- مدت امتحان -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-ink-700">مدت امتحان (دقیقه)</label>
+                {{ form.duration }}
+            </div>
+
+            <!-- فایل سوال -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-ink-700">فایل سوال (اختیاری)</label>
+                {{ form.file }}
+            </div>
+
+            <!-- دکمه ثبت -->
+            <button
+                class="w-full sm:w-auto rounded-xl bg-[#2563A6] px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-[#1E4F82] transition">
+                ثبت امتحان
+            </button>
+
+        </form>
+
+    </section>
 
 </div>
 {% endblock %}

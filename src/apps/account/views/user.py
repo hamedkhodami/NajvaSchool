@@ -1,4 +1,7 @@
+from django.contrib.auth import logout
 from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect
+from django.views import View
 from django.views.generic import DetailView, ListView
 
 from apps.account.enums import UserRoleEnum
@@ -41,3 +44,18 @@ class UserDetailView(AdminRequiredMixin, DetailView):
     model = User
     template_name = "account/user_detail.html"
     context_object_name = "user"
+
+
+class UserAccessToggleView(View):
+    def post(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+
+        # تغییر وضعیت
+        user.is_active = not user.is_active
+        user.save(update_fields=["is_active"])
+
+        # اگر خودش بود و غیرفعال شد → logout
+        if request.user.id == user.id and user.is_active is False:
+            logout(request)
+
+        return redirect("account:user_list")

@@ -7,17 +7,25 @@ class NotificationDispatcher:
 
     @staticmethod
     def dispatch(notification):
+        if not notification.send_notify:
+            return False
+
         channel = notification.channel
         user = notification.to_user
 
         if channel == NotificationChannelEnum.SMS:
-            NotificationDispatcher._dispatch_sms(notification, user.phone_number)
+            NotificationDispatcher._dispatch_sms(
+                notification,
+                user.phone_number,
+            )
 
         elif channel == NotificationChannelEnum.EMAIL:
             NotificationDispatcher._dispatch_email(notification)
 
         elif channel == NotificationChannelEnum.IN_APP:
             NotificationDispatcher._dispatch_inapp(notification)
+
+        return True
 
     @staticmethod
     def _dispatch_sms(notification, phone_number):

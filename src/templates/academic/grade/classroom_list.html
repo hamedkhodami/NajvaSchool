@@ -74,16 +74,30 @@
 
     <!-- جدول دسکتاپ -->
     <section class="hidden overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card md:block">
-        <div class="border-b border-surface-border px-5 py-4">
-            <h2 class="font-extrabold text-brand">فهرست کلاس‌ها</h2>
+        <div class="flex items-center justify-between gap-3 border-b border-surface-border px-5 py-4">
+            <div>
+                <h2 class="font-extrabold text-brand">فهرست کلاس‌ها</h2>
+                <p class="mt-1 text-xs text-slate-500">
+                    برای مشاهده اطلاعات کامل، وارد جزئیات کلاس شوید.
+                </p>
+            </div>
+
+            <span class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent-soft px-3 py-2 text-xs font-extrabold text-accent">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 11v5m0-8h.01"/>
+                </svg>
+                جزئیات کلاس
+            </span>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[850px] text-right text-sm">
+            <table class="w-full min-w-[950px] text-right text-sm">
                 <thead class="bg-surface-muted text-xs font-bold text-slate-500">
                     <tr>
-                        <th class="px-5 py-4">پایه</th>
-                        <th class="px-5 py-4">کلاس</th>
+                        <th class="px-5 py-4">مشخصات کلاس</th>
                         <th class="px-5 py-4">دانش‌آموزان</th>
                         <th class="px-5 py-4">ظرفیت</th>
                         <th class="px-5 py-4">وضعیت</th>
@@ -93,151 +107,282 @@
 
                 <tbody class="divide-y divide-surface-border">
                     {% for cls in classrooms %}
-                    <tr class="transition hover:bg-surface-muted/60">
+                        <tr class="transition hover:bg-surface-muted/60">
 
+                            <!-- مشخصات کلاس و دکمه مهم جزئیات -->
+                            <td class="px-5 py-4">
+                                <div class="flex min-w-0 flex-col items-start gap-3">
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-500">
+                                            {{ cls.get_grade_display }}
+                                        </p>
 
-                        <td class="px-5 py-4 text-slate-600">
-                            <a href="{% url 'academic:classroom_detail' cls.id %}"
-                            class="font-extrabold text-brand transition hover:text-accent">
-                               {{ cls.get_grade_display }}
-                            </a>
-                        </td>
+                                        <p class="mt-1 font-extrabold text-brand">
+                                            {{ cls.name }}
+                                        </p>
 
-                        <td class="px-5 py-4">
-                            <a href="{% url 'academic:classroom_detail' cls.id %}"
-                               class="font-extrabold text-brand transition hover:text-accent">
-                                {{ cls.name }}
-                            </a>
-                            <p class="mt-1 text-xs text-slate-400">{{ cls.academic_year.name }}</p>
-                        </td>
+                                        <p class="mt-1 text-xs text-slate-400">
+                                            {{ cls.academic_year.name }}
+                                        </p>
+                                    </div>
 
-                        <td class="px-5 py-4">
-                            <span class="inline-flex rounded-lg bg-info-soft px-3 py-1.5 text-xs font-bold text-info">
-                                {{ cls.students.count }} نفر
-                            </span>
-                        </td>
+                                    <a href="{% url 'academic:classroom_detail' cls.id %}"
+                                       class="group inline-flex items-center justify-center gap-2 rounded-xl border border-accent/30 bg-accent-soft px-4 py-2.5 text-xs font-extrabold text-accent shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-white hover:shadow-md focus:outline-none focus:ring-4 focus:ring-accent/20">
 
-                        <td class="px-5 py-4 text-slate-600">{{ cls.capacity }} نفر</td>
+                                        <svg class="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
+                                             viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor" stroke-width="1.8"
+                                             aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+                                            <circle cx="12" cy="12" r="2.5"/>
+                                        </svg>
 
-                        <td class="px-5 py-4">
-                            {% if cls.status == cls.Status.ACTIVE %}
-                            <span class="rounded-full bg-success-soft px-3 py-1.5 text-xs font-bold text-success">
-                                {{ cls.get_status_display }}
-                            </span>
-                            {% elif cls.status == cls.Status.COMPLETED %}
-                            <span class="rounded-full bg-surface-muted px-3 py-1.5 text-xs font-bold text-slate-500">
-                                {{ cls.get_status_display }}
-                            </span>
-                            {% else %}
-                            <span class="rounded-full bg-warning-soft px-3 py-1.5 text-xs font-bold text-warning">
-                                {{ cls.get_status_display }}
-                            </span>
-                            {% endif %}
-                        </td>
+                                        <span>مشاهده جزئیات کلاس</span>
 
-                        <td class="px-5 py-4">
-                            <div class="flex flex-wrap items-center justify-center gap-2">
-                                <a href="{% url 'academic:classroom_detail' cls.id %}"
-                                   class="rounded-lg border border-surface-border px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-surface-muted">
-                                    مشاهده
-                                </a>
-                                <a href="{% url 'academic:classroom_update' cls.id %}"
-                                   class="rounded-lg bg-info-soft px-3 py-2 text-xs font-bold text-info transition hover:bg-info/15">
-                                    ویرایش
-                                </a>
-                                <a href="{% url 'academic:classroom_manage_students' cls.id %}"
-                                   class="rounded-lg bg-accent-soft px-3 py-2 text-xs font-bold text-accent transition hover:bg-accent/15">
-                                    دانش‌آموزان
-                                </a>
-                                <a href="{% url 'discipline:admin_reward_create' cls.id %}"
-                                   class="rounded-lg bg-success-soft px-3 py-2 text-xs font-bold text-success transition hover:bg-success/15">
-                                    ثبت تشویقی
-                                </a>
-                                <a href="{% url 'academic:classroom_delete' cls.id %}"
-                                   class="rounded-lg bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15">
-                                    حذف کلاس
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                                        <svg class="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:-translate-x-1"
+                                             viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor" stroke-width="2"
+                                             aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="m15 18-6-6 6-6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+
+                            <!-- تعداد دانش‌آموزان -->
+                            <td class="px-5 py-4">
+                                <span class="inline-flex items-center gap-2 rounded-lg bg-info-soft px-3 py-1.5 text-xs font-bold text-info">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor"
+                                         stroke-width="1.8" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="10" cy="7" r="4"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                    {{ cls.students.count }} نفر
+                                </span>
+                            </td>
+
+                            <!-- ظرفیت -->
+                            <td class="px-5 py-4 text-slate-600">
+                                {{ cls.capacity }} نفر
+                            </td>
+
+                            <!-- وضعیت -->
+                            <td class="px-5 py-4">
+                                {% if cls.status == cls.Status.ACTIVE %}
+                                    <span class="inline-flex rounded-full bg-success-soft px-3 py-1.5 text-xs font-bold text-success">
+                                        {{ cls.get_status_display }}
+                                    </span>
+                                {% elif cls.status == cls.Status.COMPLETED %}
+                                    <span class="inline-flex rounded-full bg-surface-muted px-3 py-1.5 text-xs font-bold text-slate-500">
+                                        {{ cls.get_status_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex rounded-full bg-warning-soft px-3 py-1.5 text-xs font-bold text-warning">
+                                        {{ cls.get_status_display }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- سایر عملیات -->
+                            <td class="px-5 py-4">
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+
+                                    <a href="{% url 'academic:classroom_update' cls.id %}"
+                                       class="rounded-lg bg-info-soft px-3 py-2 text-xs font-bold text-info transition hover:bg-info/15">
+                                        ویرایش
+                                    </a>
+
+                                    <a href="{% url 'academic:classroom_manage_students' cls.id %}"
+                                       class="rounded-lg bg-accent-soft px-3 py-2 text-xs font-bold text-accent transition hover:bg-accent/15">
+                                        دانش‌آموزان
+                                    </a>
+
+                                    <a href="{% url 'discipline:admin_reward_create' cls.id %}"
+                                       class="rounded-lg bg-success-soft px-3 py-2 text-xs font-bold text-success transition hover:bg-success/15">
+                                        ثبت تشویقی
+                                    </a>
+
+                                    <a href="{% url 'academic:classroom_delete' cls.id %}"
+                                       class="rounded-lg bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15">
+                                        حذف کلاس
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+
                     {% empty %}
-                    <tr>
-                        <td colspan="6" class="px-5 py-14 text-center">
-                            <p class="font-bold text-brand">کلاسی برای نمایش وجود ندارد.</p>
-                            <p class="mt-2 text-sm text-slate-500">برای شروع، یک کلاس جدید ایجاد کنید.</p>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="5" class="px-5 py-14 text-center">
+                                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-muted text-slate-400">
+                                    <svg class="h-7 w-7" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor"
+                                         stroke-width="1.7" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                                    </svg>
+                                </div>
+
+                                <p class="mt-4 font-bold text-brand">
+                                    کلاسی برای نمایش وجود ندارد.
+                                </p>
+
+                                <p class="mt-2 text-sm text-slate-500">
+                                    برای شروع، یک کلاس جدید ایجاد کنید.
+                                </p>
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </section>
 
+
     <!-- کارت‌های موبایل -->
     <div class="space-y-4 md:hidden">
         {% for cls in classrooms %}
-        <article class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
-            <div class="flex items-start justify-between gap-3 border-b border-surface-border p-4">
-                <div>
+            <article class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card transition duration-200 hover:shadow-lift">
+
+                <!-- مشخصات و وضعیت -->
+                <div class="flex items-start justify-between gap-3 border-b border-surface-border p-4">
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold text-slate-500">
+                            {{ cls.get_grade_display }}
+                        </p>
+
+                        <h3 class="mt-1 break-words text-lg font-extrabold text-brand">
+                            {{ cls.name }}
+                        </h3>
+
+                        <p class="mt-1 text-xs text-slate-400">
+                            {{ cls.academic_year.name }}
+                        </p>
+                    </div>
+
+                    <div class="shrink-0">
+                        {% if cls.status == cls.Status.ACTIVE %}
+                            <span class="inline-flex rounded-full bg-success-soft px-3 py-1.5 text-xs font-bold text-success">
+                                {{ cls.get_status_display }}
+                            </span>
+                        {% elif cls.status == cls.Status.COMPLETED %}
+                            <span class="inline-flex rounded-full bg-surface-muted px-3 py-1.5 text-xs font-bold text-slate-500">
+                                {{ cls.get_status_display }}
+                            </span>
+                        {% else %}
+                            <span class="inline-flex rounded-full bg-warning-soft px-3 py-1.5 text-xs font-bold text-warning">
+                                {{ cls.get_status_display }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- دکمه اصلی و برجسته -->
+                <div class="border-b border-surface-border bg-accent-soft/40 p-4">
                     <a href="{% url 'academic:classroom_detail' cls.id %}"
-                       class="text-lg font-extrabold text-brand hover:text-accent">
-                        {{ cls.name }}
+                       class="group flex w-full items-center justify-between gap-3 rounded-xl border border-accent/30 bg-white px-4 py-3.5 text-sm font-extrabold text-accent shadow-sm transition duration-200 hover:border-accent hover:bg-accent hover:text-white focus:outline-none focus:ring-4 focus:ring-accent/20">
+
+                        <span class="flex min-w-0 items-center gap-3">
+                            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent transition group-hover:bg-white/15 group-hover:text-white">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor"
+                                     stroke-width="1.8" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+                                    <circle cx="12" cy="12" r="2.5"/>
+                                </svg>
+                            </span>
+
+                            <span class="text-right">
+                                <span class="block">مشاهده جزئیات کلاس</span>
+                                <span class="mt-1 block text-[11px] font-medium opacity-70">
+                                    اطلاعات و مشخصات کامل کلاس
+                                </span>
+                            </span>
+                        </span>
+
+                        <svg class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:-translate-x-1"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="m15 18-6-6 6-6"/>
+                        </svg>
                     </a>
-                    <p class="mt-1 text-sm text-slate-500">{{ cls.get_grade_display }}</p>
                 </div>
-                {% if cls.status == cls.Status.ACTIVE %}
-                <span class="rounded-full bg-success-soft px-3 py-1.5 text-xs font-bold text-success">
-                    {{ cls.get_status_display }}
-                </span>
-                {% elif cls.status == cls.Status.COMPLETED %}
-                <span class="rounded-full bg-surface-muted px-3 py-1.5 text-xs font-bold text-slate-500">
-                    {{ cls.get_status_display }}
-                </span>
-                {% else %}
-                <span class="rounded-full bg-warning-soft px-3 py-1.5 text-xs font-bold text-warning">
-                    {{ cls.get_status_display }}
-                </span>
-                {% endif %}
-            </div>
 
-            <div class="grid grid-cols-2 gap-3 p-4">
-                <div class="rounded-xl bg-surface-muted p-3">
-                    <p class="text-xs text-slate-500">دانش‌آموزان</p>
-                    <p class="mt-1 font-extrabold text-brand">{{ cls.students.count }} نفر</p>
-                </div>
-                <div class="rounded-xl bg-surface-muted p-3">
-                    <p class="text-xs text-slate-500">ظرفیت کلاس</p>
-                    <p class="mt-1 font-extrabold text-brand">{{ cls.capacity }} نفر</p>
-                </div>
-            </div>
+                <!-- اطلاعات کلاس -->
+                <div class="grid grid-cols-2 gap-3 p-4">
+                    <div class="rounded-xl bg-surface-muted p-3">
+                        <p class="text-xs text-slate-500">دانش‌آموزان</p>
+                        <p class="mt-1 font-extrabold text-brand">
+                            {{ cls.students.count }} نفر
+                        </p>
+                    </div>
 
-            <div class="grid grid-cols-2 gap-2 border-t border-surface-border p-4">
-                <a href="{% url 'academic:classroom_detail' cls.id %}"
-                   class="rounded-xl border border-surface-border px-3 py-2.5 text-center text-xs font-bold text-brand transition hover:bg-surface-muted">
-                    مشاهده جزئیات
-                </a>
-                <a href="{% url 'academic:classroom_update' cls.id %}"
-                   class="rounded-xl bg-info-soft px-3 py-2.5 text-center text-xs font-bold text-info transition hover:bg-info/15">
-                    ویرایش کلاس
-                </a>
-                <a href="{% url 'academic:classroom_manage_students' cls.id %}"
-                   class="rounded-xl bg-accent-soft px-3 py-2.5 text-center text-xs font-bold text-accent transition hover:bg-accent/15">
-                    مدیریت دانش‌آموزان
-                </a>
-                <a href="{% url 'discipline:admin_reward_create' cls.id %}"
-                   class="rounded-xl bg-success-soft px-3 py-2.5 text-center text-xs font-bold text-success transition hover:bg-success/15">
-                    ثبت تشویقی
-                </a>
-                <a href="{% url 'academic:classroom_delete' cls.id %}"
-                   class="col-span-2 rounded-xl bg-danger-soft px-3 py-2.5 text-center text-xs font-bold text-danger transition hover:bg-danger/15">
-                    حذف کلاس
-                </a>
-            </div>
-        </article>
+                    <div class="rounded-xl bg-surface-muted p-3">
+                        <p class="text-xs text-slate-500">ظرفیت کلاس</p>
+                        <p class="mt-1 font-extrabold text-brand">
+                            {{ cls.capacity }} نفر
+                        </p>
+                    </div>
+                </div>
+
+                <!-- عملیات فرعی -->
+                <div class="grid grid-cols-2 gap-2 border-t border-surface-border p-4">
+
+                    <a href="{% url 'academic:classroom_update' cls.id %}"
+                       class="rounded-xl bg-info-soft px-3 py-3 text-center text-xs font-bold text-info transition hover:bg-info/15">
+                        ویرایش کلاس
+                    </a>
+
+                    <a href="{% url 'academic:classroom_manage_students' cls.id %}"
+                       class="rounded-xl bg-accent-soft px-3 py-3 text-center text-xs font-bold text-accent transition hover:bg-accent/15">
+                        مدیریت دانش‌آموزان
+                    </a>
+
+                    <a href="{% url 'discipline:admin_reward_create' cls.id %}"
+                       class="rounded-xl bg-success-soft px-3 py-3 text-center text-xs font-bold text-success transition hover:bg-success/15">
+                        ثبت تشویقی
+                    </a>
+
+                    <a href="{% url 'academic:classroom_delete' cls.id %}"
+                       class="col-span-2 rounded-xl bg-danger-soft px-3 py-3 text-center text-xs font-bold text-danger transition hover:bg-danger/15">
+                        حذف کلاس
+                    </a>
+
+                </div>
+            </article>
+
         {% empty %}
-        <div class="rounded-2xl border border-surface-border bg-white p-8 text-center shadow-card">
-            <p class="font-bold text-brand">کلاسی برای نمایش وجود ندارد.</p>
-        </div>
+            <div class="rounded-2xl border border-surface-border bg-white p-8 text-center shadow-card">
+                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-muted text-slate-400">
+                    <svg class="h-7 w-7" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="1.7" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                    </svg>
+                </div>
+
+                <p class="mt-4 font-bold text-brand">
+                    کلاسی برای نمایش وجود ندارد.
+                </p>
+
+                <p class="mt-2 text-sm text-slate-500">
+                    برای شروع، یک کلاس جدید ایجاد کنید.
+                </p>
+            </div>
         {% endfor %}
     </div>
 

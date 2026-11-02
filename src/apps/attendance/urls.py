@@ -38,4 +38,14 @@ urlpatterns = [
         teacher.TeacherToggleAttendanceView.as_view(),
         name="teacher_toggle_attendance",
     ),
+    path(
+        "teacher/attendance/session/<uuid:schedule_id>/lists/",
+        teacher.TeacherAttendanceListsView.as_view(),
+        name="teacher_attendance_lists",
+    ),
+    path(
+        "teacher/attendance/session/<uuid:schedule_id>/lists/<uuid:attendance_session_id>/",
+        teacher.TeacherAttendanceListDetailView.as_view(),
+        name="teacher_attendance_list_detail",
+    ),
 ]

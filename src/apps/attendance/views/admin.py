@@ -15,6 +15,8 @@ from apps.core.templatetags.jalali import (
     jalali_to_gregorian,
     today_gregorian,
 )
+from apps.notification.enums import NotificationTypeEnum
+from apps.notification.utils import create_in_app_notification
 
 
 class AdminAbsenceListView(AdminRequiredMixin, View):
@@ -196,14 +198,12 @@ class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
         form = StaffAttendanceForm(request.POST)
 
         if form.is_valid():
-            # داده‌های فرم
             teacher = form.cleaned_data["teacher"]
             status = form.cleaned_data["status"]
             description = form.cleaned_data["description"]
 
             today = timezone.now().date()
 
-            # چک سال تحصیلی
             if not (active_year.start_date <= today <= active_year.end_date):
                 form.add_error("date", "تاریخ انتخاب‌شده خارج از سال تحصیلی فعال است.")
                 return render(
@@ -212,8 +212,16 @@ class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
                     {"form": form, "active_year": active_year},
                 )
 
-            # اگر رکوردی برای این معلم و امروز هست → آپدیت
-            # اگر نیست → بساز
+            previous_record = StaffAttendanceModel.objects.filter(
+                teacher=teacher,
+                date=today,
+            ).first()
+
+            was_absent = (
+                previous_record is not None
+                and previous_record.status == StaffAttendanceStatusEnum.ABSENT
+            )
+
             obj, created = StaffAttendanceModel.objects.update_or_create(
                 teacher=teacher,
                 date=today,
@@ -223,6 +231,19 @@ class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
                 },
             )
 
+            is_absent = status == StaffAttendanceStatusEnum.ABSENT
+
+            if is_absent and not was_absent:
+                create_in_app_notification(
+                    to_user=teacher.user,
+                    notification_type=NotificationTypeEnum.ATTENDANCE,
+                    title="ثبت غیبت برای شما",
+                    description=(
+                        f"غیبت شما در تاریخ {today} توسط مدیریت مدرسه ثبت شد."
+                        + (f"\nتوضیحات: {description}" if description else "")
+                    ),
+                )
+
             messages.success(
                 request,
                 (
@@ -231,6 +252,7 @@ class AdminTeacherAbsenceCreateView(AdminRequiredMixin, View):
                     else "وضعیت حضور/غیبت معلم برای امروز به‌روزرسانی شد."
                 ),
             )
+
             return redirect("attendance:admin_teacher_absence_list")
 
         return render(

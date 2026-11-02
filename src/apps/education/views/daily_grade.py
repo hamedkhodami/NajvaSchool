@@ -1,9 +1,12 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
 from apps.academic.models import ClassroomModel, SubjectModel
 from apps.academic.services.active_year import get_active_year
 from apps.education.models import DailyGradeModel
+from apps.notification.enums import NotificationTypeEnum
+from apps.notification.utils import create_in_app_notification
 
 
 class TeacherDailyGradeClassListView(View):
@@ -38,7 +41,8 @@ class TeacherDailyGradeCreateView(View):
         students = classroom.students.all()
 
         subjects = SubjectModel.objects.filter(
-            schedule_sessions__teacher=teacher, schedule_sessions__classroom=classroom
+            schedule_sessions__teacher=teacher,
+            schedule_sessions__classroom=classroom,
         ).distinct()
 
         return render(
@@ -66,19 +70,53 @@ class TeacherDailyGradeCreateView(View):
         subject_id = request.POST.get("subject")
         title = request.POST.get("title")
 
-        subject = SubjectModel.objects.get(id=subject_id)
+        subject = get_object_or_404(
+            SubjectModel,
+            id=subject_id,
+            schedule_sessions__teacher=teacher,
+            schedule_sessions__classroom=classroom,
+        )
+
+        created_count = 0
 
         for key, value in request.POST.items():
-            if key.startswith("score_") and value:
+            if key.startswith("score_") and value.strip():
+
                 student_id = key.replace("score_", "")
-                DailyGradeModel.objects.create(
-                    student_id=student_id,
+
+                student = get_object_or_404(
+                    classroom.students.select_related("user"),
+                    id=student_id,
+                )
+
+                daily_grade = DailyGradeModel.objects.create(
+                    student=student,
                     teacher=teacher,
                     classroom=classroom,
                     subject=subject,
                     title=title,
                     score=value,
                 )
+
+                # ارسال اعلان بعد از ثبت موفق نمره
+                create_in_app_notification(
+                    to_user=student.user,
+                    notification_type=NotificationTypeEnum.EDUCATIONAL,
+                    title="ثبت نمره روزانه جدید",
+                    description=(
+                        f"معلم شما یک نمره جدید برایتان ثبت کرده است.\n"
+                        f"درس: {subject}\n"
+                        f"عنوان: {title}\n"
+                        f"نمره: {daily_grade.score}"
+                    ),
+                )
+
+                created_count += 1
+
+        messages.success(
+            request,
+            f"نمرات {created_count} دانش‌آموز با موفقیت ثبت شدند.",
+        )
 
         return redirect("education:teacher_daily_grade_class_list")
 

@@ -1,10 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
 from apps.academic.models import ClassroomModel
 from apps.academic.services.active_year import get_active_year
 from apps.education.models import ExamModel, ExamResultModel
+from apps.notification.enums import NotificationTypeEnum
+from apps.notification.utils import create_in_app_notification
 from apps.teacher.mixins import TeacherRequiredMixin
 
 
@@ -44,7 +47,7 @@ class TeacherExamResultView(TeacherRequiredMixin, View):
             description = request.POST.get(f"desc_{student.id}")
 
             if score:
-                ExamResultModel.objects.update_or_create(
+                result, created = ExamResultModel.objects.update_or_create(
                     exam=exam,
                     student=student,
                     defaults={
@@ -52,6 +55,17 @@ class TeacherExamResultView(TeacherRequiredMixin, View):
                         "description": description,
                     },
                 )
+
+                if created:
+                    create_in_app_notification(
+                        to_user=student.user,
+                        notification_type=NotificationTypeEnum.EDUCATIONAL,
+                        title="ثبت نمره امتحان جدید",
+                        description=(
+                            f"نمره جدیدی برای شما در امتحان "
+                            f"«{exam}» توسط معلم ثبت شده است."
+                        ),
+                    )
 
         messages.success(request, "نمرات با موفقیت ثبت شدند.")
         return redirect("education:exam_list")
@@ -134,7 +148,7 @@ class TeacherClassExamResultView(TeacherRequiredMixin, View):
         )
 
 
-class StudentExamResultListView(View):
+class StudentExamResultListView(LoginRequiredMixin, View):
     template_name = "education/exam_result/student_exam_results.html"
 
     def get(self, request):

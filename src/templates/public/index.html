@@ -6,84 +6,225 @@
 
 {% block content %}
 
-<!-- HERO -->
-<section class="relative overflow-hidden bg-hero-gradient">
-    <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brass-200/30 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-20 left-0 h-64 w-64 rounded-full bg-brand/5 blur-3xl"></div>
+<!-- SMART SCHOOL HERO -->
+<section class="relative isolate overflow-hidden bg-hero-gradient">
 
-    <div class="container max-w-screen relative py-12 sm:py-16 lg:py-24">
-        <div class="grid items-center gap-12 lg:grid-cols-2">
+    <!-- Background effects -->
+    <div class="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-brass-300/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-brand/10 blur-3xl"></div>
 
-            <div data-reveal class="order-2 lg:order-1">
-                <span class="inline-flex items-center gap-2 rounded-full border border-brass-200 bg-white/80 px-4 py-2 text-xs font-bold text-brass-700 shadow-card sm:text-sm">
-                    <span class="h-2 w-2 rounded-full bg-brass-500"></span>
-                    به خانواده نجوا خوش آمدید
-                </span>
+    <div class="container relative mx-auto max-w-screen-xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
 
-                <h1 class="mt-6 text-3xl font-extrabold leading-[1.65] tracking-tight text-brand sm:text-4xl lg:text-5xl">
-                    آینده‌ای روشن،
-                    <span class="block text-accent">
-                        از مسیر آموزش
+        <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
+
+            <!-- Content -->
+            <div class="relative z-10 text-center lg:text-right">
+
+                <div class="inline-flex items-center gap-3 rounded-full border border-brass-300/70 bg-white/80 px-4 py-2.5 shadow-card backdrop-blur-sm">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-50"></span>
+                        <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success"></span>
+                    </span>
+                    <span class="text-xs font-extrabold tracking-wide text-brand sm:text-sm">
+                        مدرسه هوشمند نجوا
+                    </span>
+                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2Z"/>
+                    </svg>
+                </div>
+
+                <h1 class="mt-7 text-3xl font-black leading-[1.7] tracking-tight text-brand sm:text-4xl lg:text-5xl xl:text-6xl">
+                    یک قدم جلوتر،
+                    <span class="block bg-gradient-to-l from-brass-500 via-accent to-brass-400 bg-clip-text text-transparent">
+                        در مسیر یادگیری
                     </span>
                 </h1>
 
-                <p class="mt-5 max-w-xl text-sm leading-8 text-ink-600 sm:text-base">
-                    در مدرسه نجوا، یادگیری آغاز یک مسیر بزرگ است؛
-                    مسیری برای کشف استعدادها، پرورش اندیشه و ساختن
-                    آینده‌ای سرشار از امید، آگاهی و موفقیت.
+                <p class="mx-auto mt-6 max-w-xl text-sm leading-8 text-ink-600 sm:text-base sm:leading-9 lg:mx-0">
+                    به سامانه مدرسه هوشمند نجوا خوش آمدید؛
+                    جایی برای دسترسی آسان به امکانات آموزشی، پیگیری امور مدرسه
+                    و همراهی در مسیر رشد و موفقیت دانش‌آموزان.
                 </p>
 
-                <div class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-ink-600 sm:text-sm">
-                    <span class="flex items-center gap-2">
-                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-success-soft text-success">✓</span>
-                        یادگیری هدفمند
-                    </span>
-                    <span class="flex items-center gap-2">
-                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-success-soft text-success">✓</span>
-                        رشد و خلاقیت
-                    </span>
+                <!-- Main CTA -->
+                <div class="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
+
+                    <a href="{% url 'account:login' %}"
+                       class="group relative inline-flex w-full max-w-sm items-center justify-center gap-4 overflow-hidden rounded-2xl bg-gradient-to-l from-brand via-[#172F4B] to-brand px-7 py-4 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(16,31,51,0.22)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(16,31,51,0.32)] focus:outline-none focus:ring-4 focus:ring-brass-300/50 sm:w-auto sm:min-w-[290px] sm:py-5 sm:text-base">
+
+                        <!-- Shine -->
+                        <span class="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"></span>
+
+                        <!-- Gold icon -->
+                        <span class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brass-300/40 bg-brass-400/15 text-brass-300 transition-all duration-300 group-hover:rotate-[-6deg] group-hover:scale-110">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 8.25V5.5A2.5 2.5 0 0 0 13.25 3h-7A2.5 2.5 0 0 0 3.75 5.5v13A2.5 2.5 0 0 0 6.25 21h7a2.5 2.5 0 0 0 2.5-2.5v-2.75"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 12h10m-4-4 4 4-4 4"/>
+                            </svg>
+                        </span>
+
+                        <span class="relative flex flex-col items-start gap-1">
+                            <span>ورود به مدرسه هوشمند</span>
+                            <span class="text-[10px] font-medium text-slate-300 sm:text-xs">
+                                ورود به پنل اختصاصی شما
+                            </span>
+                        </span>
+
+                        <svg class="relative h-5 w-5 shrink-0 text-brass-300 transition-transform duration-300 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </a>
+
+                </div>
+
+                <!-- Trust indicators -->
+                <div class="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4 text-xs font-semibold text-ink-600 sm:gap-x-8 lg:justify-start">
+
+                    <div class="flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-success-soft text-success">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6"/>
+                            </svg>
+                        </span>
+                        دسترسی آسان
+                    </div>
+
+                    <span class="hidden h-7 w-px bg-surface-border sm:block"></span>
+
+                    <div class="flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-brass-100 text-accent">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <rect x="4" y="10" width="16" height="11" rx="2"/>
+                                <path stroke-linecap="round" d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m10 15 1.5 1.5L14.5 13"/>
+                            </svg>
+                        </span>
+                        ورود امن
+                    </div>
+
+                    <span class="hidden h-7 w-px bg-surface-border sm:block"></span>
+
+                    <div class="flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/5 text-brand">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                                <path stroke-linecap="round" d="M8 7h8M8 11h6"/>
+                            </svg>
+                        </span>
+                        تجربه آموزشی بهتر
+                    </div>
+
                 </div>
             </div>
 
-            <div data-reveal class="order-1 lg:order-2">
-                <div class="relative mx-auto max-w-xl">
+            <!-- Visual -->
+            <div class="relative mx-auto w-full max-w-lg lg:max-w-none">
 
-                    <div class="absolute -right-3 -top-3 h-24 w-24 rounded-2xl border-2 border-brass-400/70 sm:-right-5 sm:-top-5"></div>
-                    <div class="absolute -bottom-4 -left-4 h-24 w-24 rounded-2xl bg-brass-200 sm:-bottom-5 sm:-left-5"></div>
+                <div class="absolute inset-8 rounded-full bg-brass-300/20 blur-3xl"></div>
 
-                    <div class="relative overflow-hidden rounded-2xl border-4 border-white bg-brand shadow-lift">
+                <div class="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/60 p-4 shadow-[0_24px_80px_rgba(16,31,51,0.12)] backdrop-blur-sm sm:p-6">
 
-                        {% if about and about.image %}
-                            <img src="{{ about.image.url }}"
-                                 alt="فضای مدرسه نجوا"
-                                 fetchpriority="high"
-                                 class="aspect-[4/3] w-full object-cover">
-                        {% else %}
-                            <div class="flex aspect-[4/3] flex-col items-center justify-center bg-navy-gradient p-8 text-center text-white">
-                                <span class="text-6xl text-brass-300">✦</span>
-                                <h2 class="mt-5 text-2xl font-extrabold">مدرسه نجوا</h2>
-                                <p class="mt-3 text-sm leading-7 text-slate-300">
-                                    دانایی، تلاش و آینده‌ای روشن
-                                </p>
+                    <div class="absolute right-0 top-0 h-32 w-32 rounded-full bg-brass-200/30 blur-2xl"></div>
+                    <div class="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-brand/10 blur-3xl"></div>
+
+                    <div class="relative rounded-[1.5rem] border border-white bg-gradient-to-br from-white via-[#F8F7F2] to-[#E9EEF6] p-5 sm:p-8">
+
+                        <!-- Top bar -->
+                        <div class="flex items-center justify-between border-b border-brand/10 pb-5">
+                            <div class="flex items-center gap-3">
+                                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand text-brass-300 shadow-lg">
+                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.5 12 4l9 5.5-9 5.5-9-5.5Z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 12v4.5c2.8 2.3 7.2 2.3 10 0V12M21 9.5v6"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-brand">مدرسه هوشمند نجوا</p>
+                                    <p class="mt-1 text-[10px] font-medium text-ink-400">همراه شما در مسیر پیشرفت</p>
+                                </div>
                             </div>
-                        {% endif %}
+                            <span class="rounded-full border border-success/20 bg-success-soft px-3 py-1.5 text-[10px] font-bold text-success">
+                                سامانه آموزشی
+                            </span>
+                        </div>
 
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand/95 via-brand/60 to-transparent p-5 pt-16 sm:p-7 sm:pt-20">
-                            <p class="text-lg font-bold text-white sm:text-xl">
-                                هر روز، فرصتی برای پیشرفت
-                            </p>
-                            <p class="mt-2 text-xs text-slate-200 sm:text-sm">
-                                با هم یاد می‌گیریم، با هم رشد می‌کنیم.
-                            </p>
+                        <!-- Main illustration -->
+                        <div class="relative flex min-h-52 items-center justify-center py-8 sm:min-h-64">
+
+                            <div class="absolute h-44 w-44 rounded-full border border-brass-300/40 sm:h-56 sm:w-56"></div>
+                            <div class="absolute h-36 w-36 rounded-full border border-brand/10 sm:h-48 sm:w-48"></div>
+
+                            <div class="relative flex h-36 w-36 items-center justify-center rounded-[2rem] border border-white bg-gradient-to-br from-brand to-[#263E5A] shadow-[0_20px_50px_rgba(16,31,51,0.25)] sm:h-44 sm:w-44">
+                                <div class="absolute inset-3 rounded-[1.5rem] border border-white/10"></div>
+                                <svg class="h-20 w-20 text-brass-300 sm:h-24 sm:w-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2 8.5 12 3l10 5.5-10 5.5L2 8.5Z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 8.5V15"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 19h14M8 16.5V19m8-2.5V19"/>
+                                </svg>
+                                <span class="absolute -right-3 -top-3 flex h-11 w-11 items-center justify-center rounded-2xl border-4 border-white bg-brass-400 text-brand shadow-md">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="m12 2 2.8 6.2 6.7.7-5 4.5 1.4 6.6-5.9-3.4-5.9 3.4 1.4-6.6-5-4.5 6.7-.7L12 2Z"/>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <!-- Floating cards -->
+                            <div class="absolute right-0 top-6 flex items-center gap-2 rounded-2xl border border-white bg-white/95 p-3 shadow-lg sm:right-2 sm:top-8">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-success-soft text-success">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6"/>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <p class="text-xs font-extrabold text-brand">مدیریت آسان</p>
+                                    <p class="mt-1 text-[10px] text-ink-400">همه‌چیز در یک سامانه</p>
+                                </div>
+                            </div>
+
+                            <div class="absolute bottom-5 left-0 flex items-center gap-2 rounded-2xl border border-white bg-white/95 p-3 shadow-lg sm:bottom-8 sm:left-2">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brass-100 text-accent">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                        <rect x="3" y="5" width="18" height="16" rx="2"/>
+                                        <path stroke-linecap="round" d="M16 3v4M8 3v4M3 10h18"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8 15 2 2 5-5"/>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <p class="text-xs font-extrabold text-brand">نظم آموزشی</p>
+                                    <p class="mt-1 text-[10px] text-ink-400">دسترسی سریع و ساده</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom strip -->
+                        <div class="relative grid grid-cols-3 gap-2 border-t border-brand/10 pt-5 text-center">
+                            <div class="rounded-xl bg-white/80 px-2 py-3">
+                                <p class="text-xs font-extrabold text-brand sm:text-sm">هوشمند</p>
+                                <p class="mt-1 text-[10px] text-ink-400">مدیریت بهتر</p>
+                            </div>
+                            <div class="rounded-xl bg-white/80 px-2 py-3">
+                                <p class="text-xs font-extrabold text-brand sm:text-sm">یکپارچه</p>
+                                <p class="mt-1 text-[10px] text-ink-400">دسترسی آسان</p>
+                            </div>
+                            <div class="rounded-xl bg-white/80 px-2 py-3">
+                                <p class="text-xs font-extrabold text-brand sm:text-sm">مطمئن</p>
+                                <p class="mt-1 text-[10px] text-ink-400">ورود امن</p>
+                            </div>
                         </div>
 
                     </div>
                 </div>
+
+                <div class="pointer-events-none absolute -bottom-4 -right-4 h-20 w-20 rounded-2xl border-2 border-brass-400/50"></div>
+                <div class="pointer-events-none absolute -left-3 -top-3 h-16 w-16 rounded-2xl bg-brass-200/60"></div>
+
             </div>
 
         </div>
     </div>
 </section>
+<!-- END SMART SCHOOL HERO -->
 
 
 <!-- VALUES -->

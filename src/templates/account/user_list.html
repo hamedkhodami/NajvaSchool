@@ -54,7 +54,7 @@
                     <th class="p-4 text-right font-bold">نقش</th>
                     <th class="p-4 text-right font-bold">شماره تماس</th>
                     <th class="p-4 text-right font-bold">جزئیات</th>
-                    <th class="p-4 text-right font-bold">دسترسی</th>
+                    <th class="p-4 text-right font-bold">عملیات</th>
                 </tr>
             </thead>
 
@@ -65,7 +65,6 @@
                         <td class="p-4 font-bold text-brand">{{ user.full_name }}</td>
                         <td class="p-4 text-ink-600">{{ user.get_role_display }}</td>
                         <td class="p-4 text-ink-600">{{ user.phone_number }}</td>
-
                         <td class="p-4">
                             <a href="{% url 'account:user_detail' user.id %}"
                                class="inline-flex items-center gap-1 rounded-xl bg-brand px-3 py-1.5 text-xs font-bold text-white shadow-card transition hover:bg-brand-hover">
@@ -73,23 +72,40 @@
                                 <span aria-hidden="true">←</span>
                             </a>
                         </td>
-
-                        <!-- دکمه دسترسی -->
                         <td class="p-4">
-                            <button
-                                onclick="openAccessModal('{{ user.id }}', '{{ user.full_name }}', {{ user.is_active|yesno:'true,false' }})"
-                                class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-card transition
-                                       {% if user.is_active %}
-                                           bg-success text-white hover:bg-success-hover hover:shadow-lift
-                                       {% else %}
-                                           bg-danger text-white hover:bg-danger-hover hover:shadow-lift
-                                       {% endif %}">
-                                {% if user.is_active %}
-                                    🔓 فعال
-                                {% else %}
-                                    🔒 غیرفعال
-                                {% endif %}
-                            </button>
+                            <div class="flex flex-wrap items-center gap-2">
+
+                                <!-- وضعیت دسترسی -->
+                                <button
+                                    onclick="openAccessModal('{{ user.id }}', '{{ user.full_name|escapejs }}', {{ user.is_active|yesno:'true,false' }})"
+                                    class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-card transition
+                                           {% if user.is_active %}
+                                               bg-success text-white hover:bg-success-hover
+                                           {% else %}
+                                               bg-danger text-white hover:bg-danger-hover
+                                           {% endif %}">
+                                    {% if user.is_active %}
+                                        🔓 فعال
+                                    {% else %}
+                                        🔒 غیرفعال
+                                    {% endif %}
+                                </button>
+
+                                <!-- ارسال یادآوری شهریه -->
+                                <form method="post"
+                                      action="{% url 'account:send_tuition_reminder' user.id %}"
+                                      onsubmit="return confirm('آیا از ارسال اعلان یادآوری شهریه برای {{ user.full_name|escapejs }} مطمئن هستید؟');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-2 rounded-xl bg-warning px-4 py-2 text-xs font-bold text-white shadow-card transition hover:bg-warning-hover">
+                                        <i class="fa-solid fa-bell"></i>
+                                        ارسال اعلان شهریه
+                                    </button>
+                                </form>
+
+                            </div>
                         </td>
 
                     </tr>
@@ -133,23 +149,40 @@
                     </a>
                 </div>
 
-                <div class="flex justify-between">
-                    <span class="text-sm font-bold text-ink-600">دسترسی</span>
+                <div class="space-y-3 border-t border-surface-border pt-3">
 
-                    <button
-                        onclick="openAccessModal('{{ user.id }}', '{{ user.full_name }}', {{ user.is_active|yesno:'true,false' }})"
-                        class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-card transition
-                               {% if user.is_active %}
-                                   bg-success text-white hover:bg-success-hover hover:shadow-lift
-                               {% else %}
-                                   bg-danger text-white hover:bg-danger-hover hover:shadow-lift
-                               {% endif %}">
-                        {% if user.is_active %}
-                            🔓 فعال
-                        {% else %}
-                            🔒 غیرفعال
-                        {% endif %}
-                    </button>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-bold text-ink-600">دسترسی</span>
+
+                        <button
+                            onclick="openAccessModal('{{ user.id }}', '{{ user.full_name|escapejs }}', {{ user.is_active|yesno:'true,false' }})"
+                            class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-card transition
+                                   {% if user.is_active %}
+                                       bg-success text-white hover:bg-success-hover
+                                   {% else %}
+                                       bg-danger text-white hover:bg-danger-hover
+                                   {% endif %}">
+                            {% if user.is_active %}
+                                🔓 فعال
+                            {% else %}
+                                🔒 غیرفعال
+                            {% endif %}
+                        </button>
+                    </div>
+
+                    <form method="post"
+                          action="{% url 'account:send_tuition_reminder' user.id %}"
+                          onsubmit="return confirm('آیا از ارسال اعلان یادآوری شهریه برای {{ user.full_name|escapejs }} مطمئن هستید؟');">
+
+                        {% csrf_token %}
+
+                        <button type="submit"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-warning px-4 py-3 text-sm font-bold text-white shadow-card transition hover:bg-warning-hover">
+                            <i class="fa-solid fa-bell"></i>
+                            ارسال اعلان شهریه
+                        </button>
+                    </form>
+
                 </div>
 
             </div>

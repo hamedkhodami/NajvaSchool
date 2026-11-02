@@ -10,6 +10,7 @@ class NotificationTypeEnum(TextChoices):
     ATTENDANCE = "attendance", "حضور و غیاب"
     DISCIPLINE = "discipline", "انضباطی"
     GENERAL = "general", "عمومی"
+    SALARY_PAYMENT = "salary_payment", "پرداخت حقوق"
 
 
 class NotificationChannelEnum(TextChoices):

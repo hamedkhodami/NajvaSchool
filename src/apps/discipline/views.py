@@ -13,7 +13,8 @@ from apps.discipline.enums import (
     StudentRecordCategoryEnum,
 )
 from apps.discipline.models import StudentDevelopmentRecordModel
-from apps.student.models import StudentModel
+from apps.notification.enums import NotificationTypeEnum
+from apps.notification.utils import create_in_app_notification
 
 
 class AdminRewardCreateView(AdminRequiredMixin, View):
@@ -52,11 +53,14 @@ class AdminRewardCreateView(AdminRequiredMixin, View):
 
         if not selected_ids:
             messages.error(request, "هیچ دانش‌آموزی انتخاب نشده است.")
-            return redirect("discipline:admin_reward_create", classroom_id=classroom.id)
+            return redirect(
+                "discipline:admin_reward_create",
+                classroom_id=classroom.id,
+            )
 
-        for sid in selected_ids:
-            student = get_object_or_404(StudentModel, id=sid)
+        selected_students = students.filter(id__in=selected_ids)
 
+        for student in selected_students:
             StudentDevelopmentRecordModel.objects.create(
                 student=student,
                 recorder=request.user,
@@ -67,6 +71,16 @@ class AdminRewardCreateView(AdminRequiredMixin, View):
                 educational_type=educational_type,
                 title=title,
                 description=description,
+            )
+
+            create_in_app_notification(
+                to_user=student.user,
+                notification_type=NotificationTypeEnum.DISCIPLINE,
+                title="ثبت مورد جدید برای شما",
+                description=(
+                    f"یک مورد جدید با عنوان «{title}» برای شما ثبت شده است."
+                    + (f"\nتوضیحات: {description}" if description else "")
+                ),
             )
 
         messages.success(request, "تشویقی‌ها با موفقیت ثبت شدند.")

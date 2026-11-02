@@ -21,7 +21,7 @@
             {% endif %}
         </div>
 
-        <a href="#"
+        <a href="{% url 'notification:user_notifications' %}"
            class="inline-flex w-fit items-center gap-2 rounded-full border px-3 py-2.5 text-xs font-bold transition
            {% if unread_notifications_count > 0 %}
                border-warning/30 bg-warning-soft text-warning
@@ -315,34 +315,46 @@
 
     </section>
 
-    <!-- غیبت‌های دانش‌آموز -->
+    <!-- تمام غیبت‌های دانش‌آموز -->
     <section class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
 
         <div class="border-b border-surface-border p-5">
-            <h2 class="text-lg font-extrabold text-brand">غیبت‌های من</h2>
-            <p class="mt-1 text-sm text-slate-500">گزارش غیبت‌های ثبت‌شده برای شما</p>
+            <h2 class="text-lg font-extrabold text-brand">
+                غیبت‌های من
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+                تمام سوابق غیبت ثبت‌شده برای شما
+            </p>
         </div>
 
         <div class="p-4 sm:p-5">
 
+            <!-- تعداد کل غیبت‌ها -->
             <div class="mb-5 rounded-xl border border-surface-border bg-surface-muted p-4">
                 <p class="text-sm text-slate-600">
                     تعداد کل غیبت‌ها:
-                    <strong class="mr-1 text-lg text-brand">{{ total_absents }}</strong>
+                    <strong class="mr-1 text-lg text-brand">
+                        {{ total_absents }}
+                    </strong>
                 </p>
             </div>
 
             <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
 
-                <!-- غیبت بر اساس درس -->
+                <!-- غیبت‌ها بر اساس درس -->
                 <div class="overflow-hidden rounded-xl border border-surface-border">
+
                     <div class="border-b border-surface-border bg-surface-muted px-4 py-3">
-                        <h3 class="text-sm font-extrabold text-brand">غیبت‌ها بر اساس درس</h3>
+                        <h3 class="text-sm font-extrabold text-brand">
+                            غیبت‌ها بر اساس درس
+                        </h3>
                     </div>
 
                     <div class="divide-y divide-surface-border">
+
                         {% for subject, count in absents_by_subject.items %}
                             <div class="flex items-center justify-between gap-3 p-4">
+
                                 <span class="break-words text-sm font-medium text-slate-700">
                                     {{ subject }}
                                 </span>
@@ -350,26 +362,39 @@
                                 <span class="shrink-0 rounded-lg bg-danger-soft px-2.5 py-1.5 text-xs font-bold text-danger">
                                     {{ count }} غیبت
                                 </span>
+
                             </div>
                         {% empty %}
                             <div class="px-4 py-8 text-center text-sm text-slate-500">
                                 هیچ غیبتی ثبت نشده است.
                             </div>
                         {% endfor %}
+
                     </div>
                 </div>
 
-                <!-- تاریخ‌های غیبت -->
+                <!-- تمام تاریخ‌های غیبت -->
                 <div class="overflow-hidden rounded-xl border border-surface-border">
+
                     <div class="border-b border-surface-border bg-surface-muted px-4 py-3">
-                        <h3 class="text-sm font-extrabold text-brand">تاریخ‌های غیبت</h3>
+                        <h3 class="text-sm font-extrabold text-brand">
+                            تمام تاریخ‌های غیبت
+                        </h3>
                     </div>
 
                     <div class="divide-y divide-surface-border">
+
                         {% for item in absent_dates %}
-                            <div class="flex items-center gap-3 p-4">
+                            <article class="flex items-start gap-3 p-4">
+
                                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg class="h-5 w-5"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round">
                                         <circle cx="12" cy="12" r="9"/>
                                         <path d="M12 7v5l3 2"/>
                                     </svg>
@@ -379,16 +404,30 @@
                                     <p class="break-words text-sm font-bold text-brand">
                                         {{ item.subject }}
                                     </p>
+
                                     <p class="mt-1 text-xs text-slate-500">
+                                        تاریخ:
                                         {{ item.date|jalali }}
                                     </p>
+
+                                    {% if item.description %}
+                                        <p class="mt-2 break-words text-sm leading-6 text-slate-600">
+                                            {{ item.description }}
+                                        </p>
+                                    {% endif %}
                                 </div>
-                            </div>
+
+                                <span class="shrink-0 rounded-lg bg-danger-soft px-2.5 py-1.5 text-xs font-bold text-danger">
+                                    غایب
+                                </span>
+
+                            </article>
                         {% empty %}
                             <div class="px-4 py-8 text-center text-sm text-slate-500">
                                 هیچ غیبتی ثبت نشده است.
                             </div>
                         {% endfor %}
+
                     </div>
                 </div>
 

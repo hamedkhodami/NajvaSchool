@@ -13,7 +13,6 @@ class ScheduleSessionListView(AdminRequiredMixin, View):
     def get(self, request, class_id):
         classroom = get_object_or_404(ClassroomModel, id=class_id)
 
-        # فقط جلسات همین کلاس
         sessions = classroom.schedule_sessions.select_related("subject", "teacher")
 
         return render(

@@ -1,12 +1,15 @@
+from django.contrib import messages
 from django.contrib.auth import logout
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
 
 from apps.account.enums import UserRoleEnum
 from apps.account.mixins import AdminRequiredMixin
 from apps.account.models import User
+from apps.notification.enums import NotificationTypeEnum
+from apps.notification.utils import create_in_app_notification
 
 
 class UserListView(AdminRequiredMixin, ListView):
@@ -40,21 +43,48 @@ class UserListView(AdminRequiredMixin, ListView):
         return context
 
 
+class SendTuitionReminderView(AdminRequiredMixin, View):
+
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+
+        notification = create_in_app_notification(
+            to_user=user,
+            notification_type=NotificationTypeEnum.TUITION_REMINDER,
+            title="یادآوری پرداخت شهریه",
+            description=(
+                "کاربر گرامی، لطفاً نسبت به پرداخت شهریه خود اقدام فرمایید. "
+                "در صورت عدم پرداخت شهریه در مهلت تعیین‌شده، "
+                "دسترسی شما به سامانه طبق مقررات مدرسه به‌صورت خودکار قطع خواهد شد."
+            ),
+        )
+
+        if notification:
+            messages.success(
+                request,
+                f"اعلان یادآوری شهریه برای {user.full_name} با موفقیت ارسال شد.",
+            )
+        else:
+            messages.error(request, "ارسال اعلان انجام نشد. لطفاً دوباره تلاش کنید.")
+
+        return redirect(
+            request.META.get("HTTP_REFERER") or reverse("account:user_list")
+        )
+
+
 class UserDetailView(AdminRequiredMixin, DetailView):
     model = User
     template_name = "account/user_detail.html"
     context_object_name = "user"
 
 
-class UserAccessToggleView(View):
+class UserAccessToggleView(AdminRequiredMixin, View):
     def post(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
 
-        # تغییر وضعیت
         user.is_active = not user.is_active
         user.save(update_fields=["is_active"])
 
-        # اگر خودش بود و غیرفعال شد → logout
         if request.user.id == user.id and user.is_active is False:
             logout(request)
 

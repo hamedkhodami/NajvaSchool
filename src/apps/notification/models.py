@@ -61,6 +61,10 @@ class Notification(BaseModel):
         default=True,
         verbose_name="نمایش اعلان",
     )
+    is_read = models.BooleanField(
+        default=False,
+        verbose_name="مشاهده شده",
+    )
 
     class Meta:
         verbose_name = "اعلان"

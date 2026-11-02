@@ -88,6 +88,22 @@
                                         </svg>
                                         ورود به جلسه
                                     </a>
+                                    <a href="{% url 'attendance:teacher_attendance_lists' s.id %}"
+                                       class="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-surface-border bg-white px-4 py-3 text-sm font-bold text-brand transition hover:border-accent hover:bg-accent-soft focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+
+                                        <svg class="h-4 w-4"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+                                        </svg>
+
+                                        لیست‌های حضور و غیاب
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -126,6 +142,23 @@
                                     <div class="mt-3 text-sm text-ink-500">
                                         روز: {{ day.label }}
                                     </div>
+
+                                    <a href="{% url 'attendance:teacher_attendance_lists' s.id %}"
+                                       class="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-surface-border bg-white px-4 py-3 text-sm font-bold text-brand transition hover:border-accent hover:bg-accent-soft focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+
+                                        <svg class="h-4 w-4"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+                                        </svg>
+
+                                        لیست‌های حضور و غیاب
+                                    </a>
 
                                     <a href="{% url 'attendance:teacher_session' s.id %}"
                                        class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">

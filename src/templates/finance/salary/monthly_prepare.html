@@ -1,114 +1,324 @@
 {% extends "base/base_dashboard.html" %}
+
 {% block title %}تهیه لیست پرداخت حقوق{% endblock %}
 
 {% block extra_style %}
 <style>
 .finance-control {
-  width: 100%;
-  border: 1px solid #E2E8F0;
-  border-radius: .75rem;
-  padding: .7rem .85rem;
-  background: #fff;
-  color: #101F33;
-  outline: none;
+    width: 100%;
+    border: 1px solid #E2E8F0;
+    border-radius: .75rem;
+    padding: .7rem .85rem;
+    background: #fff;
+    color: #101F33;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
 }
+
 .finance-control:focus {
-  border-color: #9A6B1F;
-  box-shadow: 0 0 0 3px rgb(154 107 31 / 12%);
+    border-color: #9A6B1F;
+    box-shadow: 0 0 0 3px rgb(154 107 31 / 12%);
+}
+
+.finance-control:disabled {
+    background: #F8FAFC;
+    color: #94A3B8;
+    cursor: not-allowed;
+}
+
+.salary-result {
+    font-weight: 800;
+    color: #1F7A5C;
+    direction: ltr;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.salary-row-selected {
+    background: #FDFBF6;
+}
+
+.salary-hours {
+    max-width: 130px;
+}
+
+@media (max-width: 640px) {
+    .salary-hours {
+        max-width: 100%;
+    }
 }
 </style>
 {% endblock %}
 
+
 {% block content %}
 <div class="space-y-6">
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-3">
-      <span class="h-8 w-1 rounded-full bg-accent"></span>
-      <div>
-        <h1 class="text-xl font-bold text-brand sm:text-2xl">تهیه لیست پرداخت حقوق</h1>
-        <p class="mt-1 text-sm text-ink-400">سال تحصیلی {{ active_year.name }}</p>
-      </div>
+
+    <!-- عنوان صفحه -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div class="flex items-center gap-3">
+            <span class="h-8 w-1 rounded-full bg-accent"></span>
+
+            <div>
+                <h1 class="text-xl font-bold text-brand sm:text-2xl">
+                    تهیه لیست پرداخت حقوق
+                </h1>
+
+                <p class="mt-1 text-sm text-ink-400">
+                    سال تحصیلی
+                    {% if active_year %}
+                        {{ active_year.name }}
+                    {% else %}
+                        نامشخص
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <a href="{% url 'finance:salary_list' %}"
+           class="rounded-xl border border-surface-border px-4 py-2.5 text-center text-sm font-semibold text-ink-600 transition hover:bg-surface-muted">
+            بازگشت
+        </a>
     </div>
-    <a href="{% url 'finance:salary_list' %}"
-       class="rounded-xl border border-surface-border px-4 py-2.5 text-sm font-semibold text-ink-600">
-      بازگشت
-    </a>
-  </div>
 
-  <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card sm:p-7">
-    <form method="post"
-          action="{% url 'finance:salary_monthly_export' %}"
-          id="salary-monthly-form"
-          class="space-y-5">
-      {% csrf_token %}
 
-      <div class="max-w-xs">
-        <label for="month" class="mb-2 block text-sm font-semibold">
-          ماه پرداخت (۱ تا ۱۲)
-        </label>
-        <input id="month" type="number" name="month" min="1" max="12"
-               required class="finance-control">
-      </div>
+    {% if not active_year %}
 
-      <p class="rounded-xl bg-surface-muted p-4 text-sm text-ink-600">
-        معلمان را انتخاب کنید و مبلغ پرداختی هر نفر را بررسی کنید.
-      </p>
+        <div class="rounded-2xl border border-warning/20 bg-warning-soft p-5 text-sm font-semibold text-warning">
+            در حال حاضر سال تحصیلی فعالی برای تهیه لیست حقوق وجود ندارد.
+        </div>
 
-      <div class="overflow-x-auto rounded-xl border border-surface-border">
-        <table class="w-full min-w-[700px] text-right text-sm">
-          <thead class="bg-surface-muted">
-            <tr>
-              <th class="px-4 py-4">انتخاب</th>
-              <th class="px-4 py-4">معلم</th>
-              <th class="px-4 py-4">حقوق پایه</th>
-              <th class="px-4 py-4">مبلغ پرداختی</th>
-            </tr>
-          </thead>
+    {% else %}
 
-          <tbody class="divide-y divide-surface-border">
-            {% for s in salaries %}
-            <tr>
-              <td class="px-4 py-4 text-center">
-                <input type="checkbox"
-                       class="teacher-select"
-                       data-teacher-id="{{ s.teacher.id }}"
-                       aria-label="انتخاب {{ s.teacher.user.full_name }}">
-              </td>
-              <td class="px-4 py-4 font-semibold text-brand">
-                {{ s.teacher.user.full_name }}
-              </td>
-              <td class="px-4 py-4">
-                {{ s.base_amount|floatformat:0 }} تومان
-              </td>
-              <td class="px-4 py-4">
-                <input type="number" min="0" step="1"
-                       class="finance-control teacher-amount"
-                       data-teacher-id="{{ s.teacher.id }}"
-                       value="{{ s.base_amount|floatformat:0 }}">
-              </td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="4" class="px-4 py-12 text-center text-ink-400">
-                هیچ حکمی برای این سال تحصیلی ثبت نشده است.
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+        <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card sm:p-7">
 
-      <input type="hidden" name="payload" id="salary-payload">
+            <form method="post"
+                  action="{% url 'finance:salary_monthly_export' %}"
+                  id="salary-monthly-form"
+                  class="space-y-6">
 
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p id="selected-count" class="text-sm text-ink-500">۰ معلم انتخاب شده</p>
-        <button type="submit"
-                class="rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-hover">
-          ساخت فایل اکسل و دانلود
-        </button>
-      </div>
-    </form>
-  </div>
+                {% csrf_token %}
+
+                <!-- انتخاب ماه -->
+                <div class="max-w-xs">
+                    <label for="month"
+                           class="mb-2 block text-sm font-semibold text-brand">
+                        ماه پرداخت
+                    </label>
+
+                    <input id="month"
+                           type="number"
+                           name="month"
+                           min="1"
+                           max="12"
+                           required
+                           placeholder="مثلاً ۷"
+                           class="finance-control">
+                </div>
+
+
+                <!-- توضیحات محاسبه -->
+                <div class="rounded-xl border border-info/15 bg-info-soft/50 p-4">
+                    <div class="flex items-start gap-3">
+
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-info">
+                            <svg class="h-5 w-5"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 aria-hidden="true">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path stroke-linecap="round" d="M12 11v5m0-8h.01"/>
+                            </svg>
+                        </span>
+
+                        <div>
+                            <p class="text-sm font-bold text-brand">
+                                نحوه محاسبه حقوق معلمان
+                            </p>
+
+                            <p class="mt-1 text-xs leading-7 text-ink-600">
+                                ابتدا معلم موردنظر را انتخاب کنید، سپس تعداد
+                                ساعت کارکرد او را وارد نمایید. مبلغ پرداختی
+                                به‌صورت خودکار از حاصل‌ضرب حقوق ساعتی در
+                                ساعت کارکرد محاسبه می‌شود.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- جدول حقوق -->
+                <div class="overflow-hidden rounded-xl border border-surface-border">
+
+                    <div class="border-b border-surface-border bg-surface-muted px-4 py-4">
+                        <h2 class="font-extrabold text-brand">
+                            فهرست حقوق معلمان
+                        </h2>
+
+                        <p class="mt-1 text-xs text-ink-400">
+                            ساعت کارکرد هر معلم را در ستون مربوطه وارد کنید.
+                        </p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[850px] text-right text-sm">
+
+                            <thead class="bg-surface-muted text-xs font-bold text-ink-600">
+                                <tr>
+                                    <th class="px-4 py-4 text-center">انتخاب</th>
+                                    <th class="px-4 py-4">معلم</th>
+                                    <th class="px-4 py-4">حقوق پایه ساعتی</th>
+                                    <th class="px-4 py-4">ساعت کارکرد</th>
+                                    <th class="px-4 py-4">مبلغ قابل پرداخت</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-surface-border">
+
+                                {% for s in salaries %}
+
+                                <tr class="salary-row transition hover:bg-surface-muted/50"
+                                    data-salary-id="{{ s.id }}"
+                                    data-hourly-rate="{{ s.base_amount }}">
+
+                                    <!-- انتخاب معلم -->
+                                    <td class="px-4 py-4 text-center">
+                                        <input type="checkbox"
+                                               class="teacher-select h-4 w-4 cursor-pointer accent-[#9A6B1F]"
+                                               data-salary-id="{{ s.id }}"
+                                               aria-label="انتخاب {{ s.teacher.user.full_name }}">
+                                    </td>
+
+                                    <!-- نام معلم -->
+                                    <td class="px-4 py-4">
+                                        <p class="font-bold text-brand">
+                                            {{ s.teacher.user.full_name }}
+                                        </p>
+
+                                        <p class="mt-1 text-xs text-ink-400">
+                                            {{ s.teacher.national_id }}
+                                        </p>
+                                    </td>
+
+                                    <!-- نرخ ساعتی -->
+                                    <td class="px-4 py-4">
+                                        <span class="font-bold text-brand">
+                                            {{ s.base_amount|floatformat:0 }}
+                                        </span>
+
+                                        <span class="text-xs text-ink-400">
+                                            تومان
+                                        </span>
+                                    </td>
+
+                                    <!-- ساعت کارکرد -->
+                                    <td class="px-4 py-4">
+                                        <input type="number"
+                                               min="0"
+                                               step="0.5"
+                                               value="0"
+                                               disabled
+                                               inputmode="decimal"
+                                               placeholder="ساعت"
+                                               class="finance-control salary-hours"
+                                               data-salary-id="{{ s.id }}"
+                                               aria-label="ساعت کارکرد {{ s.teacher.user.full_name }}">
+                                    </td>
+
+                                    <!-- مبلغ نهایی -->
+                                    <td class="px-4 py-4">
+                                        <div class="salary-result"
+                                             data-salary-id="{{ s.id }}">
+                                            ۰ تومان
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+                                    <td colspan="5"
+                                        class="px-4 py-12 text-center text-ink-400">
+                                        هیچ حکمی برای این سال تحصیلی ثبت نشده است.
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!-- خلاصه -->
+                <div class="grid gap-3 sm:grid-cols-2">
+
+                    <div class="rounded-xl border border-surface-border bg-surface-muted p-4">
+                        <p class="text-xs text-ink-500">
+                            تعداد معلمان انتخاب‌شده
+                        </p>
+
+                        <p id="selected-count"
+                           class="mt-2 text-xl font-extrabold text-brand">
+                            ۰ نفر
+                        </p>
+                    </div>
+
+                    <div class="rounded-xl border border-success/15 bg-success-soft p-4">
+                        <p class="text-xs text-success">
+                            مجموع مبلغ قابل پرداخت
+                        </p>
+
+                        <p id="total-amount"
+                           class="mt-2 text-xl font-extrabold text-success">
+                            ۰ تومان
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- اطلاعات ارسالی -->
+                <input type="hidden"
+                       name="payload"
+                       id="salary-payload">
+
+
+                <!-- دکمه خروجی -->
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                    <p class="text-xs leading-6 text-ink-400">
+                        مبالغ نهایی در سمت سرور مجدداً محاسبه و در فایل اکسل ثبت می‌شوند.
+                    </p>
+
+                    <button type="submit"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-hover focus:outline-none focus:ring-4 focus:ring-brand/20">
+
+                        <svg class="h-5 w-5"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M12 3v12m0 0 4-4m-4 4-4-4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M5 17v3h14v-3"/>
+                        </svg>
+
+                        ساخت فایل اکسل و دانلود
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -116,45 +326,171 @@
 {% block extra_script %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('salary-monthly-form');
-  if (!form) return;
 
-  const checkboxes = Array.from(form.querySelectorAll('.teacher-select'));
-  const count = document.getElementById('selected-count');
+    const form = document.getElementById('salary-monthly-form');
 
-  const updateCount = () => {
-    const selectedCount = checkboxes.filter(box => box.checked).length;
-    count.textContent =
-      new Intl.NumberFormat('fa-IR').format(selectedCount) + ' معلم انتخاب شده';
-  };
+    if (!form) return;
 
-  checkboxes.forEach(box => box.addEventListener('change', updateCount));
+    const checkboxes = Array.from(
+        form.querySelectorAll('.teacher-select')
+    );
 
-  form.addEventListener('submit', event => {
-    const selected = checkboxes
-      .filter(box => box.checked)
-      .map(box => {
-        const teacherId = box.dataset.teacherId;
-        const amountInput = form.querySelector(
-          '.teacher-amount[data-teacher-id="' + teacherId + '"]'
+    const countElement = document.getElementById('selected-count');
+    const totalElement = document.getElementById('total-amount');
+    const payloadInput = document.getElementById('salary-payload');
+
+    const numberFormat = new Intl.NumberFormat('fa-IR', {
+        maximumFractionDigits: 2
+    });
+
+    const formatMoney = value => {
+        return numberFormat.format(value) + ' تومان';
+    };
+
+    const getRowData = checkbox => {
+        const salaryId = checkbox.dataset.salaryId;
+
+        const row = form.querySelector(
+            '.salary-row[data-salary-id="' + salaryId + '"]'
         );
 
+        if (!row) return null;
+
+        const hourlyRate = Number(row.dataset.hourlyRate);
+
+        const hoursInput = row.querySelector('.salary-hours');
+
+        const resultElement = row.querySelector('.salary-result');
+
         return {
-          teacher_id: teacherId,
-          amount: amountInput ? amountInput.value : '0'
+            salaryId,
+            row,
+            hourlyRate,
+            hoursInput,
+            resultElement
         };
-      });
+    };
 
-    if (selected.length === 0) {
-      event.preventDefault();
-      alert('لطفاً دست‌کم یک معلم را انتخاب کنید.');
-      return;
-    }
+    const calculate = () => {
 
-    document.getElementById('salary-payload').value = JSON.stringify(selected);
-  });
+        let selectedCount = 0;
+        let totalAmount = 0;
 
-  updateCount();
+        checkboxes.forEach(checkbox => {
+
+            const data = getRowData(checkbox);
+
+            if (!data) return;
+
+            const {
+                row,
+                hourlyRate,
+                hoursInput,
+                resultElement
+            } = data;
+
+            hoursInput.disabled = !checkbox.checked;
+
+            row.classList.toggle(
+                'salary-row-selected',
+                checkbox.checked
+            );
+
+            if (!checkbox.checked) {
+                resultElement.textContent = '۰ تومان';
+                return;
+            }
+
+            const hours = Number(hoursInput.value) || 0;
+
+            const amount = hourlyRate * hours;
+
+            selectedCount += 1;
+            totalAmount += amount;
+
+            resultElement.textContent = formatMoney(amount);
+        });
+
+        countElement.textContent =
+            numberFormat.format(selectedCount) + ' نفر';
+
+        totalElement.textContent = formatMoney(totalAmount);
+    };
+
+
+    // انتخاب و لغو انتخاب معلم
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', calculate);
+    });
+
+
+    // محاسبه زنده با تغییر ساعت کارکرد
+    form.querySelectorAll('.salary-hours').forEach(input => {
+        input.addEventListener('input', calculate);
+    });
+
+
+    // ارسال اطلاعات برای ساخت اکسل
+    form.addEventListener('submit', event => {
+
+        const monthInput = document.getElementById('month');
+
+        const month = Number(monthInput.value);
+
+        if (!Number.isInteger(month) || month < 1 || month > 12) {
+            event.preventDefault();
+            alert('لطفاً ماهی بین ۱ تا ۱۲ وارد کنید.');
+            monthInput.focus();
+            return;
+        }
+
+        const selected = [];
+
+        let invalidHours = false;
+
+        checkboxes.forEach(checkbox => {
+
+            if (!checkbox.checked) return;
+
+            const data = getRowData(checkbox);
+
+            if (!data) return;
+
+            const hours = Number(data.hoursInput.value);
+
+            if (
+                !Number.isFinite(hours) ||
+                hours < 0
+            ) {
+                invalidHours = true;
+                return;
+            }
+
+            selected.push({
+                salary_id: data.salaryId,
+                hours: String(hours)
+            });
+        });
+
+
+        if (selected.length === 0) {
+            event.preventDefault();
+            alert('لطفاً دست‌کم یک معلم را انتخاب کنید.');
+            return;
+        }
+
+        if (invalidHours) {
+            event.preventDefault();
+            alert('لطفاً ساعت کارکرد معلمان را به‌درستی وارد کنید.');
+            return;
+        }
+
+        payloadInput.value = JSON.stringify(selected);
+    });
+
+
+    calculate();
+
 });
 </script>
 {% endblock %}

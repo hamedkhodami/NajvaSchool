@@ -43,4 +43,9 @@ urlpatterns = [
         user.UserAccessToggleView.as_view(),
         name="user_toggle_access",
     ),
+    path(
+        "users/<uuid:user_id>/send-tuition-reminder/",
+        user.SendTuitionReminderView.as_view(),
+        name="send_tuition_reminder",
+    ),
 ]

@@ -1,38 +1,48 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from apps.academic.forms import ClassroomForm, ClassroomStudentForm
 from apps.academic.models import ClassroomModel
 from apps.academic.services.active_year import get_active_year
 from apps.account.mixins import AdminRequiredMixin
+from apps.core.pagination import BasePaginatedListView
 from apps.student.models import StudentModel
 
 
-class ClassroomListView(AdminRequiredMixin, View):
+class ClassroomListView(AdminRequiredMixin, BasePaginatedListView):
+    model = ClassroomModel
     template_name = "academic/grade/classroom_list.html"
+    context_object_name = "classrooms"
+    paginate_by = 10
 
-    def get(self, request):
-        active_year = get_active_year(request)
+    def get_queryset(self):
+        active_year = get_active_year(self.request)
 
         if not active_year:
-            messages.error(request, "هیچ سال تحصیلی فعالی وجود ندارد.")
-            classrooms = ClassroomModel.objects.none()
-        else:
-            classrooms = ClassroomModel.objects.filter(
-                academic_year=active_year, is_deleted=False
-            ).select_related("academic_year")
+            messages.error(self.request, "هیچ سال تحصیلی فعالی وجود ندارد.")
+            return ClassroomModel.objects.none()
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "classrooms": classrooms,
-                "active_year": active_year,
-            },
+        return (
+            ClassroomModel.objects.filter(
+                academic_year=active_year,
+                is_deleted=False,
+            )
+            .select_related("academic_year")
+            .order_by("name", "pk")
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        context["active_year"] = get_active_year(self.request)
+
+        return context
+
+
+@method_decorator(never_cache, name="dispatch")
 class ClassroomManageStudentsView(AdminRequiredMixin, View):
     template_name = "academic/grade/classroom_manage_students.html"
 
@@ -74,6 +84,7 @@ class ClassroomManageStudentsView(AdminRequiredMixin, View):
         )
 
 
+@method_decorator(never_cache, name="dispatch")
 class ClassroomRemoveStudentView(AdminRequiredMixin, View):
     def post(self, request, class_id, student_id):
         classroom = get_object_or_404(ClassroomModel, id=class_id)
@@ -147,6 +158,7 @@ class ClassroomCreateView(AdminRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
+@method_decorator(never_cache, name="dispatch")
 class ClassroomUpdateView(AdminRequiredMixin, View):
     template_name = "academic/grade/classroom_update.html"
 

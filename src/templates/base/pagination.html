@@ -1,10 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load pagination_tags %}
 
-</body>
-</html>
+{% if is_paginated %}
+<div class="mt-6 flex flex-col items-center gap-4">
+
+    <nav class="flex w-full flex-wrap items-center justify-center gap-2"
+         aria-label="صفحه‌بندی">
+
+        {# صفحه قبل #}
+        {% if page_obj.has_previous %}
+            <a href="?{% pagination_url request page_obj.previous_page_number %}"
+               class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-surface-border bg-white px-3 text-sm text-ink-700 transition hover:bg-surface-muted">
+                قبلی
+            </a>
+        {% else %}
+            <span class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-surface-border bg-surface-muted px-3 text-sm text-ink-300">
+                قبلی
+            </span>
+        {% endif %}
+
+        {# شماره صفحات #}
+        {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+                <span aria-current="page"
+                      class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl bg-brand px-3 text-sm font-semibold text-white">
+                    {{ num }}
+                </span>
+
+            {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                <a href="?{% pagination_url request num %}"
+                   class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-surface-border bg-white px-3 text-sm text-ink-700 transition hover:bg-surface-muted">
+                    {{ num }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {# صفحه بعد #}
+        {% if page_obj.has_next %}
+            <a href="?{% pagination_url request page_obj.next_page_number %}"
+               class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-surface-border bg-white px-3 text-sm text-ink-700 transition hover:bg-surface-muted">
+                بعدی
+            </a>
+        {% else %}
+            <span class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-surface-border bg-surface-muted px-3 text-sm text-ink-300">
+                بعدی
+            </span>
+        {% endif %}
+
+    </nav>
+
+    <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-ink-400">
+        <span>
+            صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
+        </span>
+
+        <span class="hidden sm:inline">|</span>
+
+        <span>
+            مجموع {{ page_obj.paginator.count }} مورد
+        </span>
+    </div>
+
+</div>
+{% endif %}

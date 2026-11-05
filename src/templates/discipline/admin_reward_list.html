@@ -1,4 +1,6 @@
 {% extends "base/base_dashboard.html" %}
+{% load jalali %}
+
 {% block title %}لیست تشویقی‌ها{% endblock %}
 {% block dashboard_role %}لیست تشویقی‌ها{% endblock %}
 
@@ -46,7 +48,7 @@
                     <td class="p-3 border">{{ record.title }}</td>
 
                     <td class="p-3 border">
-                        {{ record.created_at|date:"Y-m-d" }}
+                        {{ record.created_at|jalali }}
                     </td>
 
                     <td class="p-3 border">{{ record.recorder.get_full_name }}</td>
@@ -137,4 +139,7 @@
     </div>
 
 </section>
+
+{% include "base/pagination.html" %}
+
 {% endblock %}

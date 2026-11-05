@@ -5,13 +5,16 @@ from django.contrib import messages
 from django.db.models import Q, Sum
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 from apps.academic.models import AcademicYearModel
 from apps.academic.services.active_year import get_active_year
 from apps.account.mixins import AdminRequiredMixin
+from apps.core.pagination import paginate_queryset
 from apps.finance.forms import (
     SalaryPaymentCreateForm,
     StaffSalaryCreateForm,
@@ -50,15 +53,16 @@ class StaffSalaryListView(AdminRequiredMixin, View):
 
     def get(self, request):
         year_id = request.GET.get("year")
-        search = request.GET.get("search")
+        search = request.GET.get("search", "").strip()
 
-        salaries = StaffSalaryModel.objects.select_related("teacher", "academic_year")
+        salaries = StaffSalaryModel.objects.select_related(
+            "teacher",
+            "academic_year",
+        )
 
-        # فیلتر سال تحصیلی
         if year_id:
             salaries = salaries.filter(academic_year_id=year_id)
 
-        # جستجو معلم
         if search:
             salaries = salaries.filter(
                 Q(teacher__user__first_name__icontains=search)
@@ -66,18 +70,28 @@ class StaffSalaryListView(AdminRequiredMixin, View):
                 | Q(teacher__national_id__icontains=search)
             )
 
+        salaries = salaries.order_by("-id")
+
         years = AcademicYearModel.objects.all()
+
+        pagination = paginate_queryset(request, salaries, per_page=10)
 
         return render(
             request,
             self.template_name,
             {
-                "salaries": salaries,
+                "salaries": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
                 "years": years,
+                "selected_year": year_id,
+                "search": search,
             },
         )
 
 
+@method_decorator(never_cache, name="dispatch")
 class StaffSalaryUpdateView(AdminRequiredMixin, View):
     template_name = "finance/salary/update.html"
 

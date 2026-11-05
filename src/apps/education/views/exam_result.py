@@ -5,6 +5,7 @@ from django.views import View
 
 from apps.academic.models import ClassroomModel
 from apps.academic.services.active_year import get_active_year
+from apps.core.pagination import paginate_queryset
 from apps.education.models import ExamModel, ExamResultModel
 from apps.notification.enums import NotificationTypeEnum
 from apps.notification.utils import create_in_app_notification
@@ -76,16 +77,29 @@ class TeacherClassListView(TeacherRequiredMixin, View):
 
     def get(self, request):
         teacher = request.user.teacher
-
         active_year = get_active_year(request)
 
-        teacher_classrooms = ClassroomModel.objects.filter(
-            schedule_sessions__teacher=teacher
-        ).distinct()
+        classrooms = (
+            ClassroomModel.objects.filter(
+                schedule_sessions__teacher=teacher,
+                academic_year=active_year,
+            )
+            .distinct()
+            .order_by("id")
+        )
 
-        classrooms = teacher_classrooms.filter(academic_year=active_year)
+        pagination = paginate_queryset(request, classrooms, per_page=10)
 
-        return render(request, self.template_name, {"classrooms": classrooms})
+        return render(
+            request,
+            self.template_name,
+            {
+                "classrooms": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
+            },
+        )
 
 
 class TeacherClassExamResultView(TeacherRequiredMixin, View):

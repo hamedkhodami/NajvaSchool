@@ -4,13 +4,16 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
 from apps.academic.models import ScheduleSessionModel
 from apps.academic.services.active_year import get_active_year
 from apps.attendance.enums import AttendanceStatusEnum
 from apps.attendance.models import AttendanceSessionModel, StudentAttendanceModel
+from apps.core.pagination import paginate_queryset
 from apps.core.templatetags.jalali import (
     gregorian_to_jalali,
     jalali_to_gregorian,
@@ -260,6 +263,7 @@ class TeacherAttendanceSessionView(TeacherOrAdminRequiredMixin, View):
         )
 
 
+@method_decorator(never_cache, name="dispatch")
 class TeacherToggleAttendanceView(TeacherOrAdminRequiredMixin, View):
     def post(self, request):
         session_id = request.POST.get("session_id")
@@ -366,9 +370,22 @@ class TeacherAttendanceListsView(TeacherOrAdminRequiredMixin, TemplateView):
             .order_by("-date", "-session_number", "-pk")
         )
 
-        context["schedule"] = self.schedule
-        context["attendance_lists"] = attendance_lists
-        context["total_lists"] = attendance_lists.count()
+        pagination = paginate_queryset(
+            request=self.request,
+            queryset=attendance_lists,
+            per_page=10,
+        )
+
+        context.update(
+            {
+                "schedule": self.schedule,
+                "attendance_lists": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
+                "total_lists": pagination["paginator"].count,
+            }
+        )
 
         return context
 

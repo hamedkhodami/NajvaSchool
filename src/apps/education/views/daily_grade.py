@@ -4,6 +4,7 @@ from django.views import View
 
 from apps.academic.models import ClassroomModel, SubjectModel
 from apps.academic.services.active_year import get_active_year
+from apps.core.pagination import paginate_queryset
 from apps.education.models import DailyGradeModel
 from apps.notification.enums import NotificationTypeEnum
 from apps.notification.utils import create_in_app_notification
@@ -20,7 +21,20 @@ class TeacherDailyGradeClassListView(View):
             academic_year=active_year, schedule_sessions__teacher=teacher
         ).distinct()
 
-        return render(request, self.template_name, {"classrooms": classrooms})
+        pagination = paginate_queryset(
+            request=request,
+            queryset=classrooms,
+            per_page=10,
+        )
+
+        context = {
+            "classrooms": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)
 
 
 class TeacherDailyGradeCreateView(View):
@@ -136,20 +150,36 @@ class TeacherDailyGradeListView(View):
             ).distinct()
         )
 
-        students = classroom.students.all()
+        students = classroom.students.all().order_by("id")
 
-        # تمام نمرات روزانه این کلاس توسط این معلم
+        pagination = paginate_queryset(
+            request=request,
+            queryset=students,
+            per_page=10,
+        )
+
+        students = pagination["object_list"]
+
         grades = (
-            DailyGradeModel.objects.filter(classroom=classroom, teacher=teacher)
+            DailyGradeModel.objects.filter(
+                classroom=classroom,
+                teacher=teacher,
+                student__in=students,
+            )
             .select_related("student", "subject")
             .order_by("created_at")
         )
 
-        # ساخت جدول داینامیک
+        # گروه‌بندی نمرات بر اساس دانش‌آموز
+        grades_by_student = {}
+
+        for grade in grades:
+            grades_by_student.setdefault(grade.student_id, []).append(grade)
+
         table_rows = []
 
         for student in students:
-            student_grades = grades.filter(student=student)
+            student_grades = grades_by_student.get(student.id, [])
 
             scores = [g.score for g in student_grades]
             avg_score = sum(scores) / len(scores) if scores else None
@@ -162,14 +192,15 @@ class TeacherDailyGradeListView(View):
                 }
             )
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "classroom": classroom,
-                "table_rows": table_rows,
-            },
-        )
+        context = {
+            "classroom": classroom,
+            "table_rows": table_rows,
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)
 
 
 class StudentDailyGradeListView(View):
@@ -179,28 +210,37 @@ class StudentDailyGradeListView(View):
         student = request.user.student
         active_year = get_active_year(request)
 
-        # کلاس‌های دانش‌آموز در سال فعال
         classrooms = ClassroomModel.objects.filter(
-            students=student, academic_year=active_year
+            students=student,
+            academic_year=active_year,
         )
 
-        # نمرات روزانه دانش‌آموز در سال فعال
         grades = (
-            DailyGradeModel.objects.filter(student=student, classroom__in=classrooms)
+            DailyGradeModel.objects.filter(
+                student=student,
+                classroom__in=classrooms,
+            )
             .select_related("subject", "teacher", "classroom")
-            .order_by("-created_at")
+            .order_by("-created_at", "-id")
         )
 
-        # میانگین کل نمرات
-        scores = [g.score for g in grades]
+        # محاسبه میانگین کل نمرات، قبل از صفحه‌بندی
+        scores = list(grades.values_list("score", flat=True))
         avg_score = sum(scores) / len(scores) if scores else None
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "grades": grades,
-                "avg_score": avg_score,
-                "active_year": active_year,
-            },
+        pagination = paginate_queryset(
+            request=request,
+            queryset=grades,
+            per_page=10,
         )
+
+        context = {
+            "grades": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+            "avg_score": avg_score,
+            "active_year": active_year,
+        }
+
+        return render(request, self.template_name, context)

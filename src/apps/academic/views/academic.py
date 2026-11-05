@@ -1,9 +1,12 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from apps.academic.forms import AcademicYearForm
 from apps.academic.models import AcademicYearModel
 from apps.account.mixins import AdminRequiredMixin
+from apps.core.pagination import paginate_queryset
 
 
 class AcademicYearListView(AdminRequiredMixin, View):
@@ -11,7 +14,20 @@ class AcademicYearListView(AdminRequiredMixin, View):
 
     def get(self, request):
         years = AcademicYearModel.objects.all()
-        return render(request, self.template_name, {"years": years})
+        pagination = paginate_queryset(
+            request=request,
+            queryset=years,
+            per_page=10,
+        )
+
+        context = {
+            "years": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)
 
 
 class AcademicYearCreateView(AdminRequiredMixin, View):
@@ -29,6 +45,7 @@ class AcademicYearCreateView(AdminRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
+@method_decorator(never_cache, name="dispatch")
 class AcademicYearUpdateStatusView(AdminRequiredMixin, View):
     template_name = "academic/academic_year_update_status.html"
 

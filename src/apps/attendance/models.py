@@ -89,6 +89,15 @@ class StudentAttendanceModel(BaseModel):
 class StaffAttendanceModel(BaseModel):
     Status = StaffAttendanceStatusEnum
 
+    academic_year = models.ForeignKey(
+        "academic.AcademicYearModel",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="staff_attendances",
+        verbose_name="سال تحصیلی",
+    )
+
     teacher = models.ForeignKey(
         "teacher.TeacherModel",
         on_delete=models.PROTECT,

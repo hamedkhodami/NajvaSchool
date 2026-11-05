@@ -116,7 +116,7 @@ class SubjectModel(BaseModel):
         ordering = ("name",)
 
     def __str__(self):
-        return f"{self.name} - {self.code}"
+        return f"{self.name} - {self.get_code_display()}"
 
 
 class ScheduleSessionModel(BaseModel):

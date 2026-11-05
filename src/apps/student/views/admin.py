@@ -16,11 +16,12 @@ class StudentListView(AdminRequiredMixin, ListView):
     model = StudentModel
     template_name = "student/admin/student_list.html"
     context_object_name = "students"
+    paginate_by = 10
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super().get_queryset().select_related("user")
 
-        search = self.request.GET.get("search")
+        search = self.request.GET.get("search", "").strip()
 
         if search:
             qs = qs.filter(
@@ -30,6 +31,13 @@ class StudentListView(AdminRequiredMixin, ListView):
             )
 
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_value"] = self.request.GET.get("search", "")
+        context["total_students"] = context["paginator"].count
+
+        return context
 
 
 class StudentDetailView(AdminRequiredMixin, DetailView):

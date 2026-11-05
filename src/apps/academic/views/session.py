@@ -1,10 +1,13 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from apps.academic.forms import ScheduleSessionForm
 from apps.academic.models import ClassroomModel, ScheduleSessionModel
 from apps.account.mixins import AdminRequiredMixin
+from apps.core.pagination import paginate_queryset
 
 
 class ScheduleSessionListView(AdminRequiredMixin, View):
@@ -13,16 +16,26 @@ class ScheduleSessionListView(AdminRequiredMixin, View):
     def get(self, request, class_id):
         classroom = get_object_or_404(ClassroomModel, id=class_id)
 
-        sessions = classroom.schedule_sessions.select_related("subject", "teacher")
-
-        return render(
-            request,
-            self.template_name,
-            {
-                "classroom": classroom,
-                "sessions": sessions,
-            },
+        sessions = classroom.schedule_sessions.select_related(
+            "subject",
+            "teacher",
         )
+
+        pagination = paginate_queryset(
+            request=request,
+            queryset=sessions,
+            per_page=10,
+        )
+
+        context = {
+            "classroom": classroom,
+            "sessions": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)
 
 
 class ScheduleSessionCreateView(AdminRequiredMixin, View):
@@ -65,6 +78,7 @@ class ScheduleSessionCreateView(AdminRequiredMixin, View):
         )
 
 
+@method_decorator(never_cache, name="dispatch")
 class ScheduleSessionUpdateView(AdminRequiredMixin, View):
     template_name = "academic/session/schedule_session_update.html"
 

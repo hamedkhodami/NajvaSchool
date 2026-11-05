@@ -1,7 +1,7 @@
 {% extends "base/base_dashboard.html" %}
 {% load jalali %}
 
-{% block title %}جزئیات کلاس {{ classroom.name }}{% endblock %}
+{% block title %}جزئیات کلاس {{ classroom.get_grade_display }}-{{ classroom.name }}{% endblock %}
 
 {% block content %}
 <div class="space-y-6">

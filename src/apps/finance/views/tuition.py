@@ -4,6 +4,7 @@ from django.views import View
 
 from apps.academic.models import AcademicYearModel
 from apps.academic.services.active_year import get_active_year
+from apps.core.pagination import paginate_queryset
 from apps.finance.forms import TuitionCreateForm
 from apps.finance.models import TuitionModel
 
@@ -34,22 +35,21 @@ class TuitionListView(View):
     template_name = "finance/tuition/list.html"
 
     def get(self, request):
-        # فیلترها
         year_id = request.GET.get("year")
         status = request.GET.get("status")
-        search = request.GET.get("search")
+        search = request.GET.get("search", "").strip()
 
-        tuitions = TuitionModel.objects.select_related("student", "academic_year")
+        tuitions = TuitionModel.objects.select_related(
+            "student",
+            "academic_year",
+        )
 
-        # فیلتر سال تحصیلی
         if year_id:
             tuitions = tuitions.filter(academic_year_id=year_id)
 
-        # فیلتر وضعیت
         if status:
             tuitions = tuitions.filter(status=status)
 
-        # جستجو دانش‌آموز
         if search:
             tuitions = tuitions.filter(
                 Q(student__user__first_name__icontains=search)
@@ -58,14 +58,24 @@ class TuitionListView(View):
                 | Q(student__user__phone_number__icontains=search)
             )
 
+        tuitions = tuitions.order_by("-id")
+
         years = AcademicYearModel.objects.all()
+
+        pagination = paginate_queryset(request, tuitions, per_page=10)
 
         return render(
             request,
             self.template_name,
             {
-                "tuitions": tuitions,
+                "tuitions": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
                 "years": years,
+                "selected_year": year_id,
+                "selected_status": status,
+                "search": search,
             },
         )
 

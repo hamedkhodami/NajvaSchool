@@ -1,27 +1,33 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.views import View
 
+from apps.core.pagination import paginate_queryset
 from apps.notification.models import Notification
 
 
 class UserNotificationListView(LoginRequiredMixin, View):
+
     def get(self, request):
         notifications = Notification.objects.filter(
             to_user=request.user,
             is_showing=True,
-        ).order_by("-created_at")
+        ).order_by("-created_at", "-id")
 
-        paginator = Paginator(notifications, 10)
-        page_obj = paginator.get_page(request.GET.get("page"))
+        pagination = paginate_queryset(
+            request=request,
+            queryset=notifications,
+            per_page=10,
+        )
 
         return render(
             request,
             "notification/user_notifications.html",
             {
-                "notifications": page_obj.object_list,
-                "page_obj": page_obj,
+                "notifications": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
             },
         )
 

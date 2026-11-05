@@ -6,6 +6,7 @@ from django.views import View
 from apps.academic.models import ClassroomModel
 from apps.academic.services.active_year import get_active_year
 from apps.account.mixins import AdminRequiredMixin
+from apps.core.pagination import paginate_queryset
 from apps.discipline.enums import (
     BehavioralEvaluationLevelEnum,
     DisciplineEffectEnum,
@@ -99,14 +100,21 @@ class AdminRewardListView(AdminRequiredMixin, View):
             is_deleted=False,  # اگر فیلد حذف نرم داری
         ).select_related("student", "classroom", "recorder")
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "records": records,
-                "active_year": active_year,
-            },
+        pagination = paginate_queryset(
+            request=request,
+            queryset=records,
+            per_page=10,
         )
+
+        context = {
+            "active_year": active_year,
+            "records": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)
 
 
 class AdminRewardDetailView(AdminRequiredMixin, View):
@@ -162,11 +170,18 @@ class StudentRewardListView(LoginRequiredMixin, View):
             student=student, effect="positive", is_deleted=False  # اگر سافت‌دلیت داری
         ).select_related("classroom", "recorder")
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "records": records,
-                "student": student,
-            },
+        pagination = paginate_queryset(
+            request=request,
+            queryset=records,
+            per_page=10,
         )
+
+        context = {
+            "student": student,
+            "records": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)

@@ -1,4 +1,5 @@
 {% extends "base/base_dashboard.html" %}
+{% load jalali %}
 {% block title %}جزئیات حقوق معلم{% endblock %}
 
 {% block extra_style %}
@@ -82,7 +83,7 @@
           {% for p in payments %}
           <tr>
             <td class="px-5 py-4 font-bold">{{ p.amount|floatformat:0 }} تومان</td>
-            <td class="px-5 py-4">{{ p.payment_date|date:"Y/m/d H:i" }}</td>
+            <td class="px-5 py-4">{{ p.payment_date|jalali }}</td>
             <td class="px-5 py-4">{{ p.description|default:"—" }}</td>
           </tr>
           {% empty %}

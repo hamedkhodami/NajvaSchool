@@ -3,25 +3,28 @@ from django.contrib.auth import logout
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views import View
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 
 from apps.account.enums import UserRoleEnum
 from apps.account.mixins import AdminRequiredMixin
 from apps.account.models import User
+from apps.core.pagination import BasePaginatedListView
 from apps.notification.enums import NotificationTypeEnum
 from apps.notification.utils import create_in_app_notification
 
 
-class UserListView(AdminRequiredMixin, ListView):
+class UserListView(AdminRequiredMixin, BasePaginatedListView):
     model = User
     template_name = "account/user_list.html"
     context_object_name = "users"
 
-    def get_queryset(self):
-        qs = User.objects.all().order_by("-created_at")
+    paginate_by = 5
 
-        search = self.request.GET.get("search")
-        role = self.request.GET.get("role")
+    def get_queryset(self):
+        qs = User.objects.all().order_by("-created_at", "-pk")
+
+        search = self.request.GET.get("search", "").strip()
+        role = self.request.GET.get("role", "").strip()
 
         if search:
             qs = qs.filter(
@@ -37,9 +40,11 @@ class UserListView(AdminRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context["roles"] = UserRoleEnum.choices
         context["selected_role"] = self.request.GET.get("role", "")
         context["search_value"] = self.request.GET.get("search", "")
+
         return context
 
 

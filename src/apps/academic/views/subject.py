@@ -1,10 +1,13 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from apps.academic.forms import SubjectForm
 from apps.academic.models import SubjectModel
 from apps.account.mixins import AdminRequiredMixin
+from apps.core.pagination import paginate_queryset
 
 
 class SubjectListView(AdminRequiredMixin, View):
@@ -12,7 +15,20 @@ class SubjectListView(AdminRequiredMixin, View):
 
     def get(self, request):
         subjects = SubjectModel.objects.filter(is_deleted=False)
-        return render(request, self.template_name, {"subjects": subjects})
+        pagination = paginate_queryset(
+            request=request,
+            queryset=subjects,
+            per_page=10,
+        )
+
+        context = {
+            "subjects": pagination["object_list"],
+            "paginator": pagination["paginator"],
+            "page_obj": pagination["page_obj"],
+            "is_paginated": pagination["is_paginated"],
+        }
+
+        return render(request, self.template_name, context)
 
 
 class SubjectCreateView(AdminRequiredMixin, View):
@@ -34,6 +50,7 @@ class SubjectCreateView(AdminRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
+@method_decorator(never_cache, name="dispatch")
 class SubjectUpdateView(AdminRequiredMixin, View):
     template_name = "academic/subject/subject_update.html"
 

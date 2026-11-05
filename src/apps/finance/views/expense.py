@@ -1,9 +1,12 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from apps.academic.models import AcademicYearModel
+from apps.core.pagination import paginate_queryset
 from apps.finance.forms import SchoolExpenseCreateForm, SchoolExpenseUpdateForm
 from apps.finance.models import SchoolExpenseModel
 
@@ -13,7 +16,7 @@ class ExpenseListView(View):
 
     def get(self, request):
         year_id = request.GET.get("year")
-        search = request.GET.get("search")
+        search = request.GET.get("search", "").strip()
 
         expenses = SchoolExpenseModel.objects.select_related("academic_year").filter(
             is_deleted=False
@@ -27,14 +30,23 @@ class ExpenseListView(View):
                 Q(title__icontains=search) | Q(description__icontains=search)
             )
 
+        expenses = expenses.order_by("-created_at")
+
         years = AcademicYearModel.objects.all()
+
+        pagination = paginate_queryset(request, expenses, per_page=10)
 
         return render(
             request,
             self.template_name,
             {
-                "expenses": expenses,
+                "expenses": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
                 "years": years,
+                "selected_year": year_id,
+                "search": search,
             },
         )
 
@@ -54,6 +66,7 @@ class ExpenseCreateView(View):
         return render(request, self.template_name, {"form": form})
 
 
+@method_decorator(never_cache, name="dispatch")
 class ExpenseUpdateView(View):
     template_name = "finance/expense/update.html"
 

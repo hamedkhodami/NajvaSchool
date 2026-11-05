@@ -1,9 +1,12 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from apps.academic.models import SubjectModel
 from apps.academic.services.active_year import get_active_year
+from apps.core.pagination import paginate_queryset
 from apps.education.forms import ExamCreateForm, ExamUpdateForm
 from apps.education.models import ExamModel
 from apps.teacher.mixins import TeacherOrAdminRequiredMixin, TeacherRequiredMixin
@@ -45,11 +48,27 @@ class TeacherExamListView(TeacherRequiredMixin, View):
         active_year = get_active_year(request)
         teacher = request.user.teacher
 
-        exams = ExamModel.objects.filter(
-            teacher=teacher, classroom__academic_year=active_year
-        ).select_related("classroom", "subject")
+        exams = (
+            ExamModel.objects.filter(
+                teacher=teacher,
+                classroom__academic_year=active_year,
+            )
+            .select_related("classroom", "subject")
+            .order_by("-id")
+        )
 
-        return render(request, self.template_name, {"exams": exams})
+        pagination = paginate_queryset(request, exams, per_page=10)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "exams": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
+            },
+        )
 
 
 class TeacherExamDetailView(TeacherRequiredMixin, View):
@@ -61,6 +80,7 @@ class TeacherExamDetailView(TeacherRequiredMixin, View):
         return render(request, self.template_name, {"exam": exam})
 
 
+@method_decorator(never_cache, name="dispatch")
 class TeacherExamUpdateView(TeacherRequiredMixin, View):
     template_name = "education/exam/teacher_exam_edit.html"
 
@@ -109,19 +129,26 @@ class QuestionBankListView(TeacherOrAdminRequiredMixin, View):
                 "classroom",
                 "classroom__academic_year",
             )
+            .order_by("-id")
         )
 
         subject_id = request.GET.get("subject")
+
         if subject_id:
             exams = exams.filter(subject_id=subject_id)
 
         subjects = SubjectModel.objects.all()
 
+        pagination = paginate_queryset(request, exams, per_page=10)
+
         return render(
             request,
             self.template_name,
             {
-                "exams": exams,
+                "exams": pagination["object_list"],
+                "paginator": pagination["paginator"],
+                "page_obj": pagination["page_obj"],
+                "is_paginated": pagination["is_paginated"],
                 "subjects": subjects,
                 "selected_subject": subject_id,
             },

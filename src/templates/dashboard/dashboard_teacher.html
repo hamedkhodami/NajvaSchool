@@ -1,5 +1,5 @@
-
 {% extends "base/base_dashboard.html" %}
+{% load jalali %}
 
 {% block title %}داشبورد معلم{% endblock %}
 {% block dashboard_role %}پنل معلم{% endblock %}
@@ -301,7 +301,7 @@
 
                         <p class="mt-1 text-xs text-slate-500">
                             تاریخ:
-                            {{ absence.date|date:"Y/m/d" }}
+                            {{ absence.date|jalali }}
                         </p>
 
                         {% if absence.description %}

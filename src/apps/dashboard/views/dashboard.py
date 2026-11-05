@@ -5,7 +5,10 @@ from django.views.generic import TemplateView
 from apps.academic.models import ScheduleSessionModel
 from apps.academic.services.active_year import get_active_year
 from apps.account.enums import UserRoleEnum
-from apps.attendance.models import StaffAttendanceModel, StudentAttendanceModel
+from apps.attendance.models import (
+    StaffAttendanceModel,
+    StudentAttendanceModel,
+)
 from apps.notification.models import Notification
 
 
@@ -13,7 +16,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/dashboard.html"
 
     def get(self, request, *args, **kwargs):
-
         has_unread_notifications = Notification.objects.filter(
             to_user=request.user,
             is_showing=True,
@@ -29,9 +31,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # -------------------------
         # تعیین نقش کاربر
-        # -------------------------
         if user.is_superuser:
             role = UserRoleEnum.ADMIN
         elif hasattr(user, "role"):
@@ -41,21 +41,18 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         context["role"] = role
 
-        # -------------------------
         # تعداد اعلان‌های خوانده‌نشده
-        # -------------------------
         context["unread_notifications_count"] = Notification.objects.filter(
             to_user=user,
             is_showing=True,
             is_read=False,
         ).count()
 
-        # -------------------------
         # سال تحصیلی فعال
-        # -------------------------
         active_year = get_active_year(self.request)
         context["active_year"] = active_year
 
+        # روزهای هفته
         weekdays = [
             ("saturday", "شنبه"),
             ("sunday", "یکشنبه"),
@@ -66,30 +63,35 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             ("friday", "جمعه"),
         ]
 
-        # -------------------------
+        # ==========================================
         # داشبورد معلم
-        # -------------------------
+        # ==========================================
         if role == UserRoleEnum.TEACHER:
             teacher = user.teacher
             context["teacher"] = teacher
 
-            schedules = list(
-                ScheduleSessionModel.objects.filter(
-                    teacher=teacher,
-                    classroom__academic_year=active_year,
+            # برنامه هفتگی معلم در سال تحصیلی فعال
+            if active_year:
+                schedules = list(
+                    ScheduleSessionModel.objects.filter(
+                        teacher=teacher,
+                        classroom__academic_year=active_year,
+                    )
+                    .select_related(
+                        "classroom",
+                        "classroom__academic_year",
+                        "subject",
+                        "teacher",
+                        "teacher__user",
+                    )
+                    .order_by("session_number")
                 )
-                .select_related(
-                    "classroom",
-                    "classroom__academic_year",
-                    "subject",
-                    "teacher",
-                    "teacher__user",
-                )
-                .order_by("session_number")
-            )
+            else:
+                schedules = []
 
             context["sessions"] = schedules
 
+            # دسته‌بندی برنامه‌ها بر اساس روز هفته
             schedule_days = []
 
             for value, label in weekdays:
@@ -105,30 +107,41 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             context["schedule_days"] = schedule_days
 
-            # تمام غیبت‌های معلم
-            all_absents = StaffAttendanceModel.objects.filter(
-                teacher=teacher,
-                status=StaffAttendanceModel.Status.ABSENT,
-            ).order_by("-date", "-created_at", "-pk")
+            # غیبت‌های معلم در سال تحصیلی فعال
+            if active_year:
+                all_absents = StaffAttendanceModel.objects.filter(
+                    teacher=teacher,
+                    academic_year=active_year,
+                    status=StaffAttendanceModel.Status.ABSENT,
+                ).order_by("-date", "-created_at", "-pk")
+            else:
+                all_absents = StaffAttendanceModel.objects.none()
 
             context["total_absents"] = all_absents.count()
             context["all_absents"] = all_absents
 
-        # -------------------------
+        # ==========================================
         # داشبورد دانش‌آموز
-        # -------------------------
+        # ==========================================
         elif role == UserRoleEnum.STUDENT:
             student = user.student
             context["student"] = student
 
-            classrooms = student.classrooms.filter(
-                academic_year=active_year
-            ).select_related("academic_year")
+            # کلاس‌های دانش‌آموز در سال تحصیلی فعال
+            if active_year:
+                classrooms = student.classrooms.filter(
+                    academic_year=active_year,
+                ).select_related("academic_year")
+            else:
+                classrooms = student.classrooms.none()
 
             context["classrooms"] = classrooms
 
+            # برنامه هفتگی دانش‌آموز
             schedules = list(
-                ScheduleSessionModel.objects.filter(classroom__in=classrooms)
+                ScheduleSessionModel.objects.filter(
+                    classroom__in=classrooms,
+                )
                 .select_related(
                     "classroom",
                     "classroom__academic_year",
@@ -141,6 +154,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             context["sessions"] = schedules
 
+            # دسته‌بندی برنامه‌ها بر اساس روز هفته
             schedule_days = []
 
             for value, label in weekdays:
@@ -156,26 +170,32 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             context["schedule_days"] = schedule_days
 
-            # تمام رکوردهای غیبت دانش‌آموز
-            all_absents = (
-                StudentAttendanceModel.objects.filter(
-                    student=student,
-                    status=StudentAttendanceModel.Status.ABSENT,
+            # غیبت‌های دانش‌آموز در سال تحصیلی فعال
+            if active_year:
+                all_absents = (
+                    StudentAttendanceModel.objects.filter(
+                        student=student,
+                        status=StudentAttendanceModel.Status.ABSENT,
+                        session__schedule_session__classroom__academic_year=active_year,
+                    )
+                    .select_related(
+                        "session",
+                        "session__schedule_session",
+                        "session__schedule_session__subject",
+                        "session__schedule_session__classroom",
+                    )
+                    .order_by(
+                        "-session__date",
+                        "-created_at",
+                        "-pk",
+                    )
                 )
-                .select_related(
-                    "session",
-                    "session__schedule_session",
-                    "session__schedule_session__subject",
-                )
-                .order_by(
-                    "-session__date",
-                    "-created_at",
-                    "-pk",
-                )
-            )
+            else:
+                all_absents = StudentAttendanceModel.objects.none()
 
             context["total_absents"] = all_absents.count()
 
+            # آماده‌سازی اطلاعات غیبت‌ها برای قالب
             absent_dates = []
             absents_by_subject = {}
 

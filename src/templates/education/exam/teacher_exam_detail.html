@@ -1,5 +1,6 @@
 {% extends "base/base_dashboard.html" %}
 {% load static %}
+{% load jalali %}
 
 {% block title %}جزئیات امتحان{% endblock %}
 {% block dashboard_role %}جزئیات امتحان{% endblock %}
@@ -39,7 +40,7 @@
 
             <div class="space-y-2">
                 <p class="text-sm text-ink-500">تاریخ ایجاد</p>
-                <p class="font-extrabold text-brand">{{ exam.created_at }}</p>
+                <p class="font-extrabold text-brand">{{ exam.created_at|jalali }}</p>
             </div>
 
             <div class="space-y-2">

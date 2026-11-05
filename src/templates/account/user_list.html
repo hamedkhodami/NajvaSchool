@@ -227,6 +227,16 @@
     </div>
 </div>
 
+<div class="mb-4 rounded-xl border border-surface-border bg-white p-4 text-sm">
+    <p>تعداد کل: {{ paginator.count }}</p>
+    <p>تعداد صفحات: {{ paginator.num_pages }}</p>
+    <p>صفحه فعلی: {{ page_obj.number }}</p>
+    <p>تعداد آیتم‌های این صفحه: {{ years|length }}</p>
+    <p>Pagination فعال: {{ is_paginated }}</p>
+</div>
+
+{% include "base/pagination.html" %}
+
 {% endblock %}
 
 {% block extra_script %}

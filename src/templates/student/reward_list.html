@@ -1,4 +1,6 @@
 {% extends "base/base_dashboard.html" %}
+{% load jalali %}
+
 {% block title %}تشویقی‌های من{% endblock %}
 {% block dashboard_role %}تشویقی‌های من{% endblock %}
 
@@ -19,7 +21,7 @@
             <!-- عنوان + تاریخ -->
             <div class="flex justify-between items-center">
                 <span class="text-xl font-extrabold text-brand">{{ record.title }}</span>
-                <span class="text-sm text-ink-500">{{ record.created_at|date:"Y-m-d" }}</span>
+                <span class="text-sm text-ink-500">{{ record.created_at|jalali }}</span>
             </div>
 
             <!-- اطلاعات اصلی -->
@@ -80,7 +82,7 @@
 
             <div class="flex justify-between">
                 <span class="font-extrabold text-brand">{{ record.title }}</span>
-                <span>{{ record.created_at|date:"Y-m-d" }}</span>
+                <span>{{ record.created_at|jalali }}</span>
             </div>
 
             <div class="grid grid-cols-1 gap-2">
@@ -132,4 +134,5 @@
     </div>
 
 </section>
+
 {% endblock %}

@@ -62,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.core.middleware.no_cache_middleware.NoCacheForAdminMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -161,12 +162,4 @@ REDIS_CONFIG = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-# ---------------------------------------------------------------
-
-
-# ---SMS config -------------------------------------------------
-SMS_CONFIG = {
-    "API_KEY": os.getenv("SMS_CONFIG_API_KEY"),
-    "ORIGINATOR": os.getenv("SMS_CONFIG_ORIGINATOR"),
-}
 # ---------------------------------------------------------------

@@ -1,4 +1,5 @@
 {% extends "base/base_dashboard.html" %}
+{% load jalali %}
 
 {% block title %}نمرات روزانه من{% endblock %}
 {% block dashboard_role %}نمرات روزانه{% endblock %}
@@ -36,7 +37,7 @@
                     </td>
 
                     <td class="p-3 border border-gray-200 text-center">
-                        {{ g.created_at|date:"Y/m/d" }}
+                        {{ g.created_at|jalali }}
                     </td>
 
                     <td class="p-3 border border-gray-200">
@@ -71,7 +72,7 @@
             </div>
 
             <div class="text-sm text-ink-700">
-                <span class="font-bold">تاریخ:</span> {{ g.created_at|date:"Y/m/d" }}
+                <span class="font-bold">تاریخ:</span> {{ g.created_at|jalali }}
             </div>
 
             <div class="text-sm text-ink-700">

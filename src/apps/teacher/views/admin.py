@@ -56,10 +56,12 @@ class TeacherListView(AdminRequiredMixin, ListView):
     model = TeacherModel
     template_name = "teacher/admin/teacher_list.html"
     context_object_name = "teachers"
+    paginate_by = 10
 
     def get_queryset(self):
         qs = super().get_queryset().select_related("user")
-        search = self.request.GET.get("search")
+
+        search = self.request.GET.get("search", "").strip()
 
         if search:
             qs = qs.filter(
@@ -73,7 +75,8 @@ class TeacherListView(AdminRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["search_value"] = self.request.GET.get("search", "")
-        context["total_teachers"] = self.get_queryset().count()
+        context["total_teachers"] = context["paginator"].count
+
         return context
 
 

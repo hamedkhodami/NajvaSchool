@@ -23,6 +23,7 @@ from apps.finance.forms import (
 from apps.finance.models import StaffSalaryModel
 from apps.notification.enums import NotificationTypeEnum
 from apps.notification.utils import create_in_app_notification
+from apps.teacher.mixins import TeacherOrAdminRequiredMixin
 from apps.teacher.models import TeacherModel
 
 
@@ -413,7 +414,7 @@ class StaffSalaryDetailView(AdminRequiredMixin, View):
         )
 
 
-class TeacherSalaryDashboardView(AdminRequiredMixin, View):
+class TeacherSalaryDashboardView(TeacherOrAdminRequiredMixin, View):
     template_name = "teacher/salary.html"
 
     def get(self, request):

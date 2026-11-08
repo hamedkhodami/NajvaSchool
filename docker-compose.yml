@@ -138,11 +138,9 @@ services:
 
     ports:
       - "80:80"
-      - "443:443"
 
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - /opt/najva-data/ssl:/etc/nginx/ssl:ro
       - static_volume:/var/www/static:ro
       - /opt/najva-data/media:/var/www/media:ro
       - /opt/najva-data/35987415.txt:/var/www/35987415.txt:ro
@@ -153,4 +151,3 @@ services:
 
 volumes:
   static_volume:
-
